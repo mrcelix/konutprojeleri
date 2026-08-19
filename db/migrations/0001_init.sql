@@ -95,13 +95,32 @@ create table proje (
 --
 -- SORGULARDA DA BU FONKSİYON KULLANILMALI — düz unaccent() çağıran bir
 -- sorgu indeksi kullanamaz ve tablo taramasına düşer.
-create or replace function tr_unaccent(text)
-returns text
-language sql
-immutable
-strict
-parallel safe
-as $$ select public.unaccent('public.unaccent'::regdictionary, $1) $$;
+--
+-- UZANTI ŞEMASI SABİT YAZILAMAZ. Düz Postgres'te unaccent public'e kurulur,
+-- Supabase'de panelden açıldığında "extensions" şemasına gider. Şema sabit
+-- yazılırsa göç ortamlardan birinde patlar. Bu yüzden şema çalışma anında
+-- katalogdan okunup fonksiyon dinamik olarak üretiliyor.
+do $kur$
+declare
+  sema text;
+begin
+  select n.nspname into sema
+    from pg_extension e
+    join pg_namespace n on n.oid = e.extnamespace
+   where e.extname = 'unaccent';
+
+  if sema is null then
+    raise exception 'unaccent uzantısı bulunamadı';
+  end if;
+
+  execute format(
+    'create or replace function tr_unaccent(text) '
+    'returns text language sql immutable strict parallel safe '
+    'as $govde$ select %I.unaccent(%L::regdictionary, $1) $govde$',
+    sema, sema || '.unaccent'
+  );
+end
+$kur$;
 
 -- Coğrafi arama: haritada alan çizme, "metroya 10 dk"
 create index proje_konum_ix   on proje using gist (konum);

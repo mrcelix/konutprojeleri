@@ -12,7 +12,10 @@
     "lint": "next lint",
     "typecheck": "tsc --noEmit",
     "db:migrate": "node --env-file=.env.local scripts/migrate.mjs",
-    "db:seed": "node --env-file=.env.local scripts/seed.mjs"
+    "db:seed": "node --env-file=.env.local scripts/seed.mjs",
+    "db:dogrula": "node --env-file=.env.local scripts/dogrula.mjs",
+    "db:gecikme": "node --env-file=.env.local scripts/gecikme.mjs",
+    "kurulum": "npm run db:migrate && npm run db:seed && npm run db:dogrula"
   },
   "dependencies": {
     "leaflet": "^1.9.4",

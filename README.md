@@ -7,6 +7,12 @@ bilgisiyle listeleyen portal. Bu depo yeniden yazımın iskeletidir.
 
 ---
 
+## Kurulum
+
+Supabase, R2 ve Vercel bağlantısı için adım adım rehber:
+**[KURULUM.md](KURULUM.md)**. Sırayı bozmayın — Vercel'i veritabanı hazır
+olmadan bağlarsanız ilk dağıtım hata verir.
+
 ## Hızlı başlangıç
 
 ```bash
