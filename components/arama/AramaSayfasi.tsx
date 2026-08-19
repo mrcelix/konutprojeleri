@@ -44,6 +44,12 @@ export async function AramaSayfasi({ taban, baslik, filtre, girisMetni }: Props)
             <span style={{ fontSize: 13 }}>
               <b>{toplam}</b> proje
             </span>
+            <Link
+              href={`${taban}${filtreYaz({ ...filtre, sayfa: 1 })}${filtreYaz({ ...filtre, sayfa: 1 }) ? '&' : '?'}gorunum=harita`}
+              className="kp-chip"
+            >
+              Haritada gör
+            </Link>
             <nav className="kp-row" style={{ marginLeft: 'auto', gap: 4 }} aria-label="Sıralama">
               {SIRALAMALAR.map((s) => (
                 <Link

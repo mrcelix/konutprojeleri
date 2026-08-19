@@ -3,6 +3,7 @@ import type { Metadata } from 'next';
 import { bolgeIcerik } from '@/lib/queries/bolge';
 import { filtreCoz } from '@/lib/filtre';
 import { AramaSayfasi } from '@/components/arama/AramaSayfasi';
+import { HaritaGorunumu } from '@/components/harita/HaritaGorunumu';
 
 /**
  * İlçe sayfası — /istanbul/kadikoy-konut-projeleri
@@ -48,13 +49,20 @@ export default async function IlceSayfasi({ params, searchParams }: Params) {
   const ilce = ilceCoz(ilceSlug);
   if (!ilce) notFound();
 
-  const icerik = await bolgeIcerik(il, ilce);
   const filtre = filtreCoz({ il, ilce }, q);
   const ad = ilce.charAt(0).toUpperCase() + ilce.slice(1);
+  const taban = `/${il}/${ilceSlug}`;
+
+  // Aramanın üçüncü modu. Harita dinamiktir, ISR'a girmez.
+  if (q.gorunum === 'harita') {
+    return <HaritaGorunumu taban={taban} baslik={`${ad} Konut Projeleri`} filtre={filtre} />;
+  }
+
+  const icerik = await bolgeIcerik(il, ilce);
 
   return (
     <AramaSayfasi
-      taban={`/${il}/${ilceSlug}`}
+      taban={taban}
       baslik={`${ad} Konut Projeleri`}
       filtre={filtre}
       girisMetni={icerik?.metin ?? null}

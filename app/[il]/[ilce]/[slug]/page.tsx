@@ -6,6 +6,7 @@ import { filtreCoz } from '@/lib/filtre';
 import { ProjeDetay } from '@/components/ProjeDetay';
 import { ArsivProje } from '@/components/ArsivProje';
 import { AramaSayfasi } from '@/components/arama/AramaSayfasi';
+import { HaritaGorunumu } from '@/components/harita/HaritaGorunumu';
 import { para, teslim, tarih } from '@/lib/format';
 
 /**
@@ -91,6 +92,10 @@ export default async function Sayfa({ params, searchParams }: Params) {
       cozum.tip === 'daire-tipi' ? `${ilceAd} ${cozum.daireTipi} Konut Projeleri`
       : cozum.tip === 'mahalle' ? `${cozum.mahalle.charAt(0).toUpperCase() + cozum.mahalle.slice(1)} Konut Projeleri`
       : `${ilceAd} ${cozum.kategori.replace(/-/g, ' ')} Projeleri`;
+
+    if (q.gorunum === 'harita') {
+      return <HaritaGorunumu taban={yol} baslik={baslik} filtre={filtre} />;
+    }
 
     return <AramaSayfasi taban={yol} baslik={baslik} filtre={filtre} />;
   }

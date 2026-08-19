@@ -118,3 +118,97 @@
   background: var(--btn-primary-bg); border-color: var(--btn-primary-bg);
   color: var(--btn-primary-text); font-weight: 700; text-align: center;
 }
+
+/* ═══════════════════════════════════════════════════════════════
+   Harita
+   ═══════════════════════════════════════════════════════════════ */
+
+/* Fiyat bantları.
+   DİKKAT: koyu temada ısı YÖNÜ TERSİNE DÖNER — açık temada "koyu = pahalı",
+   koyuda "açık = pahalı". Efsane her iki temada da görünür kalır. */
+:root {
+  --bant-ucuz-bg: #eef4fa;  --bant-ucuz-ink: #2f5675;
+  --bant-orta-bg: #cfe0f0;  --bant-orta-ink: #234a68;
+  --bant-yuksek-bg: #a99cc4; --bant-yuksek-ink: #ffffff;
+  --bant-premium-bg: #6e5c82; --bant-premium-ink: #ffffff;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bant-ucuz-bg: #22303f;   --bant-ucuz-ink: #8fb2cf;
+    --bant-orta-bg: #33475c;   --bant-orta-ink: #b4cde4;
+    --bant-yuksek-bg: #8b7ba6; --bant-yuksek-ink: #16141c;
+    --bant-premium-bg: #cbbcdd; --bant-premium-ink: #16141c;
+  }
+}
+:root[data-theme="dark"] {
+  --bant-ucuz-bg: #22303f;   --bant-ucuz-ink: #8fb2cf;
+  --bant-orta-bg: #33475c;   --bant-orta-ink: #b4cde4;
+  --bant-yuksek-bg: #8b7ba6; --bant-yuksek-ink: #16141c;
+  --bant-premium-bg: #cbbcdd; --bant-premium-ink: #16141c;
+}
+
+/* Fiyat etiketli pin — noktanın üstünde ortalanır */
+.hp-pin {
+  position: absolute;
+  transform: translate(-50%, -100%);
+  white-space: nowrap;
+  padding: 4px 9px;
+  border-radius: var(--r-full);
+  font-size: 11px;
+  font-weight: 750;
+  font-variant-numeric: tabular-nums;
+  box-shadow: 0 2px 8px rgba(20, 20, 30, 0.28);
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  cursor: pointer;
+}
+.hp-pin--bilinmiyor { background: var(--surface-sunken); color: var(--text-muted); }
+.hp-pin--ucuz     { background: var(--bant-ucuz-bg);     color: var(--bant-ucuz-ink); }
+.hp-pin--orta     { background: var(--bant-orta-bg);     color: var(--bant-orta-ink); }
+.hp-pin--yuksek   { background: var(--bant-yuksek-bg);   color: var(--bant-yuksek-ink); }
+.hp-pin--premium  { background: var(--bant-premium-bg);  color: var(--bant-premium-ink); }
+
+.hp-ornek {
+  width: 18px; height: 9px; border-radius: 3px; display: block;
+  border: 1px solid rgba(128, 128, 128, 0.3);
+}
+
+/* Küme baloncuğu */
+.hp-kume {
+  background: var(--brand);
+  color: var(--text-inverse);
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  font-size: 13px;
+  font-weight: 750;
+  box-shadow: 0 0 0 8px color-mix(in srgb, var(--brand) 22%, transparent);
+}
+.hp-kume span { display: block; }
+
+/* Balon içi mini kart */
+.hp-pop { display: block; line-height: 1.45; }
+.hp-pop b { display: block; font-size: 13px; font-weight: 750; letter-spacing: -0.02em; }
+.hp-pop span { display: block; font-size: 10.5px; color: var(--text-muted); margin: 1px 0 6px; }
+.hp-pop strong { font-size: 14px; font-weight: 800; font-variant-numeric: tabular-nums; }
+.hp-pop em { display: block; font-style: normal; font-size: 10.5px; color: var(--success); margin-top: 3px; }
+
+/* Leaflet kabuğu token'lara uyar */
+.leaflet-container { background: var(--surface-sunken); font-family: var(--font-sans); }
+.leaflet-popup-content-wrapper {
+  background: var(--surface-raised);
+  color: var(--text-primary);
+  border-radius: var(--r-block);
+  box-shadow: var(--elev-2);
+}
+.leaflet-popup-tip { background: var(--surface-raised); }
+.leaflet-bar a {
+  background: var(--surface-raised);
+  color: var(--text-primary);
+  border-bottom-color: var(--border);
+}
+.leaflet-control-attribution {
+  background: color-mix(in srgb, var(--surface-card) 82%, transparent);
+  color: var(--text-muted);
+  font-size: 10px;
+}
+.leaflet-control-attribution a { color: var(--text-secondary); }
