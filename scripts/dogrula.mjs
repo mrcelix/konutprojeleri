@@ -258,6 +258,46 @@ async function calistir() {
     if (r.plansiz === 0) return 'ödeme planı bildirilmemiş proje yok — bu durum test edilemiyor';
     return true;
   });
+
+  console.log('\nKarşılaştırma');
+
+  await kontrol('Karşılaştırma sorgusu çalışıyor', async () => {
+    // lib/queries/karsilastir.ts ile aynı yapı. Amaç SQL'i doğrulamak:
+    // mv_firma_karne birleşimi, PostGIS mesafesi ve json_agg birlikte
+    // ancak burada çalıştırılabiliyor.
+    const sluglar = ['benesta-benleo-acibadem', 'vn-kartal', 'isiltili-evler-sancaktepe'];
+    const satirlar = await sql`
+      select
+        p.slug::text as slug, p.ad,
+        k.sicil, k.ort_gecikme::float8 as ort_gecikme,
+        (select min(st_distance(p.konum, i.konum))
+           from poi i where i.tip = 'metro')::float8 as metro_m,
+        (select coalesce(json_agg(json_build_object(
+            'tip', d.tip, 'net_m2', d.net_m2::float8,
+            'liste_fiyati', d.liste_fiyati::float8,
+            'm2_birim', d.m2_birim::float8,
+            'kalan_adet', d.kalan_adet) order by d.tip), '[]')
+         from daire_tipi d where d.proje_id = p.id) as tipler
+      from proje p
+      join firma f on f.id = p.firma_id
+      left join mv_firma_karne k on k.firma_id = f.id
+      where p.yayinda and p.slug = any(${sluglar})`;
+
+    if (satirlar.length !== 3) return `3 proje bekleniyordu, ${satirlar.length} geldi`;
+    if (satirlar.some((s) => !Array.isArray(s.tipler))) return 'daire tipleri dizi değil';
+    if (satirlar.every((s) => s.metro_m == null)) return 'hiçbir projede metro mesafesi yok';
+    return true;
+  });
+
+  await kontrol('Proje slug alanı benzersiz', async () => {
+    // Karşılaştırma adresleri yalnızca slug taşır; il/ilçe yok.
+    // Slug benzersiz olmazsa yanlış proje karşılaştırılır.
+    const [{ n }] = await sql`
+      select count(*)::int as n from (
+        select slug from proje group by slug having count(*) > 1
+      ) t`;
+    return n === 0 || `${n} slug birden fazla projede kullanılıyor`;
+  });
   await sql.end();
 
   if (hata > 0) {

@@ -3,6 +3,7 @@ import Image from 'next/image';
 import { Pill, SantiyePill, StokPill } from '@/components/ui/Pill';
 import { para, paraKisa, m2Birim, teslim, alan } from '@/lib/format';
 import { projeYolu } from '@/lib/routing';
+import { SepetDugmesi } from '@/components/karsilastir/SepetDugmesi';
 
 /**
  * Proje kartı · liste boyutu.
@@ -34,6 +35,9 @@ type Props = {
     kapak: string | null;
     metro_dk?: number | null;
   };
+  /** Karşılaştırma düğmesi için dönüş adresi. Verilmezse düğme çıkmaz. */
+  don?: string;
+  sepette?: boolean;
   daireTipleri?: {
     tip: string;
     net_m2: number | null;
@@ -41,7 +45,7 @@ type Props = {
   }[];
 };
 
-export function ProjeKarti({ proje: p, daireTipleri = [] }: Props) {
+export function ProjeKarti({ proje: p, daireTipleri = [], don, sepette }: Props) {
   const yol = projeYolu(p);
   const fiyat = para(p.min_fiyat);
 
@@ -126,6 +130,7 @@ export function ProjeKarti({ proje: p, daireTipleri = [] }: Props) {
           <Link href={yol} className="kp-btn is-small">
             {fiyat ? 'Projeyi incele' : 'Fiyat isteyin'}
           </Link>
+          {don && <SepetDugmesi slug={p.slug} don={don} sepette={sepette} kucuk />}
         </div>
       </div>
     </article>

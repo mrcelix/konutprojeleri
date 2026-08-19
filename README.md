@@ -57,6 +57,8 @@ app/
   firmalar/[slug]/               firma karnesi
   teslim-takvimi/                zaman ekseni · çeyrek bazlı teslim takvimi
   butce/                         ödeme kapasitesi ekseni · senetli plan eşleşmesi
+  karsilastir/[[...dilim]]/      dört projeye kadar karşılaştırma · noindex
+  api/karsilastir/               sepet çerezi (POST; prefetch tetiklemesin diye)
   fiyat-endeksi/                 m² fiyat endeksi
   api/onay/                      onay kuyruğu → etiketli ISR yenilemesi
   api/cron/                      Vercel Cron uçları

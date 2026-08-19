@@ -7,6 +7,9 @@ import {
   filtreYaz, kaldir, seciliSayisi, type Filtre,
 } from '@/lib/filtre';
 import { para } from '@/lib/format';
+import { sepetOku } from '@/lib/sepet';
+import { sepetAdlari } from '@/lib/queries/karsilastir';
+import { SepetSeridi } from '@/components/karsilastir/SepetDugmesi';
 
 /**
  * Arama sonuçları sayfası.
@@ -20,6 +23,11 @@ type Props = { taban: string; baslik: string; filtre: Filtre; girisMetni?: strin
 export async function AramaSayfasi({ taban, baslik, filtre, girisMetni }: Props) {
   const { sonuclar, toplam, fasetler } = await ara(filtre);
   const secili = seciliSayisi(filtre);
+
+  // Sepet çerezden okunur; bu sayfa zaten dinamik olduğu için ek maliyeti yok.
+  const sepet = await sepetOku();
+  const sepetAd = await sepetAdlari(sepet).catch(() => ({}));
+  const buAdres = taban + filtreYaz(filtre);
   const sonSayfa = Math.max(1, Math.ceil(toplam / SAYFA_BOYUTU));
   const sayfa = filtre.sayfa ?? 1;
 
@@ -114,7 +122,13 @@ export async function AramaSayfasi({ taban, baslik, filtre, girisMetni }: Props)
           {/* Sonuçlar */}
           {sonuclar.length > 0 ? (
             sonuclar.map((p) => (
-              <ProjeKarti key={p.id} proje={p} daireTipleri={p.tipler} />
+              <ProjeKarti
+                key={p.id}
+                proje={p}
+                daireTipleri={p.tipler}
+                don={buAdres}
+                sepette={sepet.includes(p.slug.toLowerCase())}
+              />
             ))
           ) : (
             <SonucYok taban={taban} filtre={filtre} />
@@ -150,6 +164,7 @@ export async function AramaSayfasi({ taban, baslik, filtre, girisMetni }: Props)
           )}
         </div>
       </div>
+      <SepetSeridi sluglar={sepet} adlar={sepetAd} don={buAdres} />
     </main>
   );
 }

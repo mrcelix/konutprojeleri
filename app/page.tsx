@@ -58,6 +58,7 @@ export default async function AnaSayfa() {
           <li><code>/firmalar/[slug]</code> — firma karnesi</li>
           <li><code>/teslim-takvimi</code> — zaman ekseni (<Link href="/teslim-takvimi">örnek</Link>)</li>
           <li><code>/butce</code> — ödeme kapasitesi ekseni (<Link href="/butce">örnek</Link>)</li>
+          <li><code>/karsilastir/a+b+c</code> — dört projeye kadar karşılaştırma (arama motoruna kapalı)</li>
           <li><code>/fiyat-endeksi</code> — m² fiyat endeksi (<Link href="/fiyat-endeksi">örnek</Link>)</li>
           <li><code>/api/onay</code> — onay kuyruğu, etiketli ISR yenilemesi</li>
         </ul>
