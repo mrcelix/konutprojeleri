@@ -1,19 +1,24 @@
 import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';
 import { bolgeIcerik } from '@/lib/queries/bolge';
-import { projeAra } from '@/lib/queries/proje';
+import { filtreCoz } from '@/lib/filtre';
+import { AramaSayfasi } from '@/components/arama/AramaSayfasi';
 
 /**
  * İlçe sayfası — /istanbul/kadikoy-konut-projeleri
- * Şehir şablonunun türevi; kapsam daralır, yapı aynıdır.
  *
- * İNDEKSLEME EŞİĞİ: 3 aktif proje + 120 kelime özgün metin.
- * Eşiğin altındaki sayfa noindex olur — ince içerik yığını üretmemek için.
+ * Şehir şablonunun türevi; kapsam daralır, arama bileşeni aynıdır.
+ *
+ * İNDEKSLEME EŞİĞİ: 120 kelime özgün metin. Eşiğin altındaki sayfa
+ * noindex olur ama bağlantıları taranır — ince içerik yığını üretmemek için.
  */
 
 export const revalidate = 3600;
 
-type Params = { params: Promise<{ il: string; ilce: string }> };
+type Params = {
+  params: Promise<{ il: string; ilce: string }>;
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
+};
 
 function ilceCoz(slug: string): string | null {
   const m = /^(.+)-konut-projeleri$/.exec(slug);
@@ -26,36 +31,33 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
   if (!ilce) return {};
 
   const icerik = await bolgeIcerik(il, ilce);
-  const indekslenebilir = icerik?.indekslenebilir ?? false;
+  const ad = ilce.charAt(0).toUpperCase() + ilce.slice(1);
 
   return {
-    title: `${ilce} Konut Projeleri`,
-    // Eşiği geçmeyen sayfa indekslenmez ama bağlantıları taranır
-    robots: indekslenebilir ? { index: true, follow: true } : { index: false, follow: true },
+    title: `${ad} Konut Projeleri`,
+    robots: icerik?.indekslenebilir
+      ? { index: true, follow: true }
+      : { index: false, follow: true },
     alternates: { canonical: `/${il}/${ilceSlug}` },
   };
 }
 
-export default async function IlceSayfasi({ params }: Params) {
+export default async function IlceSayfasi({ params, searchParams }: Params) {
   const { il, ilce: ilceSlug } = await params;
+  const q = await searchParams;
   const ilce = ilceCoz(ilceSlug);
   if (!ilce) notFound();
 
-  const [icerik, projeler] = await Promise.all([
-    bolgeIcerik(il, ilce),
-    projeAra({ il, ilce, limit: 24 }),
-  ]);
-
-  if (projeler.length === 0) notFound();
+  const icerik = await bolgeIcerik(il, ilce);
+  const filtre = filtreCoz({ il, ilce }, q);
+  const ad = ilce.charAt(0).toUpperCase() + ilce.slice(1);
 
   return (
-    <main className="kp-wrap" style={{ paddingBlock: 'var(--s-6)' }}>
-      <h1 className="kp-h1">{ilce} Konut Projeleri</h1>
-      {icerik?.metin && <p className="kp-lead">{icerik.metin}</p>}
-      <p className="kp-label" style={{ marginTop: 'var(--s-4)' }}>
-        {projeler.length} proje listeleniyor
-      </p>
-      {/* TODO aşama 3: ProjeKarti listesi + filtre paneli */}
-    </main>
+    <AramaSayfasi
+      taban={`/${il}/${ilceSlug}`}
+      baslik={`${ad} Konut Projeleri`}
+      filtre={filtre}
+      girisMetni={icerik?.metin ?? null}
+    />
   );
 }
