@@ -4,6 +4,7 @@ import { slugCoz } from '@/lib/routing';
 import { projeDetayGetir, populerProjeYollari } from '@/lib/queries/proje';
 import { filtreCoz } from '@/lib/filtre';
 import { ProjeDetay } from '@/components/ProjeDetay';
+import { ArsivProje } from '@/components/ArsivProje';
 import { AramaSayfasi } from '@/components/arama/AramaSayfasi';
 import { para, teslim, tarih } from '@/lib/format';
 
@@ -97,6 +98,13 @@ export default async function Sayfa({ params, searchParams }: Params) {
   // ── Proje detay ──
   const p = await projeDetayGetir(il, ilce, slug);
   if (!p) notFound();
+
+  // Teslim edilmiş proje satış sayfası olarak render EDİLMEZ.
+  // Arşiv görünümü: satış CTA'sı yok, fiyat geçmişi ve firmanın
+  // aktif projelerine köprü var.
+  if (p.durum === 'arsiv' || p.durum === 'teslim_edildi') {
+    return <ArsivProje p={p} />;
+  }
 
   return <ProjeDetay p={p} />;
 }

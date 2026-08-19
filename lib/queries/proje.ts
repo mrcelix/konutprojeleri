@@ -59,6 +59,12 @@ export type ProjeDetay = {
   aciklama: string | null;
   fiyat_teyit_tarihi: string | null;
   goruntulenme: number;
+  /** Arşiv projelerinde: teslim dönemi ve bugünkü ikinci el m² fiyatı. */
+  teslim_m2_fiyati: number | null;
+  guncel_m2_fiyati: number | null;
+  teslim_tarihi: string | null;
+  /** Arşiv sayfası firmanın aktif projelerine köprü kurar. */
+  firma_aktifler: { slug: string; ad: string; il: string; ilce: string; teslim_ceyrek: string | null; min_fiyat: number | null }[];
   firma_slug: string;
   firma_ad: string;
   firma_sicil: string | null;
@@ -82,6 +88,20 @@ export async function projeDetayGetir(
       p.kat_sayisi, p.tavan_yuksekligi, p.aidat, p.pesinat_orani,
       p.vade_ay, p.faizsiz, p.santiye_yuzde, p.ozellikler, p.aciklama,
       p.fiyat_teyit_tarihi, p.goruntulenme,
+      p.teslim_m2_fiyati, p.guncel_m2_fiyati, p.teslim_tarihi,
+
+      coalesce((
+        select json_agg(a order by a.min_fiyat nulls last)
+        from (
+          select p3.slug, p3.ad, p3.il, p3.ilce, p3.teslim_ceyrek,
+                 (select min(d3.liste_fiyati) from daire_tipi d3 where d3.proje_id = p3.id) as min_fiyat
+          from proje p3
+          where p3.firma_id = p.firma_id and p3.yayinda
+            and p3.durum in ('lansman','satista')
+          limit 4
+        ) a
+      ), '[]') as firma_aktifler,
+
       f.slug as firma_slug,
       f.ad   as firma_ad,
       k.sicil        as firma_sicil,
