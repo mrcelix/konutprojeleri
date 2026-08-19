@@ -413,3 +413,92 @@ a.tk-etiket:hover b { color: var(--brand); }
   font-style: normal; font-size: 10.5px; color: var(--text-muted);
   font-variant-numeric: tabular-nums;
 }
+
+/* ═══════════════════════════════════════════════════════════
+   Bütçe eşleşmesi — /butce
+   Form JavaScript olmadan çalışır; stil de öyle.
+   ═══════════════════════════════════════════════════════════ */
+
+.bt-form {
+  display: flex; flex-wrap: wrap; align-items: flex-end; gap: var(--s-3);
+  padding: var(--s-4); border-radius: var(--r-block);
+  background: var(--surface-raised);
+}
+.bt-alan { display: block; flex: 1 1 200px; min-width: 0; }
+.bt-alan--dar { flex: 0 1 150px; }
+.bt-alan .kp-label { display: block; margin-bottom: 4px; }
+
+.bt-girdi { position: relative; }
+.bt-girdi input,
+.bt-alan select {
+  width: 100%; box-sizing: border-box;
+  padding: 10px var(--s-4); font: inherit; font-size: 14px;
+  font-variant-numeric: tabular-nums;
+  color: var(--text-primary); background: var(--surface-card);
+  border: 1px solid var(--border); border-radius: var(--r-input);
+}
+.bt-girdi input { padding-right: 30px; font-weight: 650; }
+.bt-girdi i {
+  position: absolute; right: 12px; top: 50%; transform: translateY(-50%);
+  font-style: normal; color: var(--text-muted); font-size: 13px;
+}
+.bt-girdi input:focus-visible,
+.bt-alan select:focus-visible {
+  outline: 2px solid var(--brand); outline-offset: 1px; border-color: var(--brand);
+}
+.bt-gonder { flex: 0 0 auto; padding-block: 11px; }
+
+.bt-ornekler {
+  display: flex; align-items: center; gap: 6px; flex-wrap: wrap;
+  margin-top: var(--s-3);
+}
+
+/* ── Sonuç kartları ── */
+.bt-liste { list-style: none; padding: 0; margin: 0; display: grid; gap: var(--s-2); }
+.bt-kart {
+  display: grid; align-items: center; gap: var(--s-3);
+  grid-template-columns: minmax(0, 2.2fr) auto minmax(0, 2.6fr);
+  padding: var(--s-4); border-radius: var(--r-block);
+  background: var(--surface-card); border: 1px solid var(--border);
+}
+.bt-kart.is-yakin { background: var(--surface-raised); border-style: dashed; }
+
+.bt-kart__ad { text-decoration: none; min-width: 0; }
+.bt-kart__ad b {
+  display: block; font-size: 13.5px; font-weight: 700; letter-spacing: -0.015em;
+  color: var(--text-primary);
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.bt-kart__ad span { font-size: 10.5px; color: var(--text-muted); }
+.bt-kart__ad:hover b { color: var(--brand); }
+
+.bt-kart__tip { text-align: center; }
+.bt-kart__tip b {
+  display: block; font-size: 14px; font-weight: 800; color: var(--text-primary);
+}
+.bt-kart__tip span { font-size: 10.5px; color: var(--text-muted); }
+
+.bt-kart__odeme {
+  display: flex; gap: var(--s-5); margin: 0; justify-content: flex-end;
+  flex-wrap: wrap;
+}
+.bt-kart__odeme dt {
+  font-size: 9.5px; text-transform: uppercase; letter-spacing: 0.06em;
+  color: var(--text-muted); white-space: nowrap;
+}
+.bt-kart__odeme dd {
+  margin: 1px 0 0; font-size: 13px; font-weight: 700;
+  font-variant-numeric: tabular-nums; color: var(--text-secondary);
+  white-space: nowrap;
+}
+.bt-kart__odeme .bt-sonuc { color: var(--text-primary); font-weight: 800; }
+
+.bt-kart__etiket {
+  grid-column: 1 / -1; display: flex; gap: 4px; flex-wrap: wrap;
+}
+
+@media (max-width: 760px) {
+  .bt-kart { grid-template-columns: 1fr auto; }
+  .bt-kart__odeme { grid-column: 1 / -1; justify-content: flex-start; gap: var(--s-4); }
+  .bt-gonder { width: 100%; }
+}

@@ -80,6 +80,19 @@ export async function ara(f: Filtre): Promise<AramaCikti> {
   }
   if (f.maxAidat) kosullar.push(sql`p.aidat <= ${f.maxAidat}`);
   if (f.maxPesinat) kosullar.push(sql`p.pesinat_orani <= ${f.maxPesinat}`);
+  // Aylık senet = kalan bedel / vade. /butce sayfasıyla AYNI formül olmak
+  // zorunda: iki sayfa aynı daire için farklı taksit gösterirse güven biter.
+  if (f.maxAylik) {
+    kosullar.push(sql`exists (
+      select 1 from daire_tipi da
+      where da.proje_id = p.id
+        and da.liste_fiyati is not null
+        and p.pesinat_orani is not null
+        and p.vade_ay is not null and p.vade_ay > 0
+        and (da.liste_fiyati - da.liste_fiyati * p.pesinat_orani / 100.0) / p.vade_ay
+            <= ${f.maxAylik}
+    )`);
+  }
   if (f.sicil) kosullar.push(sql`k.sicil = ${f.sicil}`);
   if (f.santiyeDurumu?.length) {
     kosullar.push(sql`(

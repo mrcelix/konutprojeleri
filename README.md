@@ -56,6 +56,7 @@ app/
   [il]/[ilce]/[slug]/[plan]/     /…/2-1-kat-plani
   firmalar/[slug]/               firma karnesi
   teslim-takvimi/                zaman ekseni · çeyrek bazlı teslim takvimi
+  butce/                         ödeme kapasitesi ekseni · senetli plan eşleşmesi
   fiyat-endeksi/                 m² fiyat endeksi
   api/onay/                      onay kuyruğu → etiketli ISR yenilemesi
   api/cron/                      Vercel Cron uçları

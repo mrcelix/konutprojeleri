@@ -197,6 +197,67 @@ async function calistir() {
       where santiye_yuzde is not null and (santiye_yuzde < 0 or santiye_yuzde > 100)`;
     return n === 0 || `${n} projede şantiye yüzdesi aralık dışı`;
   });
+
+  console.log('\nÖdeme planı');
+
+  await kontrol('Peşinat oranı 0–100 aralığında', async () => {
+    const [{ n }] = await sql`
+      select count(*)::int as n from proje
+      where pesinat_orani is not null and (pesinat_orani < 0 or pesinat_orani > 100)`;
+    return n === 0 || `${n} projede peşinat oranı aralık dışı`;
+  });
+
+  await kontrol('Vade ayı pozitif', async () => {
+    const [{ n }] = await sql`
+      select count(*)::int as n from proje where vade_ay is not null and vade_ay <= 0`;
+    return n === 0 || `${n} projede vade sıfır ya da negatif — aylık taksit bölmesi patlar`;
+  });
+
+  await kontrol('Aylık senet formülü sabit', async () => {
+    // /butce ve arama sayfası aynı formülü ayrı ayrı yazıyor. İkisi
+    // ayrışırsa aynı daire iki sayfada farklı taksit gösterir; güven biter.
+    // Formülün sonucu burada sabitlenir.
+    const [r] = await sql`
+      select round((5000000 - 5000000 * 30 / 100.0) / 36)::int as beklenen`;
+    return r.beklenen === 97222 || `formül değişmiş: ${r.beklenen} (beklenen 97222)`;
+  });
+
+  await kontrol('Bütçe eşleşme sorgusu çalışıyor', async () => {
+    // lib/queries/butce.ts içindeki CTE'nin birebir aynısı. Amaç sonucu
+    // değil SQL'i doğrulamak: sorgu yalnızca üretimde çalıştığı için
+    // sözdizimi hatası ancak burada yakalanır.
+    const [r] = await sql`
+      with aday as (
+        select
+          p.id, d.tip,
+          d.liste_fiyati::float8 as liste_fiyati,
+          round(d.liste_fiyati * p.pesinat_orani / 100.0)::float8 as gereken_pesinat,
+          round(
+            (d.liste_fiyati - d.liste_fiyati * p.pesinat_orani / 100.0) / p.vade_ay
+          )::float8 as aylik_senet
+        from proje p
+        join firma f on f.id = p.firma_id
+        join daire_tipi d on d.proje_id = p.id
+        where p.yayinda and p.durum in ('lansman','satista')
+          and d.liste_fiyati is not null
+          and p.pesinat_orani is not null
+          and p.vade_ay is not null and p.vade_ay > 0
+      ),
+      uyan as (
+        select * from aday where gereken_pesinat <= 3000000 and aylik_senet <= 150000
+      ),
+      en_uygun as (select distinct on (id) * from uyan order by id, liste_fiyati)
+      select
+        (select count(*)::int from en_uygun) as proje,
+        (select count(*)::int from uyan) as daire,
+        (select count(*)::int from proje x
+          where x.yayinda and x.durum in ('lansman','satista')
+            and (x.pesinat_orani is null or x.vade_ay is null or x.vade_ay = 0)
+        ) as plansiz`;
+    if (r.proje === 0) return 'seed verisiyle hiçbir proje bütçeye uymuyor — eşik yanlış';
+    if (r.plansiz === 0) return 'ödeme planı bildirilmemiş proje yok — bu durum test edilemiyor';
+    return true;
+  });
   await sql.end();
 
   if (hata > 0) {

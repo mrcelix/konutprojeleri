@@ -57,6 +57,12 @@ export async function AramaSayfasi({ taban, baslik, filtre, girisMetni }: Props)
             >
               Teslim takvimi
             </Link>
+            <Link
+              href={`/butce${filtre.il ? `?il=${filtre.il}` : ''}`}
+              className="kp-chip"
+            >
+              Bütçeme uyanlar
+            </Link>
             <nav className="kp-row" style={{ marginLeft: 'auto', gap: 4 }} aria-label="Sıralama">
               {SIRALAMALAR.map((s) => (
                 <Link
