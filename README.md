@@ -55,6 +55,8 @@ app/
   [il]/[ilce]/[slug]/            proje detay VEYA liste (bkz. lib/routing.ts)
   [il]/[ilce]/[slug]/[plan]/     /…/2-1-kat-plani
   firmalar/[slug]/               firma karnesi
+  teslim-takvimi/                zaman ekseni · çeyrek bazlı teslim takvimi
+  fiyat-endeksi/                 m² fiyat endeksi
   api/onay/                      onay kuyruğu → etiketli ISR yenilemesi
   api/cron/                      Vercel Cron uçları
 lib/

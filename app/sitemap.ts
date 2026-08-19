@@ -31,6 +31,10 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
     return [
       { url: SITE, changeFrequency: 'daily', priority: 1 },
+      // Sabit merkez sayfalar — her biri kendi başına giriş kapısı
+      { url: `${SITE}/teslim-takvimi`, changeFrequency: 'daily' as const, priority: 0.9 },
+      { url: `${SITE}/fiyat-endeksi`, changeFrequency: 'weekly' as const, priority: 0.9 },
+      { url: `${SITE}/firmalar`, changeFrequency: 'weekly' as const, priority: 0.8 },
       ...iller.map((i) => ({
         url: `${SITE}/${i.il}-konut-projeleri`,
         changeFrequency: 'daily' as const,

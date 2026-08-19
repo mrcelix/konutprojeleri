@@ -50,6 +50,13 @@ export async function AramaSayfasi({ taban, baslik, filtre, girisMetni }: Props)
             >
               Haritada gör
             </Link>
+            {/* Zaman ekseni — "ne zaman taşınacağım" ile başlayan kullanıcı için */}
+            <Link
+              href={`/teslim-takvimi${filtre.il ? `?il=${filtre.il}` : ''}`}
+              className="kp-chip"
+            >
+              Teslim takvimi
+            </Link>
             <nav className="kp-row" style={{ marginLeft: 'auto', gap: 4 }} aria-label="Sıralama">
               {SIRALAMALAR.map((s) => (
                 <Link

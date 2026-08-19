@@ -56,6 +56,8 @@ export default async function AnaSayfa() {
           <li><code>/[il]/[ilce]/[slug]</code> — proje detay veya liste (bkz. <code>lib/routing.ts</code>)</li>
           <li><code>/[il]/[ilce]/[slug]/[plan]</code> — kat planı sayfası</li>
           <li><code>/firmalar/[slug]</code> — firma karnesi</li>
+          <li><code>/teslim-takvimi</code> — zaman ekseni (<Link href="/teslim-takvimi">örnek</Link>)</li>
+          <li><code>/fiyat-endeksi</code> — m² fiyat endeksi (<Link href="/fiyat-endeksi">örnek</Link>)</li>
           <li><code>/api/onay</code> — onay kuyruğu, etiketli ISR yenilemesi</li>
         </ul>
       </div>

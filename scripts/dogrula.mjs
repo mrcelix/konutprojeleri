@@ -164,6 +164,39 @@ async function calistir() {
     return n > 0 || 'arşiv projesi yok';
   });
 
+
+  console.log('\nTeslim takvimi');
+
+  await kontrol('teslim_ceyrek biçimi YYYYQn', async () => {
+    const [{ n }] = await sql`
+      select count(*)::int as n from proje
+      where teslim_ceyrek is not null and teslim_ceyrek !~ '^[0-9]{4}Q[1-4]$'`;
+    return n === 0 || `${n} projede teslim_ceyrek biçimi bozuk`;
+  });
+
+  await kontrol('teslim_ceyrek metin sıralaması kronolojik', async () => {
+    // Takvim eksende BETWEEN ile metin karşılaştırması yapıyor. Çeyrek
+    // her zaman tek haneli olduğu için sabit genişlikli biçim (YYYYQn)
+    // sözlük sırasını tarih sırasıyla eşitler. Biçim bozulursa süzgeç
+    // sessizce yanlış projeler döndürür — bu yüzden ayrıca doğrulanır.
+    const [r] = await sql`
+      select ('2026Q4' < '2027Q1') as a, ('2027Q1' < '2027Q4') as b`;
+    return (r.a && r.b) || 'çeyrek dizesi sıralaması kronolojik değil';
+  });
+
+  await kontrol('Satıştaki projelerin teslim çeyreği dolu', async () => {
+    const [{ n }] = await sql`
+      select count(*)::int as n from proje
+      where yayinda and durum in ('lansman','satista') and teslim_ceyrek is null`;
+    return n === 0 || `${n} satıştaki projede teslim tarihi yok — takvimde görünmezler`;
+  });
+
+  await kontrol('Şantiye ilerlemesi 0–100 aralığında', async () => {
+    const [{ n }] = await sql`
+      select count(*)::int as n from proje
+      where santiye_yuzde is not null and (santiye_yuzde < 0 or santiye_yuzde > 100)`;
+    return n === 0 || `${n} projede şantiye yüzdesi aralık dışı`;
+  });
   await sql.end();
 
   if (hata > 0) {
