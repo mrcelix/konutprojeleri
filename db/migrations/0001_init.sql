@@ -10,7 +10,18 @@ create extension if not exists postgis;
 create extension if not exists pg_trgm;
 create extension if not exists unaccent;
 create extension if not exists citext;
-create extension if not exists pg_cron;
+-- pg_cron her ortamda yok (Supabase'de var, düz Postgres ve CI'da olmayabilir).
+-- Şemanın her yerde çalışabilmesi için koşullu kuruluyor; zamanlanmış işler
+-- eklenti yoksa atlanır ve migration kırılmaz.
+do $do$
+begin
+  if exists (select 1 from pg_available_extensions where name = 'pg_cron') then
+    create extension if not exists pg_cron;
+  else
+    raise notice 'pg_cron mevcut degil; zamanlanmis isler atlanacak';
+  end if;
+end
+$do$;
 
 -- ─────────────────────────── FİRMA ───────────────────────────
 

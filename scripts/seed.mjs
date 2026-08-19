@@ -277,12 +277,32 @@ async function calistir() {
           ${t.katlar ?? null}, ${planId}
         ) returning id`;
 
-      // Fiyat arşivi — append-only. Endeksin geçmiş serisi burada birikir.
+      // Fiyat arşivi — append-only. m² fiyat endeksinin geçmiş serisi
+      // burada birikir; arşiv ne kadar derinse endeks o kadar sağlam.
+      //
+      // 24 aylık geçmiş geriye doğru üretilir: bugünkü fiyattan başlayıp
+      // aylık ~%2,2 bileşik düşüşle geriye gidilir, üstüne küçük bir
+      // dalgalanma eklenir. Gerçek veri gelene kadar seri boş kalmasın diye.
       if (t.fiyat) {
-        await sql`
-          insert into fiyat_kaydi (daire_tipi_id, fiyat, kalan_adet, kaynak, kaydeden, kaydedildi)
-          values (${dt.id}, ${Math.round(t.fiyat * 0.94)}, ${t.kalan + 4}, 'panel', 'seed', now() - interval '75 days'),
-                 (${dt.id}, ${t.fiyat}, ${t.kalan}, 'panel', 'seed', now() - interval '2 days')`;
+        const AY = 24;
+        const AYLIK_ARTIS = 0.022;
+        const kayitlar = [];
+
+        for (let geri = AY; geri >= 0; geri--) {
+          const taban = t.fiyat / Math.pow(1 + AYLIK_ARTIS, geri);
+          // Deterministik dalgalanma: aynı seed her çalıştırmada aynı seriyi üretir
+          const salinim = 1 + Math.sin(geri * 1.7 + t.net) * 0.012;
+          const fiyat = Math.round((taban * salinim) / 1000) * 1000;
+          const kalan = Math.min(t.toplam, t.kalan + Math.round(geri * (t.toplam - t.kalan) / AY));
+          kayitlar.push({ fiyat, kalan, geri });
+        }
+
+        for (const k of kayitlar) {
+          await sql`
+            insert into fiyat_kaydi (daire_tipi_id, fiyat, kalan_adet, kaynak, kaydeden, kaydedildi)
+            values (${dt.id}, ${k.fiyat}, ${k.kalan}, 'panel', 'seed',
+                    date_trunc('month', now()) - (${k.geri} || ' months')::interval + interval '12 days')`;
+        }
       }
     }
   }
@@ -369,6 +389,7 @@ async function calistir() {
   console.log('Materyalize görünümler yenileniyor…');
   await sql`refresh materialized view mv_ilce_m2`;
   await sql`refresh materialized view mv_firma_karne`;
+  await sql`refresh materialized view mv_endeks_donem`;
 
   const [{ count: pn }] = await sql`select count(*)::int from proje`;
   const [{ count: dn }] = await sql`select count(*)::int from daire_tipi`;

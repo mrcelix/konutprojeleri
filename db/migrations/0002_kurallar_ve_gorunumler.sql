@@ -119,24 +119,42 @@ create policy talep_firma on talep
 -- Fonksiyon süre sınırı, soğuk başlatma ve ağ hatası sorunları
 -- bir anda ortadan kalkar.
 
-select cron.schedule('mv-yenile', '0 2 * * *', $$
+do $do$
+begin
+  if exists (select 1 from pg_extension where extname = 'pg_cron') then
+    perform cron.schedule('mv-yenile', '0 2 * * *', $job$
   refresh materialized view concurrently mv_ilce_m2;
   refresh materialized view concurrently mv_firma_karne;
-$$);
+$job$);
+  end if;
+end
+$do$;
 
 -- 90 gün tazelik kuralı
-select cron.schedule('tazelik', '0 * * * *', $$
+do $do$
+begin
+  if exists (select 1 from pg_extension where extname = 'pg_cron') then
+    perform cron.schedule('tazelik', '0 * * * *', $job$
   update proje
   set fiyat_teyit_durumu = 'teyit_edilmedi'
   where fiyat_teyit_tarihi < current_date - interval '90 days'
     and fiyat_teyit_durumu <> 'teyit_edilmedi';
-$$);
+$job$);
+  end if;
+end
+$do$;
 
 -- Teslim edilen proje SİLİNMEZ, arşive geçer.
 -- Fiyat geçmişi kalır; endeksin geçmiş serisi bu arşivde birikir.
-select cron.schedule('arsivle', '30 2 * * *', $$
+do $do$
+begin
+  if exists (select 1 from pg_extension where extname = 'pg_cron') then
+    perform cron.schedule('arsivle', '30 2 * * *', $job$
   update proje
   set durum = 'arsiv'
   where durum = 'teslim_edildi'
     and teslim_tarihi < current_date - interval '3 months';
-$$);
+$job$);
+  end if;
+end
+$do$;
