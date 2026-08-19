@@ -12,10 +12,26 @@ import type { Sql } from 'postgres';
  *     `prepared statement "s1" does not exist` hatası verir.
  *     Geliştirmede ve testte görünmez, canlıda patlar.
  *
- *  2. max: 1
+ *  2. max: 1 (ÇALIŞMA ANINDA)
  *     Havuzlama Supavisor'ın işi. Serverless fonksiyon örneği başına
  *     tek bağlantı yeter; fonksiyon içinde ikinci bir havuz kurmak
  *     bağlantı fırtınasına yol açar.
+ *
+ *     DERLEME AYRI BİR DÜNYA. `next build` onlarca sayfayı aynı anda
+ *     render eder ve hepsi tek bağlantıda sıraya girer. Frankfurt'a
+ *     gidiş-dönüş 50 ms olduğunda 30+ sorgu birikince sıranın sonundaki
+ *     sayfa Next'in 60 saniyelik sayfa sınırını aşıp derlemeyi
+ *     düşürüyordu. Derleme sunucusuz değil; orada havuz açılır.
+ *
+ *  3. numeric → number
+ *     postgres.js numeric/decimal sütunlarını VARSAYILAN OLARAK METİN
+ *     döndürür (float64 kayıpsız temsil edemeyeceği için). Bizim numeric
+ *     sütunlarımız fiyat, metrekare, aidat ve gecikme ayı — hepsi
+ *     10^15'in çok altında, yani float64'te tam temsil ediliyor.
+ *     Metin dönmesi sinsi bir hata sınıfı üretiyordu: `para()` ve
+ *     `m2Birim()` zorlama sayesinde çalışıyor, `.toFixed()` ise
+ *     "toFixed is not a function" ile patlıyordu. Tek tek cast yazmak
+ *     yerine sürücü seviyesinde çözülüyor.
  *
  * BAĞLANTI TEMBELDİR: istemci ilk sorguda kurulur, modül yüklenirken değil.
  * Aksi halde DATABASE_URL olmayan ortamlarda (CI, ilk derleme, önizleme
@@ -40,12 +56,24 @@ function baglan(): Sql {
     );
   }
 
+  // NEXT_PHASE'i Next derleme sırasında kendisi ayarlar.
+  const derleme = process.env.NEXT_PHASE === 'phase-production-build';
+
   istemci = postgres(url, {
     prepare: false,
-    max: 1,
+    max: derleme ? 8 : 1,
     idle_timeout: 20,
     connect_timeout: 10,
     transform: { undefined: null },
+    types: {
+      // OID 1700 = numeric. Bkz. yukarıdaki 3 numaralı not.
+      numeric: {
+        to: 1700,
+        from: [1700],
+        serialize: (x: number | string) => String(x),
+        parse: (x: string) => Number(x),
+      },
+    },
   });
 
   if (process.env.NODE_ENV !== 'production') globalThis.__sql = istemci;

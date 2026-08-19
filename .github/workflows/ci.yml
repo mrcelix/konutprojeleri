@@ -84,3 +84,21 @@ jobs:
 
       - name: Doğrulama sorguları
         run: node scripts/dogrula.mjs
+
+      # ─────────────────────────────────────────────────────────
+      # Veriyle derleme — bugünün dersi.
+      #
+      # dogrula.mjs kendi SQL'ini çalıştırır, uygulamanınkini değil.
+      # Bu yüzden üç gerçek hata Supabase'e bağlanana kadar görünmedi:
+      # arama sorgusunda eksik takma ad, numeric sütunların metin
+      # dönmesi ve dizi filtrelerinin düz değere ayarlanması. Üçü de
+      # ancak SAYFA RENDER EDİLİNCE patlıyordu.
+      #
+      # Burada gerçek şema + seed verisiyle üretim derlemesi yapılır;
+      # statik üretim tüm sayfaları render ettiği için aynı sınıftan
+      # bir hata bir daha canlıya kadar gidemez.
+      # ─────────────────────────────────────────────────────────
+      - name: Veriyle derleme (sayfaları render eder)
+        run: npx next build --no-lint
+        env:
+          NEXT_PUBLIC_SITE_URL: http://localhost:3000

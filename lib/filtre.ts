@@ -142,6 +142,20 @@ export function filtreYaz(f: Filtre): string {
   return s ? `?${s}` : '';
 }
 
+/**
+ * Çoklu seçim alanları.
+ *
+ * Alanın DİZİ OLUP OLMADIĞI türden bilinir, mevcut değerinden değil.
+ * Önceden `Array.isArray(mevcut)` bakılıyordu; alan henüz seçilmemişse
+ * mevcut undefined olduğu için dal yanlış tarafa düşüyor ve
+ * `daireTipi` bir diziye değil düz metne ayarlanıyordu. Sonrasında
+ * filtreYaz() `.join()` çağırıp patlıyordu — ilk kez seçilen her
+ * çoklu filtre çipinde.
+ */
+const DIZI_ALANLARI = new Set<keyof Filtre>([
+  'daireTipi', 'teslimYili', 'santiyeDurumu', 'ozellik',
+]);
+
 /** Bir değeri açıp kapatan bağlantı üretir — filtre çipleri bunu kullanır. */
 export function degistir(
   taban: string,
@@ -152,8 +166,8 @@ export function degistir(
   const kopya: Filtre = { ...f, sayfa: 1 };
   const mevcut = kopya[alan];
 
-  if (Array.isArray(mevcut)) {
-    const arr = mevcut as (string | number)[];
+  if (DIZI_ALANLARI.has(alan)) {
+    const arr = (Array.isArray(mevcut) ? mevcut : []) as (string | number)[];
     const yeni = arr.includes(deger) ? arr.filter((x) => x !== deger) : [...arr, deger];
     (kopya[alan] as unknown) = yeni.length ? yeni : undefined;
   } else {
@@ -167,8 +181,9 @@ export function degistir(
 export function kaldir(taban: string, f: Filtre, alan: keyof Filtre, deger?: string | number): string {
   const kopya: Filtre = { ...f, sayfa: 1 };
   const mevcut = kopya[alan];
-  if (Array.isArray(mevcut) && deger != null) {
-    const yeni = (mevcut as (string | number)[]).filter((x) => x !== deger);
+  if (DIZI_ALANLARI.has(alan) && deger != null) {
+    const arr = (Array.isArray(mevcut) ? mevcut : []) as (string | number)[];
+    const yeni = arr.filter((x) => x !== deger);
     (kopya[alan] as unknown) = yeni.length ? yeni : undefined;
   } else {
     (kopya[alan] as unknown) = undefined;

@@ -165,7 +165,10 @@ export async function ara(f: Filtre): Promise<AramaCikti> {
       where ${where}
     ),
     sayfa as (
-      select * from eslesen
+      -- Takma ad ZORUNLU: siralamaParcasi() 'e.' önekiyle sütun veriyor.
+      -- Aliassız 'select * from eslesen' yazıldığında sıralama
+      -- "missing FROM-clause entry for table e" ile patlıyordu.
+      select e.* from eslesen e
       order by ${siralama}
       limit ${SAYFA_BOYUTU} offset ${offset}
     )
