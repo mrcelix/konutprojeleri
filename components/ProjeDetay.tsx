@@ -6,6 +6,7 @@ import { para, paraKisa, m2Birim, alan, teslim, tarih, yuzde, yurumeSuresi } fro
 import { Pill, SantiyePill, TazelikPill, StokPill } from '@/components/ui/Pill';
 import { OZELLIKLER } from '@/lib/filtre';
 import { katPlaniYolu } from '@/lib/routing';
+import { SepetDugmesi } from '@/components/karsilastir/SepetDugmesi';
 
 /**
  * Proje detay sayfası — dönüşümün gerçekleştiği yer.
@@ -389,6 +390,16 @@ export function ProjeDetay({ p }: { p: Detay }) {
               Fiyat listesini gönder
             </button>
           </form>
+
+          {/* Karşılaştırmaya ekle. Sepet DURUMU okunmaz: çerez okumak bu
+              sayfayı dinamikleştirir ve proje detayı statik kalmalı. */}
+          <div className="kp-card" style={{ padding: 'var(--s-4)' }}>
+            <h3 className="kp-label" style={{ marginBottom: 'var(--s-2)' }}>Karşılaştırma</h3>
+            <SepetDugmesi slug={p.slug} don={`/${p.il}/${p.ilce}/${p.slug}`} />
+            <p className="kp-lead" style={{ fontSize: 11, marginTop: 'var(--s-2)' }}>
+              Dört projeye kadar yan yana koyabilirsiniz.
+            </p>
+          </div>
 
           <div className="kp-card" style={{ padding: 'var(--s-4)' }}>
             <h3 className="kp-label" style={{ marginBottom: 'var(--s-2)' }}>Bu projeye ilgi</h3>
