@@ -111,6 +111,27 @@ async function calistir() {
     return n > 0 || 'endeks serisi boş';
   });
 
+  // Yıllık değişim hesaplanabilmesi için en az 13 ay gerekir.
+  // Daha azında sayfa "yeterli veri yok" gösterir — uydurma değer basmaz.
+  await kontrol('Türkiye serisi yıllık değişime yetiyor', async () => {
+    const [{ n }] = await sql`
+      select count(*)::int as n from mv_endeks_donem where il is null`;
+    return n >= 13 || `beklenen ≥13 ay, gelen ${n}`;
+  });
+
+  await kontrol('Endeks il kırılımı üretiyor', async () => {
+    const [{ n }] = await sql`
+      select count(distinct il)::int as n from mv_endeks_donem where il is not null`;
+    return n > 0 || 'il kırılımı yok';
+  });
+
+  await kontrol('Aykırı değer filtresi çalışıyor', async () => {
+    const [r] = await sql`
+      select count(*)::int as n from mv_endeks_donem
+      where m2_fiyat < 5000 or m2_fiyat > 400000`;
+    return r.n === 0 || `${r.n} aykırı değer endekse sızmış`;
+  });
+
   console.log('\nPostGIS');
 
   await kontrol('Koordinatlar yazıldı', async () => {
