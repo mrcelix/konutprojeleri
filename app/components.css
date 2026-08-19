@@ -808,3 +808,9 @@ a.tk-etiket:hover b { color: var(--brand); }
   .yn-kim { margin-left: 0; width: 100%; justify-content: space-between; }
   .yn-govde { padding: var(--s-4) var(--s-3); }
 }
+
+/* Henüz yazılmamış panel sayfaları — bağlantı değil, etiket */
+.yn-nav .is-hazirlaniyor {
+  font-size: 12px; font-weight: 600; padding: 6px 10px;
+  color: var(--text-muted); opacity: 0.55; cursor: default;
+}
