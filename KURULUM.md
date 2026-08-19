@@ -121,9 +121,33 @@ koymaktır.
 Bölge ayarı `vercel.json` içinde `"regions": ["fra1"]` olarak sabit —
 panelden değiştirmeyin.
 
-> **Hobby planındaysanız:** Vercel en fazla **2 cron** işine izin verir,
-> `vercel.json` içinde **3** tanımlı. Dağıtım hata verirse
-> `yonlendirme-testi` girdisini silin ya da Pro'ya geçin.
+### Hobby planı notları
+
+`vercel.json` Hobby'ye göre ayarlandı: **2 cron**, ikisi de günlük.
+`/api/cron/yonlendirme-testi` ucu duruyor ama zamanlamadan çıkarıldı;
+elle ya da harici bir zamanlayıcıyla çağrılabilir:
+
+```bash
+curl -H "Authorization: Bearer $CRON_SECRET" https://konutprojeleri.com/api/cron/yonlendirme-testi
+```
+
+Pro'ya geçilirse üçüncü cron geri eklenir ve endeks kontrolü haftalığa
+(`0 5 * * 1`) döndürülür.
+
+**İlk dağıtımdan sonra mutlaka bakılacak iki şey:**
+
+1. **Fonksiyon bölgesi gerçekten `fra1` mi.** Bu mimarinin tamamı
+   Vercel `fra1` ile Supabase `eu-central-1`'in aynı şehirde olmasına
+   dayanıyor. Ana sayfadaki gecikme rozeti bunu ölçer: **3 ms altı**
+   ise doğru, **~90 ms** ise fonksiyonlar ABD'de çalışıyor demektir.
+   O durumda Project Settings → Functions → Region ayarını kontrol edin;
+   plan bölge seçimine izin vermiyorsa endeks ve arama sayfaları
+   yavaşlar ve Pro'ya geçmek gerekir.
+
+2. **Ticari kullanım.** Vercel'in kullanım koşulları Hobby planında
+   ticari kullanıma izin vermiyor. konutprojeleri.com reklam ve firma
+   paketi geliri olan bir site; canlıya alınmadan önce planın buna
+   uygun olduğundan emin olun.
 
 ## 7. Alan adı
 
