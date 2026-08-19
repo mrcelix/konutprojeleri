@@ -1,0 +1,24 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+
+  "//": "KRİTİK: Fonksiyonlar Supabase ile aynı şehirde çalışmalı. Bu satır olmazsa varsayılan bölge ABD olur ve her sorgu ~90 ms sürer.",
+  "regions": ["fra1"],
+
+  "crons": [
+    {
+      "//": "Site haritası — beyaz liste ve eşik kuralları uygulama mantığı olduğu için Vercel'de",
+      "path": "/api/cron/sitemap",
+      "schedule": "0 3 * * *"
+    },
+    {
+      "//": "Endeks aykırı değer bildirimi — hesabın kendisi pg_cron'da",
+      "path": "/api/cron/endeks-bildirim",
+      "schedule": "0 5 * * 1"
+    },
+    {
+      "//": "301 yönlendirme testi",
+      "path": "/api/cron/yonlendirme-testi",
+      "schedule": "30 3 * * *"
+    }
+  ]
+}

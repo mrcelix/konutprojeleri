@@ -1,0 +1,219 @@
+/* ═══════════════════════════════════════════════════════════════
+   Pastel Tasarım Sistemi 1.1 — token katmanı
+   Bileşen dosyalarında düz renk kodu bulunmaz, hepsi buradan okur.
+   Ölçek, boşluk, köşe ve tipografi temadan bağımsızdır.
+   ═══════════════════════════════════════════════════════════════ */
+
+:root {
+  color-scheme: light dark;
+
+  /* yüzey */
+  --surface-page: #f8f7fb;
+  --surface-card: #ffffff;
+  --surface-sunken: #f1eff6;
+  --surface-raised: #ffffff;
+
+  /* metin */
+  --text-primary: #2c2838;
+  --text-secondary: #5f5a6e;
+  --text-muted: #6e6879;   /* mockuplardaki #948FA3 AA'yı geçmiyordu, üretim değeri bu */
+  --text-inverse: #ffffff;
+
+  /* çizgi */
+  --border: #ebe8f2;
+  --border-strong: #dcd7e6;
+
+  /* marka */
+  --brand: #6e5c82;
+  --brand-strong: #584568;
+  --brand-soft: #dfdbef;
+
+  /* anlam — zemin / metin çifti. Yalnızca durum bildirir, dekorasyon değil. */
+  --success-bg: #d2e7dc;  --success: #2f5c48;
+  --warning-bg: #f6ebcd;  --warning: #7a5e12;
+  --danger-bg:  #f3dce0;  --danger:  #8a3444;
+  --info-bg:    #cfe0f0;  --info:    #2f5675;
+
+  /* kategori tonları — sıra sabit, anlam taşımaz */
+  --tint-blue: #cfe0f0;   --tint-blue-ink: #2f5675;
+  --tint-mint: #d2e7dc;   --tint-mint-ink: #2f5c48;
+  --tint-lav: #dfdbef;    --tint-lav-ink: #584568;
+  --tint-butter: #f6ebcd; --tint-butter-ink: #7a5e12;
+  --tint-blush: #f3dce0;  --tint-blush-ink: #7a4550;
+  --tint-stone: #e2ecef;  --tint-stone-ink: #3d5a60;
+
+  /* tipografi */
+  --font-sans: "Segoe UI", system-ui, Roboto, Helvetica, Arial, sans-serif;
+  --font-mono: Consolas, "SF Mono", ui-monospace, monospace;
+  --text-display: 28px;
+  --text-h1: 26px;
+  --text-h2: 18px;
+  --text-h3: 15.5px;
+  --text-body: 13px;
+  --text-small: 11.5px;
+  --text-label: 10px;
+  --text-number: 20px;
+
+  /* boşluk */
+  --s-1: 4px;  --s-2: 6px;  --s-3: 9px;  --s-4: 13px;
+  --s-5: 18px; --s-6: 24px; --s-7: 32px; --s-8: 44px;
+
+  /* köşe */
+  --r-pill: 8px; --r-input: 13px; --r-block: 16px; --r-card: 20px; --r-full: 999px;
+
+  /* yükseklik — koyu temada gölge yerine çerçeve */
+  --elev-1: 0 1px 3px rgba(44, 40, 56, 0.06);
+  --elev-1-border: 1px solid transparent;
+  --elev-2: 0 8px 26px rgba(44, 40, 56, 0.26);
+
+  /* davranış anahtarları — bileşenler bunları okur */
+  --btn-primary-bg: #6e5c82;
+  --btn-primary-text: #ffffff;
+  --image-filter: none;
+  --chart-grid: #ebe8f2;
+  --chart-fill-opacity: 0.18;
+
+  /* hareket */
+  --ease: cubic-bezier(0.2, 0.7, 0.3, 1);
+  --dur: 160ms;
+}
+
+/* İşletim sistemi koyu diyorsa — ama kullanıcı açık seçmediyse */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --surface-page: #16141c;
+    --surface-card: #1e1b26;
+    --surface-sunken: #121017;
+    --surface-raised: #262231;
+
+    --text-primary: #edeaf2;
+    --text-secondary: #b4aec0;
+    --text-muted: #8b8499;
+    --text-inverse: #1a1622;
+
+    --border: #2e2a38;
+    --border-strong: #423c50;
+
+    --brand: #a493bc;
+    --brand-strong: #beb0d0;
+    --brand-soft: #2e2739;
+
+    --success-bg: #1b3329;  --success: #7fc7a5;
+    --warning-bg: #332b18;  --warning: #e0b75e;
+    --danger-bg:  #3a2028;  --danger:  #e8909e;
+    --info-bg:    #1b2a3a;  --info:    #8cbbe0;
+
+    --tint-blue: #1e2c3b;   --tint-blue-ink: #9cc2e4;
+    --tint-mint: #1c3229;   --tint-mint-ink: #8ecbab;
+    --tint-lav: #2a2437;    --tint-lav-ink: #b7a9ce;
+    --tint-butter: #332b18; --tint-butter-ink: #dcbe72;
+    --tint-blush: #372028;  --tint-blush-ink: #dfa3ae;
+    --tint-stone: #202b2e;  --tint-stone-ink: #9fbdc4;
+
+    --elev-1: none;
+    --elev-1-border: 1px solid #2e2a38;
+    --elev-2: 0 10px 32px rgba(0, 0, 0, 0.6);
+
+    /* Koyu temada birincil düğme tersine döner: en parlak öğe en önemli öğedir */
+    --btn-primary-bg: #a493bc;
+    --btn-primary-text: #1a1622;
+
+    --image-filter: brightness(0.92);
+    --chart-grid: #2a2634;
+    --chart-fill-opacity: 0.14;
+  }
+}
+
+/* Kullanıcı açıkça koyu seçtiyse — işletim sistemi ne derse desin */
+:root[data-theme="dark"] {
+  --surface-page: #16141c;
+  --surface-card: #1e1b26;
+  --surface-sunken: #121017;
+  --surface-raised: #262231;
+  --text-primary: #edeaf2;
+  --text-secondary: #b4aec0;
+  --text-muted: #8b8499;
+  --text-inverse: #1a1622;
+  --border: #2e2a38;
+  --border-strong: #423c50;
+  --brand: #a493bc;
+  --brand-strong: #beb0d0;
+  --brand-soft: #2e2739;
+  --success-bg: #1b3329;  --success: #7fc7a5;
+  --warning-bg: #332b18;  --warning: #e0b75e;
+  --danger-bg:  #3a2028;  --danger:  #e8909e;
+  --info-bg:    #1b2a3a;  --info:    #8cbbe0;
+  --tint-blue: #1e2c3b;   --tint-blue-ink: #9cc2e4;
+  --tint-mint: #1c3229;   --tint-mint-ink: #8ecbab;
+  --tint-lav: #2a2437;    --tint-lav-ink: #b7a9ce;
+  --tint-butter: #332b18; --tint-butter-ink: #dcbe72;
+  --tint-blush: #372028;  --tint-blush-ink: #dfa3ae;
+  --tint-stone: #202b2e;  --tint-stone-ink: #9fbdc4;
+  --elev-1: none;
+  --elev-1-border: 1px solid #2e2a38;
+  --elev-2: 0 10px 32px rgba(0, 0, 0, 0.6);
+  --btn-primary-bg: #a493bc;
+  --btn-primary-text: #1a1622;
+  --image-filter: brightness(0.92);
+  --chart-grid: #2a2634;
+  --chart-fill-opacity: 0.14;
+}
+
+/* Mobilde taban yazı büyür — iOS'ta girdiye odaklanınca zoom olmaması için de gerekli */
+@media (max-width: 767px) {
+  :root {
+    --text-body: 16px;
+    --text-small: 14px;
+    --text-label: 11px;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   Temel katman
+   ═══════════════════════════════════════════════════════════════ */
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html { -webkit-text-size-adjust: 100%; }
+
+body {
+  margin: 0;
+  background: var(--surface-page);
+  color: var(--text-primary);
+  font-family: var(--font-sans);
+  font-size: var(--text-body);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Odak halkası her etkileşimli öğede görünür. outline:none asla yazılmaz. */
+:focus-visible {
+  outline: 2px solid var(--brand-strong);
+  outline-offset: 2px;
+  border-radius: 3px;
+}
+
+a { color: inherit; text-decoration: none; }
+
+img, svg, video { max-width: 100%; height: auto; display: block; }
+img { filter: var(--image-filter); }
+
+/* Teknik çizimler ASLA ters çevrilmez — mimari çizim beyaz kağıt üzerine siyah çizgidir */
+.kat-plani, .kat-plani img { filter: none; background: #ffffff; }
+
+/* Rakam içeren her sütun hizalanır */
+.tabular { font-variant-numeric: tabular-nums; }
+
+/* Yazdırmada her zaman açık tema */
+@media print {
+  :root { color-scheme: light; }
+  body { background: #fff; color: #000; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

@@ -1,0 +1,1633 @@
+<title>Son Detay Sayfaları</title>
+
+<style>
+:root{
+  --paper:#F6F5F2; --surface:#FFFFFF; --surface-2:#EFEDE7;
+  --ink:#14161C; --ink-2:#4A4E58; --ink-3:#7C8089;
+  --line:#DEDCD6; --line-2:#C9C6BD;
+  --accent:#A8741A; --accent-soft:#F3E7CF;
+  --ok:#1F6B4E; --ok-bg:#DFEFE6; --crit:#9E2B25; --crit-bg:#F6E3E1;
+  --shadow:0 1px 2px rgba(20,22,28,.05), 0 10px 30px -20px rgba(20,22,28,.3);
+  --f-display:Georgia,"Times New Roman",serif;
+  --f-body:system-ui,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  --f-mono:Consolas,"SF Mono",ui-monospace,"Courier New",monospace;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --paper:#0F1217; --surface:#171B21; --surface-2:#1E232B;
+    --ink:#ECEBE7; --ink-2:#A8ABB2; --ink-3:#767A82;
+    --line:#2A2F37; --line-2:#3A414B;
+    --accent:#D9A441; --accent-soft:#3A2E18;
+    --ok:#5FC79B; --ok-bg:#12332A; --crit:#E5837B; --crit-bg:#3A1F1D;
+    --shadow:0 1px 2px rgba(0,0,0,.4), 0 10px 30px -20px rgba(0,0,0,.9);
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#0F1217; --surface:#171B21; --surface-2:#1E232B;
+  --ink:#ECEBE7; --ink-2:#A8ABB2; --ink-3:#767A82;
+  --line:#2A2F37; --line-2:#3A414B;
+  --accent:#D9A441; --accent-soft:#3A2E18;
+  --ok:#5FC79B; --ok-bg:#12332A; --crit:#E5837B; --crit-bg:#3A1F1D;
+  --shadow:0 1px 2px rgba(0,0,0,.4), 0 10px 30px -20px rgba(0,0,0,.9);
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--f-body);
+  font-size:16px;line-height:1.6;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1100px;margin:0 auto;padding:0 28px}
+@media (max-width:640px){.wrap{padding:0 18px}}
+a{color:var(--accent)}
+:focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:2px}
+
+.masthead{border-bottom:1px solid var(--line);background:var(--surface);padding:52px 0 34px}
+.eyebrow{font-family:var(--f-mono);font-size:11.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-3);margin:0 0 18px}
+h1{font-family:var(--f-display);font-weight:400;font-size:clamp(32px,5vw,48px);line-height:1.08;
+  letter-spacing:-.015em;margin:0 0 18px;text-wrap:balance;max-width:18ch}
+h1 em{font-style:italic;color:var(--accent)}
+.standfirst{font-size:17.5px;line-height:1.55;color:var(--ink-2);max-width:64ch;margin:0}
+
+section{padding:48px 0;border-bottom:1px solid var(--line)}
+h2{font-family:var(--f-display);font-weight:400;font-size:clamp(24px,3.2vw,32px);line-height:1.15;
+  letter-spacing:-.01em;margin:0 0 12px;text-wrap:balance}
+.sec-head{margin-bottom:22px;max-width:70ch}
+.sec-head .eyebrow{margin-bottom:10px}
+.sec-head p{margin:0;color:var(--ink-2);font-size:16px;max-width:64ch}
+.shot-head{display:grid;grid-template-columns:1fr 288px;gap:24px;align-items:end;
+  padding-bottom:13px;border-bottom:1px solid var(--line-2);margin-bottom:2px}
+@media (max-width:820px){.shot-head{grid-template-columns:1fr;gap:12px}}
+.kicker{font-family:var(--f-mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--accent);margin:0 0 6px}
+.shot-head h3{font-family:var(--f-display);font-size:23px;font-weight:400;margin:0 0 6px;letter-spacing:-.01em}
+.lede{margin:0;font-size:14.5px;color:var(--ink-2);max-width:58ch;line-height:1.55}
+.shot-head dl{margin:0;display:grid;gap:7px}
+.shot-head dl div{display:grid;grid-template-columns:72px 1fr;gap:10px;font-size:12px}
+.shot-head dt{font-family:var(--f-mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3);padding-top:2px}
+.shot-head dd{margin:0;color:var(--ink-2);line-height:1.45}
+
+.viewport{margin-top:16px;border:1px solid var(--line-2);border-radius:6px;overflow:hidden;
+  box-shadow:var(--shadow);background:var(--surface-2)}
+.chrome{display:flex;align-items:center;gap:8px;padding:9px 12px;background:var(--surface-2);border-bottom:1px solid var(--line)}
+.dot{width:9px;height:9px;border-radius:50%;background:var(--line-2)}
+.urlbar{flex:1;margin-left:8px;font-family:var(--f-mono);font-size:11px;color:var(--ink-3);
+  background:var(--surface);border:1px solid var(--line);border-radius:3px;padding:4px 10px}
+.stage{overflow-x:auto}
+
+.scroller{overflow-x:auto;border:1px solid var(--line);border-radius:3px;background:var(--surface)}
+table.doc{border-collapse:collapse;width:100%;min-width:700px;font-size:13px}
+table.doc thead th{text-align:left;font-family:var(--f-mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--ink-3);font-weight:400;padding:11px 13px;border-bottom:1px solid var(--line-2);
+  background:var(--surface-2);white-space:nowrap}
+table.doc tbody td{padding:10px 13px;border-bottom:1px solid var(--line);vertical-align:top;color:var(--ink-2);line-height:1.5}
+table.doc tbody tr:last-child td{border-bottom:0}
+table.doc tbody td:first-child{color:var(--ink);font-weight:600}
+code{font-family:var(--f-mono);font-size:12px;background:var(--surface-2);padding:1px 5px;border-radius:2px;color:var(--ink)}
+.badge{display:inline-block;font-family:var(--f-mono);font-size:9.5px;letter-spacing:.08em;text-transform:uppercase;
+  padding:2.5px 7px;border-radius:2px;white-space:nowrap}
+.badge.new{background:var(--crit-bg);color:var(--crit)}
+.badge.tpl{background:var(--surface-2);color:var(--ink-3)}
+.note{margin-top:16px;display:grid;grid-template-columns:repeat(3,1fr);border:1px solid var(--line);
+  border-radius:3px;background:var(--surface);overflow:hidden}
+@media (max-width:760px){.note{grid-template-columns:1fr}}
+.note div{padding:14px 17px;border-right:1px solid var(--line)}
+.note div:last-child{border-right:0}
+@media (max-width:760px){.note div{border-right:0;border-bottom:1px solid var(--line)}.note div:last-child{border-bottom:0}}
+.note b{display:block;font-size:10.5px;font-family:var(--f-mono);letter-spacing:.12em;text-transform:uppercase;
+  color:var(--ink-3);margin-bottom:5px;font-weight:400}
+.note p{margin:0;font-size:13.5px;line-height:1.5;color:var(--ink-2)}
+.okbox{background:var(--ok-bg);border:1px solid rgba(31,107,78,.22);border-radius:3px;padding:16px 18px;margin-top:16px}
+.okbox h4{margin:0 0 6px;font-size:14px;font-weight:650;color:var(--ok)}
+.okbox p{margin:0;font-size:13.5px;color:var(--ink-2);line-height:1.6;max-width:78ch}
+
+/* ============ SİTE (PASTEL) ============ */
+.pk{
+  --p-bg:#F8F7FB; --p-card:#FFFFFF; --p-ink:#2C2838; --p-ink2:#5F5A6E; --p-ink3:#6E6879;
+  --p-line:#EBE8F2; --p-line2:#DCD7E6; --p-plum:#6E5C82; --p-plum-d:#584568;
+  --p-blue:#CFE0F0; --p-mint:#D2E7DC; --p-blush:#F3DCE0; --p-butter:#F6EBCD; --p-lav:#DFDBEF;
+  --p-ok:#2F5C48; --p-warn:#7A5E12; --p-crit:#8A3444; --p-info:#2F5675;
+  background:var(--p-bg);color:var(--p-ink);min-width:1020px;
+  font-family:"Segoe UI",system-ui,Roboto,sans-serif;font-size:13px;line-height:1.5;
+}
+.pk a{color:inherit;text-decoration:none}
+.pk .c{background:var(--p-card);border-radius:20px;box-shadow:0 1px 3px rgba(44,40,56,.06)}
+.pk .top{display:flex;align-items:center;gap:18px;padding:12px 24px;background:#FFF;border-bottom:1px solid var(--p-line)}
+.pk .logo{font-size:15.5px;font-weight:750;letter-spacing:-.03em}
+.pk .logo span{color:var(--p-plum)}
+.pk .nav{display:flex;gap:3px}
+.pk .nav span{padding:6px 11px;border-radius:17px;font-size:12px;color:var(--p-ink2)}
+.pk .nav span.on{background:var(--p-lav);color:var(--p-plum);font-weight:650}
+.pk .topact{margin-left:auto;display:flex;gap:8px;align-items:center}
+.pk .ghost{font-size:12px;color:var(--p-ink2)}
+.pk .btn{background:var(--p-plum);color:#FFF;padding:8px 16px;border-radius:19px;font-size:12px;font-weight:650}
+.pk .crumb{padding:11px 24px 0;font-size:11px;color:var(--p-ink3)}
+.pk .crumb b{color:var(--p-ink);font-weight:600}
+.pk .body{padding:12px 24px 22px;display:grid;gap:12px}
+.pk .h1{margin:0 0 5px;font-size:26px;font-weight:750;letter-spacing:-.03em;line-height:1.15}
+.pk .lead{margin:0;font-size:12.5px;color:var(--p-ink2);line-height:1.65;max-width:84ch}
+.pk .lead u{text-decoration:none;color:var(--p-plum);font-weight:650}
+.pk .sec{padding:17px 19px}
+.pk .sh{display:flex;align-items:baseline;gap:10px;margin-bottom:12px}
+.pk .sec h2{margin:0;font-size:16.5px;font-weight:750;letter-spacing:-.025em;font-family:inherit;color:var(--p-ink)}
+.pk .sh span{font-size:11px;color:var(--p-ink3)}
+.pk .sh u{margin-left:auto;text-decoration:none;font-size:11.5px;color:var(--p-plum);font-weight:650;white-space:nowrap}
+.pk .txt{margin:0 0 10px;font-size:12.5px;color:var(--p-ink2);line-height:1.7;max-width:82ch}
+.pk .txt:last-child{margin-bottom:0}
+.pk .pill{border-radius:8px;padding:3px 8px;font-size:10px;font-weight:750;white-space:nowrap;display:inline-block}
+.pk .pill.ok{background:var(--p-mint);color:var(--p-ok)}
+.pk .pill.wn{background:var(--p-butter);color:var(--p-warn)}
+.pk .pill.dg{background:var(--p-blush);color:var(--p-crit)}
+.pk .pill.if{background:var(--p-blue);color:var(--p-info)}
+.pk .pill.br{background:var(--p-lav);color:var(--p-plum)}
+.pk .pill.nt{background:var(--p-bg);color:var(--p-ink3)}
+.pk .chip{border:1.5px solid var(--p-line2);border-radius:15px;padding:5px 12px;font-size:11.5px;color:var(--p-ink2);background:#FFF}
+.pk .chip.on{background:var(--p-plum);border-color:var(--p-plum);color:#FFF;font-weight:700}
+.pk table.t{width:100%;border-collapse:collapse;font-size:12px}
+.pk table.t thead th{text-align:left;font-size:10px;letter-spacing:.09em;text-transform:uppercase;
+  color:var(--p-ink3);font-weight:600;padding:0 9px 8px;border-bottom:1.5px solid var(--p-line2);
+  white-space:nowrap;background:transparent}
+.pk table.t tbody td{padding:9px;border-bottom:1px solid var(--p-line);color:var(--p-ink2);
+  font-variant-numeric:tabular-nums;vertical-align:middle}
+.pk table.t tbody tr:last-child td{border-bottom:0}
+.pk table.t tbody td:first-child{color:var(--p-ink);font-weight:650}
+
+/* arşiv bandı */
+.pk .arc{background:var(--p-lav);border-radius:18px;padding:15px 18px;display:flex;align-items:center;gap:16px}
+.pk .arc b{display:block;font-size:14px;font-weight:750;color:var(--p-plum-d);margin-bottom:3px}
+.pk .arc p{margin:0;font-size:11.5px;color:#5A4C68;line-height:1.55;max-width:64ch}
+.pk .arc span{margin-left:auto;background:var(--p-plum);color:#FFF;border-radius:16px;padding:9px 16px;
+  font-size:11.5px;font-weight:700;white-space:nowrap}
+.pk .grid2{display:grid;grid-template-columns:1fr 300px;gap:12px;align-items:start}
+.pk .facts{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--p-line);
+  border-radius:16px;overflow:hidden}
+.pk .facts div{background:#FFF;padding:12px 14px}
+.pk .facts dt{margin:0 0 3px;font-size:9.5px;color:var(--p-ink3);letter-spacing:.05em}
+.pk .facts dd{margin:0;font-size:15px;font-weight:800;letter-spacing:-.03em;font-variant-numeric:tabular-nums}
+.pk .facts dd em{font-style:normal;font-size:10px;font-weight:700;margin-left:5px}
+.pk .chart svg{display:block;width:100%;height:auto}
+
+/* kampanya */
+.pk .camp{background:linear-gradient(112deg,#F7EFD8,#FBF6EA);border-radius:20px;padding:20px 22px;
+  display:grid;grid-template-columns:1fr auto;gap:22px;align-items:center}
+.pk .camp .lbl{font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:#8A6E1E;margin:0 0 6px}
+.pk .camp h1{margin:0 0 6px;font-size:27px;font-weight:750;letter-spacing:-.03em;color:#6B5410;line-height:1.15}
+.pk .camp p{margin:0;font-size:12.5px;color:#8A6E1E;line-height:1.6;max-width:56ch}
+.pk .cd{display:flex;gap:7px}
+.pk .cd div{background:#FFF;border-radius:13px;padding:9px 12px;text-align:center;min-width:56px}
+.pk .cd b{display:block;font-size:21px;font-weight:800;letter-spacing:-.04em;color:#6B5410;font-variant-numeric:tabular-nums}
+.pk .cd span{font-size:9.5px;color:#8A6E1E;letter-spacing:.04em}
+.pk .terms{display:grid;gap:7px}
+.pk .tr{display:grid;grid-template-columns:22px 1fr;gap:10px;font-size:12px;color:var(--p-ink2);line-height:1.6}
+.pk .tr i{font-style:normal;color:var(--p-plum);font-weight:750}
+.pk .cgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.pk .cp{border:1px solid var(--p-line);border-radius:16px;overflow:hidden}
+.pk .cpimg{height:98px;position:relative}
+.pk .cpimg svg{position:absolute;inset:0;width:100%;height:100%}
+.pk .cpflag{position:absolute;top:8px;left:8px;border-radius:11px;padding:3px 9px;font-size:9.5px;font-weight:750;
+  background:#FBF1DA;color:#7A5E12}
+.pk .cpb{padding:12px 13px}
+.pk .cpb b{display:block;font-size:13.5px;font-weight:750;letter-spacing:-.02em}
+.pk .cpb .loc{display:block;font-size:10.5px;color:var(--p-ink3);margin:1px 0 8px}
+.pk .cpr{display:flex;justify-content:space-between;align-items:baseline;border-top:1px solid var(--p-line);padding-top:8px}
+.pk .cpr s{font-size:11px;color:var(--p-ink3)}
+.pk .cpr strong{font-size:14px;font-weight:800;letter-spacing:-.025em;font-variant-numeric:tabular-nums}
+
+/* metodoloji */
+.pk .wgt{display:grid;gap:9px}
+.pk .wr{display:grid;grid-template-columns:150px 1fr 44px;gap:12px;align-items:center;font-size:12px}
+.pk .wb{height:22px;border-radius:7px;background:var(--p-bg);position:relative}
+.pk .wb i{position:absolute;left:0;top:0;bottom:0;border-radius:7px;background:var(--p-plum);display:block}
+.pk .wr b{text-align:right;font-weight:750;font-variant-numeric:tabular-nums}
+.pk .steps{display:grid;grid-template-columns:repeat(4,1fr);gap:11px}
+.pk .st{background:var(--p-bg);border-radius:15px;padding:13px 14px}
+.pk .st i{display:block;width:24px;height:24px;border-radius:8px;background:var(--p-plum);color:#FFF;
+  font-style:normal;font-size:11px;font-weight:800;display:grid;place-items:center;margin-bottom:8px}
+.pk .st b{display:block;font-size:12.5px;font-weight:750;margin-bottom:3px}
+.pk .st span{font-size:10.5px;color:var(--p-ink3);line-height:1.5;display:block}
+
+/* form */
+.pk .fw{display:grid;grid-template-columns:1fr 296px;gap:12px;align-items:start}
+.pk .prog{display:flex;gap:8px;margin-bottom:16px}
+.pk .prog div{flex:1;display:flex;align-items:center;gap:8px;font-size:11.5px;color:var(--p-ink3)}
+.pk .prog i{width:22px;height:22px;border-radius:50%;background:var(--p-bg);color:var(--p-ink3);
+  display:grid;place-items:center;font-style:normal;font-size:10px;font-weight:800;flex-shrink:0}
+.pk .prog div.on{color:var(--p-plum);font-weight:700}
+.pk .prog div.on i{background:var(--p-plum);color:#FFF}
+.pk .prog div.dn i{background:var(--p-mint);color:var(--p-ok)}
+.pk .fg{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
+.pk .f{border:1.5px solid var(--p-line2);border-radius:13px;padding:9px 12px;background:#FFF}
+.pk .f.full{grid-column:1/-1}
+.pk .f span{display:block;font-size:9.5px;color:var(--p-ink3);margin-bottom:2px}
+.pk .f b{font-size:12.5px;font-weight:650}
+.pk .f.ph b{color:var(--p-ink3);font-weight:400}
+.pk .f.req span::after{content:" *";color:var(--p-crit);font-weight:800}
+.pk .drop{border:1.5px dashed var(--p-line2);border-radius:14px;padding:18px;text-align:center;
+  color:var(--p-ink3);font-size:11.5px;line-height:1.6;background:#FCFBFE}
+.pk .send{display:block;text-align:center;background:var(--p-plum);color:#FFF;border-radius:17px;
+  padding:11px;font-size:12.5px;font-weight:750;margin-top:12px}
+.pk .side-i{padding:15px 17px}
+.pk .side-i b{display:block;font-size:12.5px;font-weight:750;margin-bottom:8px}
+.pk .side-i div{display:flex;gap:9px;font-size:11.5px;color:var(--p-ink2);padding:5px 0;line-height:1.5}
+.pk .side-i div i{font-style:normal;color:var(--p-ok);font-weight:800;flex-shrink:0}
+
+/* medya kiti */
+.pk .mk{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--p-line);
+  border-radius:18px;overflow:hidden}
+.pk .mk div{background:#FFF;padding:15px 16px}
+.pk .mk dt{margin:0 0 4px;font-size:10px;color:var(--p-ink3);letter-spacing:.05em}
+.pk .mk dd{margin:0;font-size:21px;font-weight:800;letter-spacing:-.035em;font-variant-numeric:tabular-nums}
+.pk .mk dd small{display:block;font-size:10px;font-weight:400;color:var(--p-ink3);margin-top:3px;letter-spacing:0}
+.pk .pk3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.pk .pkc{border:1.5px solid var(--p-line);border-radius:18px;padding:16px 17px}
+.pk .pkc.hi{border-color:#C9BBDA;background:#FBFAFD}
+.pk .pkc b{display:block;font-size:15px;font-weight:750;letter-spacing:-.025em;margin-bottom:3px}
+.pk .pkc .pr{font-size:20px;font-weight:800;letter-spacing:-.035em;font-variant-numeric:tabular-nums;margin:6px 0 10px}
+.pk .pkc .pr em{font-style:normal;font-size:11px;font-weight:400;color:var(--p-ink3)}
+.pk .pkc ul{margin:0;padding-left:16px;font-size:11.5px;color:var(--p-ink2);display:grid;gap:5px;line-height:1.45}
+
+/* ============ YÖNETİM ============ */
+.ap{
+  --bg:#F6F5FA; --card:#FFFFFF; --sunken:#F1EFF6;
+  --tx:#2C2838; --tx2:#5F5A6E; --tx3:#6E6879;
+  --bd:#EBE8F2; --bd2:#DCD7E6;
+  --br:#6E5C82; --brs:#4E3D5E; --brsoft:#E5E1F0;
+  --ok:#2F5C48; --okbg:#D8EBE1; --wn:#7A5E12; --wnbg:#F7EDD5;
+  --dg:#8A3444; --dgbg:#F5DFE4; --if:#2F5675; --ifbg:#DDE9F4;
+  background:var(--bg);color:var(--tx);min-width:1150px;
+  font-family:"Segoe UI",system-ui,Roboto,sans-serif;font-size:12.5px;line-height:1.5;
+  display:grid;grid-template-columns:206px 1fr;
+}
+.ap a{color:inherit;text-decoration:none}
+.ap .c{background:var(--card);border-radius:16px;box-shadow:0 1px 3px rgba(44,40,56,.06)}
+.ap .side{background:#3E3050;color:#EAE5F0;padding:15px 0;display:flex;flex-direction:column}
+.ap .brand{padding:0 15px 13px;border-bottom:1px solid rgba(255,255,255,.1);margin-bottom:10px}
+.ap .brand b{display:block;font-size:13.5px;font-weight:750;letter-spacing:-.03em}
+.ap .brand b span{color:#C3B2D6}
+.ap .brand em{font-style:normal;font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:rgba(234,229,240,.5)}
+.ap .cmd{margin:0 10px 11px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.13);
+  border-radius:9px;padding:6px 9px;font-size:10.5px;color:rgba(234,229,240,.6);display:flex;align-items:center;gap:6px}
+.ap .cmd kbd{margin-left:auto;background:rgba(255,255,255,.14);border-radius:4px;padding:1px 5px;
+  font-family:Consolas,monospace;font-size:9px}
+.ap .menu{padding:0 8px;display:grid;gap:1px}
+.ap .menu span{display:flex;align-items:center;gap:8px;padding:6.5px 9px;border-radius:8px;
+  font-size:11.5px;color:rgba(234,229,240,.72)}
+.ap .menu span.on{background:rgba(255,255,255,.14);color:#FFF;font-weight:700}
+.ap .menu span em{margin-left:auto;font-style:normal;font-size:8.5px;background:#C98A93;color:#361A1F;
+  border-radius:6px;padding:1px 5px;font-weight:800}
+.ap .menu span em.q{background:rgba(255,255,255,.18);color:rgba(234,229,240,.85)}
+.ap .menu u{display:block;text-decoration:none;font-size:8.5px;letter-spacing:.14em;text-transform:uppercase;
+  color:rgba(234,229,240,.36);padding:11px 9px 4px}
+.ap .who{margin:auto 10px 0;display:flex;align-items:center;gap:8px;background:rgba(255,255,255,.08);
+  border-radius:9px;padding:8px 9px}
+.ap .who i{width:24px;height:24px;border-radius:7px;background:#EAE5F0;color:#3E3050;display:grid;
+  place-items:center;font-style:normal;font-size:9.5px;font-weight:800}
+.ap .who b{display:block;font-size:11px;font-weight:700}
+.ap .who span{font-size:9px;color:rgba(234,229,240,.55)}
+.ap .main{min-width:0}
+.ap .top{background:#FFF;border-bottom:1px solid var(--bd);padding:11px 19px;display:flex;align-items:center;gap:13px}
+.ap .top h2{margin:0;font-size:16px;font-weight:750;letter-spacing:-.025em;font-family:inherit}
+.ap .top .dt{font-size:10.5px;color:var(--tx3)}
+.ap .top .act{margin-left:auto;display:flex;gap:7px;align-items:center}
+.ap .btn{background:var(--br);color:#FFF;border-radius:14px;padding:7px 14px;font-size:11px;font-weight:700}
+.ap .btn.sec{background:#FFF;color:var(--brs);border:1px solid var(--bd2)}
+.ap .btn.ok{background:#2F5C48}
+.ap .btn.dg{background:#8A3444}
+.ap .btn.sm{padding:5px 10px;font-size:10px;border-radius:11px}
+.ap .body{padding:13px 19px 19px;display:grid;gap:11px}
+.ap .sec{padding:14px 16px}
+.ap .sh{display:flex;align-items:baseline;gap:9px;margin-bottom:11px}
+.ap .sh h3{margin:0;font-size:13px;font-weight:750;letter-spacing:-.02em}
+.ap .sh span{font-size:10px;color:var(--tx3)}
+.ap .sh u{margin-left:auto;text-decoration:none;font-size:10.5px;color:var(--br);font-weight:700;white-space:nowrap}
+.ap .pill{border-radius:7px;padding:2.5px 7px;font-size:9.5px;font-weight:750;white-space:nowrap;display:inline-block}
+.ap .pill.ok{background:var(--okbg);color:var(--ok)}
+.ap .pill.wn{background:var(--wnbg);color:var(--wn)}
+.ap .pill.dg{background:var(--dgbg);color:var(--dg)}
+.ap .pill.if{background:var(--ifbg);color:var(--if)}
+.ap .pill.br{background:var(--brsoft);color:var(--br)}
+.ap .pill.nt{background:var(--sunken);color:var(--tx3)}
+.ap .chip{border:1px solid var(--bd2);border-radius:12px;padding:4px 10px;font-size:10.5px;color:var(--tx2);background:#FFF}
+.ap .chip.on{background:var(--br);border-color:var(--br);color:#FFF;font-weight:700}
+.ap table.t{width:100%;border-collapse:collapse;font-size:11.5px}
+.ap table.t thead th{text-align:left;font-size:9.5px;letter-spacing:.09em;text-transform:uppercase;
+  color:var(--tx3);font-weight:600;padding:0 8px 8px;border-bottom:1.5px solid var(--bd2);
+  white-space:nowrap;background:transparent}
+.ap table.t tbody td{padding:8px;border-bottom:1px solid var(--bd);color:var(--tx2);
+  font-variant-numeric:tabular-nums;vertical-align:middle}
+.ap table.t tbody tr:last-child td{border-bottom:0}
+.ap table.t tbody tr.sel td{background:#FBFAFD}
+.ap .nm b{display:block;font-size:11.5px;font-weight:700;color:var(--tx);letter-spacing:-.01em}
+.ap .nm span{font-size:9.5px;color:var(--tx3)}
+.ap .tabs{display:flex;gap:4px;margin-bottom:11px;flex-wrap:wrap}
+.ap .tab{border:1px solid var(--bd2);border-radius:12px;padding:5px 11px;font-size:10.5px;color:var(--tx2);background:#FFF}
+.ap .tab.on{background:var(--br);border-color:var(--br);color:#FFF;font-weight:700}
+.ap .f{border:1px solid var(--bd2);border-radius:10px;padding:7px 10px;background:#FFF}
+.ap .f span{display:block;font-size:9px;color:var(--tx3);margin-bottom:2px}
+.ap .f b{font-size:12px;font-weight:650}
+.ap .fg{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:11px}
+.ap .diff{display:grid;gap:5px}
+.ap .dr{display:flex;align-items:center;gap:7px;font-size:10.5px;padding:7px 9px;background:var(--bg);border-radius:9px}
+.ap .dr s{color:var(--tx3)} .ap .dr b{color:var(--ok);font-weight:750}
+.ap .dr .k{color:var(--tx2);min-width:76px}
+.ap .warn{background:var(--wnbg);border:1px solid #EDDDB8;border-radius:10px;padding:9px 11px;
+  font-size:10.5px;color:#755A0F;line-height:1.5}
+.ap .warn b{display:block;font-weight:750;margin-bottom:3px}
+.ap .qi{display:flex;align-items:center;gap:10px;border-radius:11px;padding:9px 11px;border:1px solid var(--bd);margin-bottom:6px}
+.ap .qi.sel{border-color:var(--br);background:#FBFAFD}
+.ap .qi .d{width:7px;height:7px;border-radius:50%;flex-shrink:0;background:var(--tx3)}
+.ap .qi.dg .d{background:var(--dg)} .ap .qi.wn .d{background:var(--wn)} .ap .qi.if .d{background:var(--if)}
+.ap .qi b{font-size:11.5px;font-weight:700}
+.ap .qi p{margin:2px 0 0;font-size:10px;color:var(--tx2);line-height:1.4}
+.ap .qi em{margin-left:auto;font-style:normal;font-size:9.5px;color:var(--tx3);white-space:nowrap}
+.ap .log{font-family:Consolas,monospace;font-size:10.5px}
+.ap .log td{padding:7px 8px}
+.ap .bar{height:20px;border-radius:6px;background:var(--sunken);position:relative}
+.ap .bar i{position:absolute;left:0;top:0;bottom:0;border-radius:6px;background:var(--br);display:block}
+
+footer{padding:32px 0 56px;color:var(--ink-3);font-size:13px}
+footer p{margin:0 0 6px;max-width:72ch;line-height:1.55}
+</style>
+
+<header class="masthead">
+  <div class="wrap">
+    <p class="eyebrow">Konutprojeleri.com &middot; Kalan detay sayfaları</p>
+    <h1>Envanteri <em>yeniden</em> denetledim</h1>
+    <p class="standfirst">
+      Son iki turda eklenen parçalar yeni boşluklar açtı. En belirgini şuydu: müteahhit panelini
+      bir <strong>onay kuyruğuna</strong> bağladım ama o ekranı hiç tasarlamamıştım. Aynı şekilde
+      teslim edilen projelerin arşiv sayfasını, kampanya sayfasını ve karne metodolojisini
+      metinlerde defalarca bağlantı verdiğim halde çizmemiştim. Dokuzu da burada.
+    </p>
+  </div>
+</header>
+
+<section>
+  <div class="wrap">
+    <div class="sec-head">
+      <p class="eyebrow">Denetim</p>
+      <h2>Ne eksikti</h2>
+      <p>
+        <span class="badge new">Eksik</span> bir yerden bağlantı verilmiş ama tasarlanmamış
+        sayfalar. <span class="badge tpl">Şablon</span> mevcut bir şablonun türevi, ayrı tasarım
+        gerektirmiyor &mdash; bunları çizmedim, gerekçesi yanında.
+      </p>
+    </div>
+    <div class="scroller">
+      <table class="doc">
+        <thead><tr><th>Sayfa</th><th>Nereden bağlanıyor</th><th>Durum</th></tr></thead>
+        <tbody>
+          <tr><td>Onay kuyruğu (yönetim)</td><td>Müteahhit paneli, kontrol paneli</td><td><span class="badge new">Eksik</span></td></tr>
+          <tr><td>Arşiv proje sayfası</td><td>404 kurtarma, firma karnesi, veri kuralları</td><td><span class="badge new">Eksik</span></td></tr>
+          <tr><td>Kampanya sayfası</td><td>Ana sayfa bandı, kart rozetleri, arama filtresi</td><td><span class="badge new">Eksik</span></td></tr>
+          <tr><td>Karne metodolojisi</td><td>Her firma sayfası, karne kutusu</td><td><span class="badge new">Eksik</span></td></tr>
+          <tr><td>Proje / arsa bildir</td><td>Ana menü, alt bilgi, firma çağrısı</td><td><span class="badge new">Eksik</span></td></tr>
+          <tr><td>Reklam ve medya kiti</td><td>Ana menü, B2B bandı, panel satışı</td><td><span class="badge new">Eksik</span></td></tr>
+          <tr><td>Firma düzenleyici (yönetim)</td><td>Yönetim menüsü, moderasyon</td><td><span class="badge new">Eksik</span></td></tr>
+          <tr><td>Endeks yönetimi (yönetim)</td><td>Kontrol paneli iş kuyruğu</td><td><span class="badge new">Eksik</span></td></tr>
+          <tr><td>Denetim günlüğü (yönetim)</td><td>Roller bölümü, itiraz süreci</td><td><span class="badge new">Eksik</span></td></tr>
+          <tr><td>Haber düzenleyici (yönetim)</td><td>İçerik menüsü</td><td><span class="badge tpl">Şablon</span> &mdash; proje düzenleyicinin aynısı, alanlar değişir</td></tr>
+          <tr><td>Mahalle sayfası</td><td>İlçe sayfası, iç linkler</td><td><span class="badge tpl">Şablon</span> &mdash; şehir/ilçe şablonu, kapsam daralır</td></tr>
+          <tr><td>Firma detay &middot; mobil</td><td>Mobil gezinme</td><td><span class="badge tpl">Şablon</span> &mdash; proje detay mobil kalıbı</td></tr>
+          <tr><td>Kurumsal sayfalar</td><td>Alt bilgi</td><td><span class="badge tpl">Şablon</span> &mdash; tek sütun metin sayfası</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 1. ONAY KUYRUĞU ================= -->
+<section>
+  <div class="wrap">
+    <div class="shot-head">
+      <div>
+        <p class="kicker">Yönetim &middot; en kritik</p>
+        <h3>Onay kuyruğu</h3>
+        <p class="lede">
+          Müteahhit panelini geçen tur buraya bağladım. Ekran tek bir soruyu hızlı cevaplatmalı:
+          <strong>bu değişikliği onaylamalı mıyım?</strong> Solda kuyruk, sağda seçili kaydın farkı
+          ve karar düğmeleri. Anormal değerler (fiyat %20'den fazla değişmiş, stok artmış)
+          otomatik işaretleniyor &mdash; onlar dışındakiler tek tuşla toplu onaylanabiliyor.
+        </p>
+      </div>
+      <dl>
+        <div><dt>Hedef</dt><dd>Sıradan onay 2 saniye sürsün</dd></div>
+        <div><dt>Koruma</dt><dd>Anormal değer otomatik işaretli</dd></div>
+        <div><dt>Ölçek</dt><dd>Otomatik onay kuralıyla azalır</dd></div>
+      </dl>
+    </div>
+
+    <div class="viewport">
+      <div class="chrome">
+        <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+        <span class="urlbar">yonetim.konutprojeleri.com/onay-kuyrugu</span>
+      </div>
+      <div class="stage">
+        <div class="ap">
+          <aside class="side">
+            <div class="brand"><b>konut<span>projeleri</span></b><em>Yönetim</em></div>
+            <div class="cmd">Ara veya komut&hellip; <kbd>Ctrl K</kbd></div>
+            <nav class="menu">
+              <span>Kontrol paneli</span><span>Projeler <em class="q">1.240</em></span>
+              <span>Firmalar <em class="q">318</em></span><span>Medya</span>
+              <u>Akış</u>
+              <span class="on">Onay kuyruğu <em>9</em></span>
+              <span>Moderasyon <em>7</em></span>
+              <span>Talepler <em>28</em></span>
+              <u>Veri</u>
+              <span>Fiyat arşivi</span><span>Endeks</span><span>Denetim günlüğü</span>
+              <u>Yönetim</u>
+              <span>SEO</span><span>Kullanıcılar</span><span>Ayarlar ve ekip</span>
+            </nav>
+            <div class="who"><i>MÇ</i><div><b>M. Çelik</b><span>Site sahibi</span></div></div>
+          </aside>
+
+          <div class="main">
+            <div class="top">
+              <h2>Onay kuyruğu</h2>
+              <span class="dt">9 bekleyen &middot; en eskisi 14 saat &middot; bu ay ort. onay 3 sa 10 dk</span>
+              <div class="act">
+                <span class="btn sec">Otomatik onay kuralları</span>
+                <span class="btn ok">Temiz 6 kaydı onayla</span>
+              </div>
+            </div>
+
+            <div class="body">
+              <div style="display:grid;grid-template-columns:1fr 400px;gap:11px;align-items:start">
+                <div class="c sec">
+                  <div class="sh">
+                    <h3>Bekleyen değişiklikler</h3>
+                    <span>3'ü işaretli</span>
+                    <u>Yalnızca işaretlileri göster</u>
+                  </div>
+                  <div style="display:flex;gap:5px;margin-bottom:11px;flex-wrap:wrap">
+                    <span class="chip on">Tümü <b>9</b></span>
+                    <span class="chip">İşaretli <b>3</b></span>
+                    <span class="chip">Fiyat <b>5</b></span>
+                    <span class="chip">Stok <b>2</b></span>
+                    <span class="chip">Medya <b>1</b></span>
+                    <span class="chip">Yeni proje <b>1</b></span>
+                  </div>
+
+                  <div class="qi dg sel">
+                    <span class="d"></span>
+                    <div>
+                      <b>Benesta Benleo Acıbadem &middot; fiyat</b>
+                      <p>Esat İnşaat &middot; 3 tipte %5 zam, 2+1 stok 19&rarr;17
+                      &middot; <b>işaretli: 2+1 fiyatı bölge ortalamasının %3 üzerine çıkıyor</b></p>
+                    </div>
+                    <em>14 sa</em>
+                  </div>
+                  <div class="qi dg">
+                    <span class="d"></span>
+                    <div>
+                      <b>Majör Gölyaka &middot; stok</b>
+                      <p>Cevahir Yapı &middot; 2+1 stok 318&rarr;<b>412</b>
+                      &middot; <b>işaretli: stok artmış, açıklama girilmemiş</b></p>
+                    </div>
+                    <em>9 sa</em>
+                  </div>
+                  <div class="qi dg">
+                    <span class="d"></span>
+                    <div>
+                      <b>Işıltılı Evler &middot; fiyat</b>
+                      <p>Başkent İnşaat &middot; 2+1 5.900.000 &rarr; <b>4.720.000 ₺</b>
+                      &middot; <b>işaretli: %20 düşüş &mdash; hatalı giriş olabilir</b></p>
+                    </div>
+                    <em>6 sa</em>
+                  </div>
+                  <div class="qi wn">
+                    <span class="d"></span>
+                    <div>
+                      <b>Banu Evleri Ispartakule 4 &middot; yeni proje</b>
+                      <p>Hasanoğlu Grup &middot; ilk yayın başvurusu, zorunlu alanların 2'si eksik</p>
+                    </div>
+                    <em>4 sa</em>
+                  </div>
+                  <div class="qi if">
+                    <span class="d"></span>
+                    <div>
+                      <b>VN Kartal &middot; şantiye</b>
+                      <p>Neva Prestij &middot; ilerleme %38 &rarr; %41, 14 fotoğraf eklendi</p>
+                    </div>
+                    <em>3 sa</em>
+                  </div>
+                  <div class="qi if">
+                    <span class="d"></span>
+                    <div>
+                      <b>Sur Yapı Exen &middot; kat planı</b>
+                      <p>Sur Yapı &middot; 3+1 planı yüklendi, varyant üretildi, alt metin var</p>
+                    </div>
+                    <em>2 sa</em>
+                  </div>
+                  <div class="qi if">
+                    <span class="d"></span>
+                    <div>
+                      <b>Benesta Benleo &middot; özellik</b>
+                      <p>Esat İnşaat &middot; tavan yüksekliği 2,80 &rarr; 3,00 m</p>
+                    </div>
+                    <em>2 sa</em>
+                  </div>
+                </div>
+
+                <div style="display:grid;gap:11px">
+                  <div class="c sec">
+                    <div class="sh"><h3>Benesta Benleo Acıbadem</h3><span>fiyat ve stok</span></div>
+                    <div class="diff" style="margin-bottom:11px">
+                      <div class="dr"><span class="k">2+1 fiyat</span><s>8.400.000</s> &rarr; <b>8.820.000 ₺</b></div>
+                      <div class="dr"><span class="k">3+1 fiyat</span><s>11.900.000</s> &rarr; <b>12.495.000 ₺</b></div>
+                      <div class="dr"><span class="k">4+1 fiyat</span><s>16.200.000</s> &rarr; <b>17.010.000 ₺</b></div>
+                      <div class="dr"><span class="k">2+1 stok</span><s>19</s> &rarr; <b>17 daire</b></div>
+                    </div>
+
+                    <div class="warn" style="margin-bottom:11px">
+                      <b>Otomatik işaret</b>
+                      2+1 m² fiyatı 84.800 ₺ oluyor &mdash; Kadıköy ortalamasının <b>%3 üzeri</b>.
+                      Firmanın son 12 aydaki ortalama zam aralığı %3&ndash;4; bu artış %5.
+                      Kural dışı değil, ama dikkat çekiyor.
+                    </div>
+
+                    <div style="background:var(--bg);border-radius:10px;padding:10px 11px;margin-bottom:11px;
+                                font-size:10.5px;color:var(--tx2);line-height:1.55">
+                      <b style="display:block;font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;
+                                color:var(--tx3);margin-bottom:6px">Onaylanırsa</b>
+                      &bull; 212 takipçiye fiyat bildirimi gider<br>
+                      &bull; Fiyat geçmişine kalıcı kayıt düşer<br>
+                      &bull; &ldquo;8 mn TL'ye kadar&rdquo; filtresinden çıkar<br>
+                      &bull; Ağustos endeksi yeniden hesaplanır
+                    </div>
+
+                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px">
+                      <span class="btn ok" style="text-align:center;padding:9px">Onayla</span>
+                      <span class="btn dg" style="text-align:center;padding:9px">Reddet</span>
+                      <span class="btn sec" style="grid-column:1/-1;text-align:center;padding:8px">
+                        Düzelterek onayla</span>
+                      <span class="btn sec" style="grid-column:1/-1;text-align:center;padding:8px">
+                        Firmaya soru sor</span>
+                    </div>
+                    <p style="margin:9px 0 0;font-size:9.5px;color:var(--tx3);line-height:1.5">
+                      Reddederken gerekçe zorunlu &mdash; firma panelinde görünür.
+                      <b>J / K</b> kayıtlar arası, <b>A</b> onayla, <b>R</b> reddet.
+                    </p>
+                  </div>
+
+                  <div class="c sec">
+                    <div class="sh"><h3>Otomatik onay</h3><u>Kuralları düzenle</u></div>
+                    <table class="t">
+                      <tbody>
+                        <tr><td><div class="nm"><b>Şantiye fotoğrafı ve yüzdesi</b><span>tüm firmalar</span></div></td><td><span class="pill ok">Açık</span></td></tr>
+                        <tr><td><div class="nm"><b>Kat planı yüklemesi</b><span>varyant + alt metin varsa</span></div></td><td><span class="pill ok">Açık</span></td></tr>
+                        <tr><td><div class="nm"><b>Fiyat &middot; sicil A firmalar</b><span>değişim %10'un altındaysa</span></div></td><td><span class="pill ok">Açık</span></td></tr>
+                        <tr><td><div class="nm"><b>Stok azalması</b><span>artış hariç</span></div></td><td><span class="pill ok">Açık</span></td></tr>
+                        <tr><td><div class="nm"><b>Yeni proje yayını</b></div></td><td><span class="pill dg">Kapalı</span></td></tr>
+                      </tbody>
+                    </table>
+                    <p style="margin:10px 0 0;font-size:9.5px;color:var(--tx3);line-height:1.55">
+                      Bu kurallarla 9 kayıttan 6'sı zaten kuyruğa hiç düşmezdi. Kuyruk büyüdükçe
+                      kuralları genişletin &mdash; amaç sizin yalnızca <b>istisnalara</b> bakmanız.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="note">
+      <div><b>İşaretleme kuralları</b><p>%20'den büyük fiyat değişimi, stok artışı, bölge
+      ortalamasından sapma ve ilk yayın başvurusu otomatik işaretlenir.</p></div>
+      <div><b>Reddetme gerekçeli</b><p>Firma panelinde görünür. Gerekçesiz ret, firmanın aynı
+      hatayı tekrarlamasına yol açar.</p></div>
+      <div><b>Ölçeklenme</b><p>318 firmayı elle onaylamak sürdürülemez. Otomatik onay kuralları
+      panelin ilk sürümünde olmalı.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 2. ARŞİV PROJE ================= -->
+<section>
+  <div class="wrap">
+    <div class="shot-head">
+      <div>
+        <p class="kicker">Site</p>
+        <h3>Arşiv proje sayfası</h3>
+        <p class="lede">
+          Teslim edilen proje silinmiyor, arşive geçiyor demiştim &mdash; ama arşiv sayfasının
+          nasıl göründüğünü hiç göstermemiştim. Bu sayfa üç iş yapıyor: eski URL'leri canlı
+          tutuyor, <strong>fiyat geçmişini</strong> koruyor (endeksin veri kaynağı) ve teslim
+          alan kişiye <strong>yatırımının bugünkü değerini</strong> gösteriyor.
+        </p>
+      </div>
+      <dl>
+        <div><dt>SEO</dt><dd>Proje adı yıllarca aranır</dd></div>
+        <div><dt>Veri</dt><dd>Endeksin geçmiş serisi burada</dd></div>
+        <div><dt>Dönüşüm</dt><dd>Firmanın aktif projelerine köprü</dd></div>
+      </dl>
+    </div>
+
+    <div class="viewport">
+      <div class="chrome">
+        <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+        <span class="urlbar">konutprojeleri.com/istanbul/umraniye/esat-koru-evleri</span>
+      </div>
+      <div class="stage">
+        <div class="pk">
+          <div class="top">
+            <div class="logo">konut<span>projeleri</span></div>
+            <nav class="nav"><span class="on">Projeler</span><span>Şehirler</span><span>Firmalar</span>
+              <span>Takvim</span><span>Endeks</span><span>Haberler</span></nav>
+            <div class="topact"><span class="ghost">Giriş yap</span><span class="btn">Projemi ekle</span></div>
+          </div>
+          <nav class="crumb">Ana sayfa &rsaquo; İstanbul &rsaquo; Ümraniye &rsaquo; <b>Esat Koru Evleri</b></nav>
+
+          <div class="body">
+            <div class="arc">
+              <div>
+                <b>Bu proje teslim edildi</b>
+                <p>Esat Koru Evleri 2025 ikinci çeyreğinde, ilan edilen tarihte teslim edildi.
+                Sayfa arşiv amacıyla yayında tutuluyor; satış bilgisi güncel değildir.</p>
+              </div>
+              <span>Esat İnşaat'ın 3 aktif projesi</span>
+            </div>
+
+            <div>
+              <h1 class="h1">Esat Koru Evleri</h1>
+              <p class="lead">
+                İstanbul Ümraniye'de Esat İnşaat tarafından geliştirilen 124 konutluk proje.
+                <b>2025 Q2'de teslim edildi.</b> Teslim dönemindeki ortalama satış fiyatı
+                41.200 ₺/m²; bugün aynı projedeki dairelerin ikinci el ortalaması 64.800 ₺/m².
+                Bu sayfadaki veriler arşivlenmiştir ve güncellenmez.
+              </p>
+            </div>
+
+            <dl class="facts">
+              <div><dt>İlan edilen teslim</dt><dd>2025 Q2</dd></div>
+              <div><dt>Gerçekleşen teslim</dt><dd>2025 Q2<em style="color:var(--p-ok)">zamanında</em></dd></div>
+              <div><dt>Konut sayısı</dt><dd>124</dd></div>
+              <div><dt>Teslimden bu yana</dt><dd>+%57<em style="color:var(--p-ok)">m² değeri</em></dd></div>
+            </dl>
+
+            <div class="grid2">
+              <div class="c sec">
+                <div class="sh">
+                  <h2>Fiyat geçmişi</h2>
+                  <span>satış dönemi ve teslim sonrası ikinci el</span>
+                  <u>Bölge endeksiyle karşılaştır</u>
+                </div>
+                <div class="chart">
+                  <svg viewBox="0 0 660 200" preserveAspectRatio="none" aria-hidden="true" style="height:200px">
+                    <defs>
+                      <linearGradient id="afil" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0%" stop-color="#6E5C82" stop-opacity=".16"/>
+                        <stop offset="100%" stop-color="#6E5C82" stop-opacity="0"/>
+                      </linearGradient>
+                    </defs>
+                    <g stroke="#EBE8F2" stroke-width="1"><path d="M44 26H650M44 68H650M44 110H650M44 152H650"/></g>
+                    <path d="M44 170H650" stroke="#DCD7E6" stroke-width="1.5"/>
+                    <rect x="44" y="14" width="264" height="156" fill="#DFDBEF" opacity=".3"/>
+                    <path d="M44 156 L110 148 L176 138 L242 124 L308 112 L374 96 L440 80 L506 64 L572 48 L650 34 L650 170 L44 170 Z" fill="url(#afil)"/>
+                    <path d="M44 156 L110 148 L176 138 L242 124 L308 112" fill="none" stroke="#6E5C82" stroke-width="2.6"/>
+                    <path d="M308 112 L374 96 L440 80 L506 64 L572 48 L650 34" fill="none" stroke="#6E5C82"
+                          stroke-width="2.6" stroke-dasharray="7 4"/>
+                    <circle cx="308" cy="112" r="5" fill="#5C8A76"/>
+                    <circle cx="646" cy="34" r="5" fill="#6E5C82"/>
+                    <g fill="#6E6879" font-family="Consolas,monospace" font-size="10">
+                      <text x="38" y="30" text-anchor="end">70b</text>
+                      <text x="38" y="72" text-anchor="end">52b</text>
+                      <text x="38" y="114" text-anchor="end">35b</text>
+                      <text x="38" y="156" text-anchor="end">17b</text>
+                      <text x="46" y="188">2022</text>
+                      <text x="290" y="188">2025 Q2</text>
+                      <text x="650" y="188" text-anchor="end">2026 Q3</text>
+                      <text x="120" y="30" fill="#584568">satış dönemi</text>
+                      <text x="330" y="30">teslim sonrası &middot; ikinci el</text>
+                    </g>
+                  </svg>
+                </div>
+                <p class="txt" style="margin-top:10px;font-size:11px;color:var(--p-ink3)">
+                  Kesintisiz çizgi projenin satış dönemindeki liste fiyatlarıdır. Kesikli çizgi
+                  teslim sonrası aynı projedeki ikinci el ilan ortalamasıdır; farklı bir veri
+                  kaynağıdır ve doğrudan karşılaştırılamaz.
+                </p>
+              </div>
+
+              <div style="display:grid;gap:12px">
+                <div class="c sec">
+                  <div class="sh"><h2 style="font-size:14px">Firma karnesine etkisi</h2></div>
+                  <table class="t">
+                    <tbody>
+                      <tr><td>Teslim isabeti</td><td><span class="pill ok">Zamanında</span></td></tr>
+                      <tr><td>Karneye katkı</td><td>+ pozitif</td></tr>
+                      <tr><td>Firma sicili</td><td><b>A</b></td></tr>
+                    </tbody>
+                  </table>
+                  <p style="margin:10px 0 0;font-size:10.5px;color:var(--p-ink3);line-height:1.55">
+                    Bu proje <a href="#0" style="color:var(--p-plum);font-weight:650">Esat İnşaat
+                    karnesinde</a> teslim isabeti bileşenine giriyor.
+                  </p>
+                </div>
+
+                <div class="c sec">
+                  <div class="sh"><h2 style="font-size:14px">Aynı firmadan aktif</h2></div>
+                  <table class="t">
+                    <tbody>
+                      <tr><td><b>Benesta Benleo</b><br><span style="font-size:10px;color:var(--p-ink3)">Kadıköy &middot; 2027 Q1</span></td>
+                        <td style="text-align:right">8,40 mn ₺</td></tr>
+                      <tr><td><b>Işıltılı Evler</b><br><span style="font-size:10px;color:var(--p-ink3)">Sancaktepe &middot; 2026 Q4</span></td>
+                        <td style="text-align:right">5,90 mn ₺</td></tr>
+                      <tr><td><b>Banu Evleri 4</b><br><span style="font-size:10px;color:var(--p-ink3)">Avcılar &middot; 2028 Q2</span></td>
+                        <td style="text-align:right">Fiyat isteyin</td></tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+
+            <div class="c sec">
+              <div class="sh"><h2>Teslim dönemi daire tipleri</h2><span>arşiv verisi &mdash; güncel satış değildir</span></div>
+              <table class="t">
+                <thead><tr><th>Tip</th><th>Net m²</th><th>Teslim dönemi fiyatı</th><th>Teslim m² fiyatı</th><th>Bugünkü ikinci el m²</th><th>Değişim</th></tr></thead>
+                <tbody>
+                  <tr><td>1+1</td><td>62</td><td>2.550.000 ₺</td><td>41.100 ₺</td><td>63.900 ₺</td><td><span class="pill ok">+%55</span></td></tr>
+                  <tr><td>2+1</td><td>96</td><td>3.960.000 ₺</td><td>41.200 ₺</td><td>64.800 ₺</td><td><span class="pill ok">+%57</span></td></tr>
+                  <tr><td>3+1</td><td>128</td><td>5.280.000 ₺</td><td>41.250 ₺</td><td>66.200 ₺</td><td><span class="pill ok">+%60</span></td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="okbox">
+      <h4>Arşiv sayfası neden değerli</h4>
+      <p>
+        Üç ayrı sebeple: <strong>SEO</strong> &mdash; proje adı teslimden sonra da yıllarca
+        aranır ve o trafiği 404'e göndermek israftır. <strong>Veri</strong> &mdash; fiyat
+        endeksinizin geçmiş serisi bu sayfalarda birikir; ne kadar çok arşiv, o kadar sağlam
+        endeks. <strong>Güven</strong> &mdash; teslim edilen projeyi ve gerçekleşen tarihini
+        yayında tutmak, firma karnesinin kamuya açık kanıtıdır.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 3. KAMPANYA ================= -->
+<section>
+  <div class="wrap">
+    <div class="shot-head">
+      <div>
+        <p class="kicker">Site</p>
+        <h3>Kampanya sayfası</h3>
+        <p class="lede">
+          Kart rozetlerinden ve ana sayfa bandından buraya bağlantı veriyordum. Sayfanın kritik
+          bölümü <strong>koşullar</strong>: kampanyaların çoğu ince yazıda kayboluyor, biz
+          madde madde ve firma beyanı olduğu belirtilerek yazıyoruz. Geri sayım gerçek bitiş
+          tarihine bağlı &mdash; uzatılırsa tarih değişir, sayaç sıfırlanmaz.
+        </p>
+      </div>
+      <dl>
+        <div><dt>Şeffaflık</dt><dd>Koşullar madde madde, kaynağı yazılı</dd></div>
+        <div><dt>Karşılaştırma</dt><dd>Kampanya öncesi fiyat görünür</dd></div>
+        <div><dt>Yönetim</dt><dd>Tarihli, otomatik başlar ve biter</dd></div>
+      </dl>
+    </div>
+
+    <div class="viewport">
+      <div class="chrome">
+        <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+        <span class="urlbar">konutprojeleri.com/kampanyalar/eylul-pesinat-kampanyasi</span>
+      </div>
+      <div class="stage">
+        <div class="pk">
+          <div class="top">
+            <div class="logo">konut<span>projeleri</span></div>
+            <nav class="nav"><span class="on">Projeler</span><span>Şehirler</span><span>Firmalar</span>
+              <span>Takvim</span><span>Endeks</span><span>Haberler</span></nav>
+            <div class="topact"><span class="ghost">Giriş yap</span><span class="btn">Projemi ekle</span></div>
+          </div>
+          <nav class="crumb">Ana sayfa &rsaquo; Kampanyalar &rsaquo; <b>Eylül Peşinat Kampanyası</b></nav>
+
+          <div class="body">
+            <div class="camp">
+              <div>
+                <p class="lbl">Sınırlı süre &middot; 34 proje katılıyor</p>
+                <h1>Eylül Peşinat Kampanyası</h1>
+                <p>Katılan projelerde peşinat oranı %25'ten <b>%20'ye</b> iniyor ve vade
+                60 aya uzuyor. Kampanya koşulları projeden projeye değişir; her kartta
+                o projenin kendi koşulu yazılıdır.</p>
+              </div>
+              <div class="cd">
+                <div><b>12</b><span>GÜN</span></div>
+                <div><b>06</b><span>SAAT</span></div>
+                <div><b>41</b><span>DAKİKA</span></div>
+              </div>
+            </div>
+
+            <div class="grid2">
+              <div class="c sec">
+                <div class="sh"><h2>Kampanya koşulları</h2><span>firmaların beyanına dayanır</span></div>
+                <div class="terms">
+                  <div class="tr"><i>1</i><span>Kampanya <b>1&ndash;30 Eylül 2026</b> arasında yapılan
+                    sözleşmeler için geçerlidir. Ön talep formu doldurmak sözleşme yerine geçmez.</span></div>
+                  <div class="tr"><i>2</i><span>Peşinat indirimi <b>liste fiyatı üzerinden</b> uygulanır;
+                    kampanya döneminde liste fiyatı artan projelerde net avantaj değişebilir. Aşağıdaki
+                    tabloda her projenin kampanya öncesi fiyatı görünür.</span></div>
+                  <div class="tr"><i>3</i><span>60 ay vade <b>firma senedidir</b>, banka kredisi değildir.
+                    Faizsizdir ancak erken ödeme indirimi uygulanmaz.</span></div>
+                  <div class="tr"><i>4</i><span>Kampanya <b>belirli daire tipleriyle sınırlı</b> olabilir.
+                    Hangi tiplerin dahil olduğu proje sayfasında listelenir.</span></div>
+                  <div class="tr"><i>5</i><span>Konutprojeleri.com kampanyanın tarafı değildir; koşullar
+                    projeyi geliştiren firma tarafından belirlenir ve firma tarafından değiştirilebilir.
+                    Değişiklikler bu sayfada tarihiyle birlikte görünür.</span></div>
+                </div>
+              </div>
+
+              <div style="display:grid;gap:12px">
+                <div class="c sec">
+                  <div class="sh"><h2 style="font-size:14px">Özet</h2></div>
+                  <table class="t">
+                    <tbody>
+                      <tr><td>Katılan proje</td><td style="text-align:right"><b>34</b></td></tr>
+                      <tr><td>Toplam daire</td><td style="text-align:right"><b>4.280</b></td></tr>
+                      <tr><td>Şehir</td><td style="text-align:right"><b>6</b></td></tr>
+                      <tr><td>Başlangıç</td><td style="text-align:right">01.09.2026</td></tr>
+                      <tr><td>Bitiş</td><td style="text-align:right"><b>30.09.2026</b></td></tr>
+                      <tr><td>Son güncelleme</td><td style="text-align:right">17.08.2026</td></tr>
+                    </tbody>
+                  </table>
+                </div>
+                <div class="c sec" style="background:var(--p-lav)">
+                  <b style="display:block;font-size:12.5px;font-weight:750;color:var(--p-plum-d);margin-bottom:5px">
+                    Kampanya başlayınca haber verelim</b>
+                  <p style="margin:0 0 10px;font-size:11px;color:#5A4C68;line-height:1.5">
+                    İlgilendiğiniz projeler kampanyaya katılırsa e-posta gönderelim.</p>
+                  <span style="display:block;text-align:center;background:var(--p-plum);color:#FFF;
+                    border-radius:15px;padding:9px;font-size:11.5px;font-weight:700">Uyarı kur</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="c sec">
+              <div class="sh">
+                <h2>Katılan projeler</h2>
+                <span>kampanya öncesi fiyatla birlikte</span>
+                <u>Aramada kampanya filtresiyle gör</u>
+              </div>
+              <div class="cgrid">
+                <article class="cp">
+                  <div class="cpimg">
+                    <svg viewBox="0 0 260 98" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+                      <rect width="260" height="98" fill="#DCE9F6"/>
+                      <polygon points="0,98 0,58 34,58 34,38 80,38 80,68 124,68 124,30 170,30 170,58 212,58 212,44 260,44 260,98" fill="#A9C4DC"/>
+                      <rect y="90" width="260" height="8" fill="#8FB0CC"/>
+                    </svg>
+                    <span class="cpflag">%20 peşinat &middot; 60 ay</span>
+                  </div>
+                  <div class="cpb">
+                    <b>VN Kartal</b>
+                    <span class="loc">Kartal &middot; 2+1 ve 3+1 dahil &middot; 2027 Q2</span>
+                    <div class="cpr"><s>Öncesi 6.450.000 ₺</s><strong>6.450.000 ₺</strong></div>
+                  </div>
+                </article>
+                <article class="cp">
+                  <div class="cpimg">
+                    <svg viewBox="0 0 260 98" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+                      <rect width="260" height="98" fill="#E4F0E9"/>
+                      <polygon points="0,98 0,50 40,50 40,30 86,30 86,62 132,62 132,26 178,26 178,54 260,54 260,98" fill="#A8C7B6"/>
+                      <rect y="92" width="260" height="6" fill="#8DB19E"/>
+                    </svg>
+                    <span class="cpflag">%20 peşinat &middot; 48 ay</span>
+                  </div>
+                  <div class="cpb">
+                    <b>Işıltılı Evler</b>
+                    <span class="loc">Sancaktepe &middot; yalnızca 2+1 &middot; 2026 Q4</span>
+                    <div class="cpr"><s>Öncesi 5.900.000 ₺</s><strong>5.900.000 ₺</strong></div>
+                  </div>
+                </article>
+                <article class="cp">
+                  <div class="cpimg">
+                    <svg viewBox="0 0 260 98" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+                      <rect width="260" height="98" fill="#EFE7F3"/>
+                      <polygon points="0,98 0,54 36,54 36,32 82,32 82,64 128,64 128,28 174,28 174,56 260,56 260,98" fill="#BEAECD"/>
+                      <rect y="91" width="260" height="7" fill="#A695B8"/>
+                    </svg>
+                    <span class="cpflag">%15 peşinat &middot; 60 ay</span>
+                  </div>
+                  <div class="cpb">
+                    <b>Fikirtepe Yaşam Vadisi</b>
+                    <span class="loc">Kadıköy &middot; tüm tipler &middot; 2029 Q1</span>
+                    <div class="cpr"><s>Öncesi 7.150.000 ₺</s><strong>6.900.000 ₺</strong></div>
+                  </div>
+                </article>
+              </div>
+              <p style="margin:12px 0 0;font-size:10.5px;color:var(--p-ink3);line-height:1.55">
+                <b>Kampanya öncesi fiyat</b> sütunu, projenin kampanya başlamadan 30 gün önceki
+                liste fiyatıdır ve fiyat arşivinden otomatik gelir. Kampanya döneminde liste
+                fiyatını artıran projeler bu sütunda görünür &mdash; firma bunu gizleyemez.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 4. METODOLOJİ ================= -->
+<section>
+  <div class="wrap">
+    <div class="shot-head">
+      <div>
+        <p class="kicker">Site</p>
+        <h3>Karne metodolojisi</h3>
+        <p class="lede">
+          Her firma sayfasından bağlantı verdiğim, ama yazmadığım sayfa. Firma karnesinin hukuki
+          ve itibari dayanağı burada duruyor. İçeriği zaten firma sayfası belgesinde tanımlamıştım;
+          burada sayfaya dönüşmüş hali &mdash; <strong>metodoloji sürümü</strong> ve
+          <strong>ne yapmadığımız</strong> bölümleri dahil.
+        </p>
+      </div>
+      <dl>
+        <div><dt>İşlevi</dt><dd>Karnenin savunulabilirliği</dd></div>
+        <div><dt>Sürüm</dt><dd>Formül değişirse tarihli kayıt</dd></div>
+        <div><dt>E-E-A-T</dt><dd>Uzmanlık ve şeffaflık sinyali</dd></div>
+      </dl>
+    </div>
+
+    <div class="viewport">
+      <div class="chrome">
+        <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+        <span class="urlbar">konutprojeleri.com/firma-karnesi-metodoloji</span>
+      </div>
+      <div class="stage">
+        <div class="pk">
+          <div class="top">
+            <div class="logo">konut<span>projeleri</span></div>
+            <nav class="nav"><span>Projeler</span><span>Şehirler</span><span class="on">Firmalar</span>
+              <span>Takvim</span><span>Endeks</span><span>Haberler</span></nav>
+            <div class="topact"><span class="ghost">Giriş yap</span><span class="btn">Projemi ekle</span></div>
+          </div>
+          <nav class="crumb">Ana sayfa &rsaquo; Firmalar &rsaquo; <b>Firma Karnesi Metodolojisi</b></nav>
+
+          <div class="body">
+            <div>
+              <h1 class="h1">Firma Karnesi Metodolojisi</h1>
+              <p class="lead">
+                Firma karnesi, yalnızca <b>doğrulanabilir dört veriden</b> hesaplanır. Yorum,
+                editör kanaati, kullanıcı puanı veya reklam ilişkisi karneye girmez.
+                Sürüm <b>1.0</b> &middot; yürürlük tarihi 1 Eylül 2026.
+              </p>
+            </div>
+
+            <div class="c sec">
+              <div class="sh"><h2>Bileşenler ve ağırlıklar</h2><span>toplam 100 puan</span></div>
+              <div class="wgt">
+                <div class="wr"><span>Teslim isabeti</span><div class="wb"><i style="width:100%"></i></div><b>40</b></div>
+                <div class="wr"><span>Deneyim hacmi</span><div class="wb"><i style="width:50%"></i></div><b>20</b></div>
+                <div class="wr"><span>Veri şeffaflığı</span><div class="wb"><i style="width:50%"></i></div><b>20</b></div>
+                <div class="wr"><span>Talep yanıt süresi</span><div class="wb"><i style="width:50%"></i></div><b>20</b></div>
+              </div>
+              <table class="t" style="margin-top:14px">
+                <thead><tr><th>Bileşen</th><th>Nasıl ölçülür</th><th>Veri kaynağı</th></tr></thead>
+                <tbody>
+                  <tr><td>Teslim isabeti</td>
+                    <td>Satış aşamasında ilan edilen teslim çeyreğinin son ayı ile gerçekleşen teslim
+                    arasındaki ay farkının ortalaması</td>
+                    <td>İlan arşivi + teslim kaydı</td></tr>
+                  <tr><td>Deneyim hacmi</td>
+                    <td>Tamamlanan proje ve konut sayısı; logaritmik ölçek, 1 ile 30 proje arasındaki
+                    fark abartılmaz</td>
+                    <td>İlan arşivi</td></tr>
+                  <tr><td>Veri şeffaflığı</td>
+                    <td>Fiyat, stok, kat planı ve şantiye bilgisinin güncelliği &mdash; proje sayfasındaki
+                    veri sağlığı skorunun ortalaması</td>
+                    <td>Firma paneli</td></tr>
+                  <tr><td>Talep yanıt süresi</td>
+                    <td>Talebin firmaya iletilmesi ile firmanın numarayı açması arasındaki ortalama süre</td>
+                    <td>Firma paneli</td></tr>
+                </tbody>
+              </table>
+            </div>
+
+            <div class="grid2">
+              <div class="c sec">
+                <div class="sh"><h2>İtiraz süreci</h2><span>her veri satırı için ayrı</span></div>
+                <div class="steps">
+                  <div class="st"><i>1</i><b>İtiraz</b><span>Firma panelden ilgili satıra itiraz eder, belge ekler</span></div>
+                  <div class="st"><i>2</i><b>İşaret</b><span>Satır sayfada &ldquo;itiraz edildi&rdquo; olarak görünür</span></div>
+                  <div class="st"><i>3</i><b>İnceleme</b><span>5 iş günü içinde sonuçlandırılır</span></div>
+                  <div class="st"><i>4</i><b>Kayıt</b><span>Düzeltme yapılırsa düzeltme kaydı sayfada kalır</span></div>
+                </div>
+              </div>
+              <div class="c sec">
+                <div class="sh"><h2 style="font-size:14px">Eşikler</h2></div>
+                <table class="t">
+                  <tbody>
+                    <tr><td>Not verilebilmesi için</td><td style="text-align:right"><b>2+ tamamlanmış proje</b></td></tr>
+                    <tr><td>Altındaki firmalar</td><td style="text-align:right">&ldquo;Yeni firma&rdquo;</td></tr>
+                    <tr><td>10 yıldan eski projeler</td><td style="text-align:right">Ağırlık %50</td></tr>
+                    <tr><td>2020&ndash;21 dönemi</td><td style="text-align:right">Ayrı işaretli</td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <div class="c sec">
+              <div class="sh"><h2>Karneye girmeyenler</h2><span>bilinçli olarak dışarıda tuttuklarımız</span></div>
+              <div class="terms">
+                <div class="tr"><i>&times;</i><span><b>Abonelik paketi ve reklam harcaması.</b> Ücretli
+                  pakete geçmek notu değiştirmez; ücretsiz katmandaki bir firma A alabilir.</span></div>
+                <div class="tr"><i>&times;</i><span><b>Kullanıcı puanı ve yorumlar.</b> Sakin
+                  değerlendirmeleri firma sayfasında ayrı gösterilir, karne hesabına katılmaz.</span></div>
+                <div class="tr"><i>&times;</i><span><b>Proje kalitesi ve mimari.</b> Ölçülebilir olmadığı
+                  için değerlendirilmez.</span></div>
+                <div class="tr"><i>&times;</i><span><b>Mali durum ve kredi notu.</b> Bizim erişimimizde
+                  olmayan ve doğrulayamayacağımız veridir.</span></div>
+                <div class="tr"><i>&times;</i><span><b>Basına yansıyan uyuşmazlıklar.</b> Haber
+                  arşivimizde yer alır, karneye girmez.</span></div>
+              </div>
+            </div>
+
+            <div class="c sec">
+              <div class="sh"><h2>Metodoloji sürüm geçmişi</h2><span>formül değişirse burada duyurulur</span></div>
+              <table class="t">
+                <thead><tr><th>Sürüm</th><th>Tarih</th><th>Değişiklik</th><th>Etkilenen firma</th></tr></thead>
+                <tbody>
+                  <tr><td>1.0</td><td>01.09.2026</td><td>İlk yayın</td><td>&mdash;</td></tr>
+                </tbody>
+              </table>
+              <p style="margin:11px 0 0;font-size:11px;color:var(--p-ink3);line-height:1.6">
+                Formül değiştiğinde eski notlar geriye dönük olarak yeniden hesaplanır ve bu tabloda
+                kaç firmanın notunun değiştiği yazılır. Sessiz formül değişikliği yapılmaz.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 5. BİLDİR + MEDYA KİTİ ================= -->
+<section>
+  <div class="wrap">
+    <div class="shot-head">
+      <div>
+        <p class="kicker">Site &middot; iki sayfa</p>
+        <h3>Proje bildir ve medya kiti</h3>
+        <p class="lede">
+          İkisi de ana menüde duruyor ama tasarlanmamıştı. <strong>Proje bildir</strong> envanteri
+          büyüten kanal &mdash; üç adımda, ücretsiz olduğu net, ne olacağı yazılı.
+          <strong>Reklam ve medya kiti</strong> ise müteahhit panelinin satış sayfası: trafik
+          rakamları, paketler ve basın kiti bir arada.
+        </p>
+      </div>
+      <dl>
+        <div><dt>Bildir</dt><dd>3 adım, 48 saat vaadi</dd></div>
+        <div><dt>Medya kiti</dt><dd>Panelin satış vitrini</dd></div>
+        <div><dt>Ortak</dt><dd>Beklenti baştan kuruluyor</dd></div>
+      </dl>
+    </div>
+
+    <div class="viewport">
+      <div class="chrome">
+        <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+        <span class="urlbar">konutprojeleri.com/proje-bildir</span>
+      </div>
+      <div class="stage">
+        <div class="pk">
+          <div class="top">
+            <div class="logo">konut<span>projeleri</span></div>
+            <nav class="nav"><span>Projeler</span><span>Şehirler</span><span>Firmalar</span>
+              <span class="on">Proje bildir</span><span>Reklam</span></nav>
+            <div class="topact"><span class="ghost">Giriş yap</span></div>
+          </div>
+
+          <div class="body">
+            <div>
+              <h1 class="h1">Projenizi bildirin</h1>
+              <p class="lead">
+                Yayınlamak <b>ücretsizdir</b>, komisyon alınmaz. Bildirdiğiniz proje 48 saat
+                içinde incelenir; eksik bilgi varsa sizinle iletişime geçilir. Yayına girdikten
+                sonra firma panelinden kendiniz güncelleyebilirsiniz.
+              </p>
+            </div>
+
+            <div class="fw">
+              <div class="c sec">
+                <div class="prog">
+                  <div class="dn"><i>&#10003;</i> Firma bilgileri</div>
+                  <div class="on"><i>2</i> Proje bilgileri</div>
+                  <div><i>3</i> İletişim</div>
+                </div>
+
+                <div style="display:flex;gap:6px;margin-bottom:14px">
+                  <span class="chip on">Konut projesi</span>
+                  <span class="chip">Arsa bildirimi</span>
+                </div>
+
+                <div class="fg">
+                  <div class="f req full"><span>Proje adı</span><b>Benesta Benleo Acıbadem</b></div>
+                  <div class="f req"><span>İl</span><b>İstanbul</b></div>
+                  <div class="f req"><span>İlçe</span><b>Kadıköy</b></div>
+                  <div class="f req ph"><span>Mahalle</span><b>Seçiniz</b></div>
+                  <div class="f req"><span>Proje tipi</span><b>Konut</b></div>
+                  <div class="f req ph"><span>Toplam konut sayısı</span><b>Örn. 186</b></div>
+                  <div class="f req"><span>Teslim çeyreği</span><b>2027 Q1</b></div>
+                  <div class="f ph"><span>Daire tipleri</span><b>1+1, 2+1, 3+1&hellip;</b></div>
+                  <div class="f ph"><span>Fiyat aralığı</span><b>Sonra da girebilirsiniz</b></div>
+                </div>
+
+                <div class="drop">
+                  Görselleri, kat planlarını ve proje broşürünü buraya sürükleyin<br>
+                  <span style="color:var(--p-plum);font-weight:650">veya dosya seçin</span>
+                  &middot; JPG, PNG, PDF &middot; en fazla 25 MB
+                </div>
+
+                <span class="send">Devam et &rarr; İletişim bilgileri</span>
+              </div>
+
+              <div style="display:grid;gap:12px">
+                <div class="c side-i">
+                  <b>Bildirdikten sonra ne olur</b>
+                  <div><i>1</i> <span>Ekibimiz 48 saat içinde inceler ve eksikleri sorar.</span></div>
+                  <div><i>2</i> <span>Proje yayına alınır, arama ve şehir sayfalarında görünür.</span></div>
+                  <div><i>3</i> <span>Size firma paneli açılır &mdash; fiyat, stok ve şantiyeyi kendiniz güncellersiniz.</span></div>
+                  <div><i>4</i> <span>Gelen talepler doğrudan size iletilir.</span></div>
+                </div>
+                <div class="c side-i">
+                  <b>Sık sorulanlar</b>
+                  <div><i>&middot;</i> <span><b>Ücretli mi?</b> Hayır. İlk proje ve temel yayın ücretsizdir.</span></div>
+                  <div><i>&middot;</i> <span><b>Fiyat vermek zorunda mıyım?</b> Hayır, ama fiyatı olan
+                    projeler ortalama 3 kat daha fazla talep alır.</span></div>
+                  <div><i>&middot;</i> <span><b>Emlakçıyım, bildirebilir miyim?</b> Yalnızca projenin
+                    resmi satış temsilcisiyseniz.</span></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="viewport" style="margin-top:22px">
+      <div class="chrome">
+        <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+        <span class="urlbar">konutprojeleri.com/reklam</span>
+      </div>
+      <div class="stage">
+        <div class="pk">
+          <div class="top">
+            <div class="logo">konut<span>projeleri</span></div>
+            <nav class="nav"><span>Projeler</span><span>Şehirler</span><span>Firmalar</span>
+              <span>Proje bildir</span><span class="on">Reklam</span></nav>
+            <div class="topact"><span class="ghost">Giriş yap</span><span class="btn">Panele giriş</span></div>
+          </div>
+
+          <div class="body">
+            <div>
+              <h1 class="h1">Reklam ve medya kiti</h1>
+              <p class="lead">
+                Konutprojeleri.com'da 1.240 aktif proje ve 318 firma listeleniyor. Ziyaretçilerin
+                büyük kısmı satın alma niyetiyle geliyor &mdash; site içi yolculuk ortalama
+                <b>4,2 proje karşılaştırması</b> içeriyor. Rakamlar son 30 günün ortalamasıdır ve
+                aylık güncellenir.
+              </p>
+            </div>
+
+            <dl class="mk">
+              <div><dt>Aylık ziyaretçi</dt><dd>418.000<small>tekil</small></dd></div>
+              <div><dt>Aylık sayfa görüntüleme</dt><dd>2,4 mn<small>%71 mobil</small></dd></div>
+              <div><dt>Aylık nitelikli talep</dt><dd>1.842<small>bütçe ve tip bilgisiyle</small></dd></div>
+              <div><dt>Ortalama oturum</dt><dd>4 dk 12 sn<small>4,2 proje incelenir</small></dd></div>
+            </dl>
+
+            <div class="c sec">
+              <div class="sh"><h2>Paketler</h2><span>tüm paketlerde firma paneli dahildir</span>
+                <u>Detaylı karşılaştırma</u></div>
+              <div class="pk3">
+                <div class="pkc">
+                  <b>Ücretsiz</b>
+                  <p class="pr">0 ₺<em> / ay</em></p>
+                  <ul>
+                    <li>1 proje yayını</li>
+                    <li>Stok ve fiyat girişi</li>
+                    <li>Ayda 5 talep</li>
+                    <li>Temel istatistik</li>
+                  </ul>
+                </div>
+                <div class="pkc hi">
+                  <b>Pro <span class="pill br">En çok tercih edilen</span></b>
+                  <p class="pr">Teklif alın<em> / aylık</em></p>
+                  <ul>
+                    <li>5 projeye kadar</li>
+                    <li>Ayda 60 talep, tam detayla</li>
+                    <li>Kampanya yayınlama</li>
+                    <li>Ayda 1 proje öne çıkarma</li>
+                    <li>Tam istatistik panosu</li>
+                  </ul>
+                </div>
+                <div class="pkc">
+                  <b>Kurumsal</b>
+                  <p class="pr">Teklif alın<em> / yıllık</em></p>
+                  <ul>
+                    <li>Sınırsız proje ve talep</li>
+                    <li>Bölge sponsorluğu</li>
+                    <li>Rakip karşılaştırma raporu</li>
+                    <li>API ile stok senkronizasyonu</li>
+                    <li>Öncelikli destek</li>
+                  </ul>
+                </div>
+              </div>
+              <p style="margin:13px 0 0;font-size:11px;color:var(--p-ink3);line-height:1.6">
+                <b>Sıralamayı para belirlemez.</b> Öne çıkarma yalnızca sayfa başına bir slot
+                ve açıkça etiketlidir; arama sonuçlarının sıralaması filtre uyumuna göre
+                hesaplanır. Veri skoru düşük projeler öne çıkarılamaz.
+              </p>
+            </div>
+
+            <div class="grid2">
+              <div class="c sec">
+                <div class="sh"><h2 style="font-size:14px">Basın kiti</h2><span>kaynak gösterilerek serbestçe kullanılabilir</span></div>
+                <table class="t">
+                  <tbody>
+                    <tr><td>Aylık konut projeleri raporu</td><td style="text-align:right"><b>PDF</b></td></tr>
+                    <tr><td>m² fiyat endeksi verisi</td><td style="text-align:right"><b>CSV</b></td></tr>
+                    <tr><td>Logo ve marka kullanımı</td><td style="text-align:right"><b>ZIP</b></td></tr>
+                    <tr><td>Teslim performansı raporu</td><td style="text-align:right"><b>PDF</b></td></tr>
+                  </tbody>
+                </table>
+              </div>
+              <div class="c sec">
+                <div class="sh"><h2 style="font-size:14px">Görüşelim</h2></div>
+                <div class="f req full" style="margin-bottom:8px"><span>Firma</span><b>Firma adınız</b></div>
+                <div class="f req full ph" style="margin-bottom:8px"><span>Telefon</span><b>05__ ___ __ __</b></div>
+                <div class="f full ph"><span>Kaç projeniz var</span><b>Örn. 3</b></div>
+                <span class="send">Teklif isteyin</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 6. YÖNETİM: FİRMA + ENDEKS + GÜNLÜK ================= -->
+<section>
+  <div class="wrap">
+    <div class="shot-head">
+      <div>
+        <p class="kicker">Yönetim &middot; üç ekran</p>
+        <h3>Firma düzenleyici, endeks yönetimi, denetim günlüğü</h3>
+        <p class="lede">
+          Yönetim panelinde menüde duran ama çizilmemiş üç ekran. Firma düzenleyicide kritik
+          bölüm <strong>teslim arşivi</strong> &mdash; karnenin %40'ı oradan hesaplanıyor ve elle
+          girilen tek veri o. Endeks yönetiminde <strong>aykırı değer kontrolü</strong> yayından
+          önceki son emniyet kemeri. Denetim günlüğü ise değiştirilemez.
+        </p>
+      </div>
+      <dl>
+        <div><dt>Firma</dt><dd>Teslim arşivi = karnenin kaynağı</dd></div>
+        <div><dt>Endeks</dt><dd>Aykırı değer kontrolü zorunlu</dd></div>
+        <div><dt>Günlük</dt><dd>Salt okunur, dışa aktarılır</dd></div>
+      </dl>
+    </div>
+
+    <div class="viewport">
+      <div class="chrome">
+        <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+        <span class="urlbar">yonetim.konutprojeleri.com/firmalar/esat-insaat</span>
+      </div>
+      <div class="stage">
+        <div class="ap">
+          <aside class="side">
+            <div class="brand"><b>konut<span>projeleri</span></b><em>Yönetim</em></div>
+            <div class="cmd">Ara veya komut&hellip; <kbd>Ctrl K</kbd></div>
+            <nav class="menu">
+              <span>Kontrol paneli</span><span>Projeler <em class="q">1.240</em></span>
+              <span class="on">Firmalar <em class="q">318</em></span><span>Medya</span>
+              <u>Akış</u><span>Onay kuyruğu <em>9</em></span><span>Moderasyon <em>7</em></span><span>Talepler <em>28</em></span>
+              <u>Veri</u><span>Fiyat arşivi</span><span>Endeks</span><span>Denetim günlüğü</span>
+              <u>Yönetim</u><span>SEO</span><span>Kullanıcılar</span><span>Ayarlar ve ekip</span>
+            </nav>
+            <div class="who"><i>MÇ</i><div><b>M. Çelik</b><span>Site sahibi</span></div></div>
+          </aside>
+
+          <div class="main">
+            <div class="top">
+              <h2>Esat İnşaat</h2>
+              <span class="pill ok">Sicil A</span>
+              <span class="dt">9 tamamlanmış &middot; 3 aktif &middot; Pro paket &middot; 1 açık itiraz</span>
+              <div class="act"><span class="btn sec">Sitede gör</span><span class="btn">Kaydet</span></div>
+            </div>
+
+            <div class="body">
+              <div class="tabs">
+                <span class="tab">Profil</span>
+                <span class="tab on">Teslim arşivi</span>
+                <span class="tab">Karne dökümü</span>
+                <span class="tab">Projeler</span>
+                <span class="tab">Abonelik</span>
+                <span class="tab">İtirazlar <b style="color:#C98A93">1</b></span>
+              </div>
+
+              <div style="display:grid;grid-template-columns:1fr 330px;gap:11px;align-items:start">
+                <div class="c sec">
+                  <div class="sh">
+                    <h3>Teslim arşivi</h3>
+                    <span>karnenin %40'ı buradan hesaplanır &mdash; her satır kaynak gösterilerek girilir</span>
+                    <u>+ Kayıt ekle</u>
+                  </div>
+                  <table class="t">
+                    <thead><tr><th>Proje</th><th>İlan edilen</th><th>Gerçekleşen</th><th>Fark</th><th>Kaynak</th><th>Durum</th></tr></thead>
+                    <tbody>
+                      <tr><td><div class="nm"><b>Esat Koru Evleri</b><span>Ümraniye &middot; 124</span></div></td>
+                        <td>2025 Q2</td><td>2025 Q2</td><td><span class="pill ok">Zamanında</span></td>
+                        <td>İlan arşivi + firma teyidi</td><td><span class="pill ok">Teyitli</span></td></tr>
+                      <tr><td><div class="nm"><b>Acıbadem Loft</b><span>Kadıköy &middot; 88</span></div></td>
+                        <td>2024 Q3</td><td>2024 Q4</td><td><span class="pill wn">+1 ay</span></td>
+                        <td>İlan arşivi + haber</td><td><span class="pill ok">Teyitli</span></td></tr>
+                      <tr><td><div class="nm"><b>Bostancı Sahil Evleri</b><span>Kadıköy &middot; 96</span></div></td>
+                        <td>2022 Q2</td><td>2022 Q3</td><td><span class="pill wn">+3 ay</span></td>
+                        <td>İlan arşivi</td><td><span class="pill ok">Teyitli</span></td></tr>
+                      <tr><td><div class="nm"><b>Esat Bahçe Konakları</b><span>Üsküdar &middot; 74</span></div></td>
+                        <td>2019 Q1</td><td>2019 Q2</td><td><span class="pill dg">+5 ay</span></td>
+                        <td>İlan arşivi</td><td><span class="pill wn">İtiraz var</span></td></tr>
+                      <tr><td><div class="nm"><b>Kozyatağı Terrace</b><span>Kadıköy &middot; 110</span></div></td>
+                        <td>2018 Q3</td><td>2018 Q3</td><td><span class="pill ok">Zamanında</span></td>
+                        <td>İlan arşivi</td><td><span class="pill ok">Teyitli</span></td></tr>
+                    </tbody>
+                  </table>
+                  <div class="warn" style="margin-top:12px">
+                    <b>Kaynak zorunlu</b>
+                    Her teslim kaydı bir kaynağa dayanmalı: ilan arşivindeki tarih, haber
+                    bağlantısı veya firma teyidi. Kaynaksız satır karneye dahil edilmez ve
+                    &ldquo;doğrulanmadı&rdquo; olarak işaretlenir. İtiraz durumunda tek dayanağınız budur.
+                  </div>
+                </div>
+
+                <div style="display:grid;gap:11px">
+                  <div class="c sec">
+                    <div class="sh"><h3>Karne dökümü</h3><span>anlık hesap</span></div>
+                    <table class="t">
+                      <tbody>
+                        <tr><td>Teslim isabeti</td><td><div class="bar" style="width:70px"><i style="width:82%"></i></div></td><td style="text-align:right"><b>33/40</b></td></tr>
+                        <tr><td>Deneyim hacmi</td><td><div class="bar" style="width:70px"><i style="width:70%"></i></div></td><td style="text-align:right"><b>14/20</b></td></tr>
+                        <tr><td>Veri şeffaflığı</td><td><div class="bar" style="width:70px"><i style="width:88%"></i></div></td><td style="text-align:right"><b>18/20</b></td></tr>
+                        <tr><td>Yanıt süresi</td><td><div class="bar" style="width:70px"><i style="width:90%"></i></div></td><td style="text-align:right"><b>18/20</b></td></tr>
+                        <tr><td><b>Toplam</b></td><td></td><td style="text-align:right"><b style="font-size:14px">83 &middot; A</b></td></tr>
+                      </tbody>
+                    </table>
+                    <p style="margin:9px 0 0;font-size:9.5px;color:var(--tx3);line-height:1.5">
+                      Not elle değiştirilemez. Değiştirmek için altındaki veriyi düzeltmek gerekir.
+                    </p>
+                  </div>
+
+                  <div class="c sec">
+                    <div class="sh"><h3>Açık itiraz</h3><span class="pill dg">2 gün kaldı</span></div>
+                    <p style="margin:0 0 10px;font-size:10.5px;color:var(--tx2);line-height:1.55">
+                      <b>Esat Bahçe Konakları, +5 ay</b><br>
+                      Firma beyanı: &ldquo;Gecikme ruhsat revizyonundan kaynaklandı, belediye
+                      yazısı ekte.&rdquo; &middot; 1 belge eklendi.
+                    </p>
+                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px">
+                      <span class="btn ok" style="text-align:center;padding:8px">Kabul et</span>
+                      <span class="btn dg" style="text-align:center;padding:8px">Reddet</span>
+                      <span class="btn sec" style="grid-column:1/-1;text-align:center;padding:7px">Belgeyi indir</span>
+                    </div>
+                    <p style="margin:9px 0 0;font-size:9.5px;color:var(--tx3);line-height:1.5">
+                      Kabul edilirse satır düzeltilir ve <b>düzeltme kaydı</b> firma sayfasında
+                      görünür kalır. Sessiz düzeltme yapılamaz.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="viewport" style="margin-top:22px">
+      <div class="chrome">
+        <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+        <span class="urlbar">yonetim.konutprojeleri.com/endeks</span>
+      </div>
+      <div class="stage">
+        <div class="ap">
+          <aside class="side">
+            <div class="brand"><b>konut<span>projeleri</span></b><em>Yönetim</em></div>
+            <div class="cmd">Ara veya komut&hellip; <kbd>Ctrl K</kbd></div>
+            <nav class="menu">
+              <span>Kontrol paneli</span><span>Projeler <em class="q">1.240</em></span>
+              <span>Firmalar <em class="q">318</em></span><span>Medya</span>
+              <u>Akış</u><span>Onay kuyruğu <em>9</em></span><span>Moderasyon <em>7</em></span><span>Talepler <em>28</em></span>
+              <u>Veri</u><span>Fiyat arşivi</span><span class="on">Endeks</span><span>Denetim günlüğü</span>
+              <u>Yönetim</u><span>SEO</span><span>Kullanıcılar</span><span>Ayarlar ve ekip</span>
+            </nav>
+            <div class="who"><i>MÇ</i><div><b>M. Çelik</b><span>Site sahibi</span></div></div>
+          </aside>
+
+          <div class="main">
+            <div class="top">
+              <h2>Endeks &middot; Ağustos 2026</h2>
+              <span class="pill wn">Hesaplandı, yayınlanmadı</span>
+              <span class="dt">1.240 projeden &middot; 17.08.2026 04:00'te otomatik hesaplandı</span>
+              <div class="act"><span class="btn sec">Yeniden hesapla</span><span class="btn">Yayınla</span></div>
+            </div>
+
+            <div class="body">
+              <div style="display:grid;grid-template-columns:1fr 340px;gap:11px;align-items:start">
+                <div style="display:grid;gap:11px">
+                  <div class="c sec">
+                    <div class="sh"><h3>Aykırı değer kontrolü</h3>
+                      <span>yayından önce karar verilmesi gereken 4 kayıt</span>
+                      <u>Kuralları düzenle</u></div>
+                    <table class="t">
+                      <thead><tr><th>Proje</th><th>m² fiyatı</th><th>Bölge ort.</th><th>Sapma</th><th>Karar</th></tr></thead>
+                      <tbody>
+                        <tr><td><div class="nm"><b>Bebek Kıyı Rezidans</b><span>Beşiktaş</span></div></td>
+                          <td>486.000 ₺</td><td>214.600 ₺</td><td><span class="pill dg">+%126</span></td>
+                          <td><span class="pill nt">Hariç tut</span></td></tr>
+                        <tr><td><div class="nm"><b>Silivri Yaşam</b><span>Silivri</span></div></td>
+                          <td>18.400 ₺</td><td>41.200 ₺</td><td><span class="pill dg">&minus;%55</span></td>
+                          <td><span class="pill nt">Hariç tut</span></td></tr>
+                        <tr><td><div class="nm"><b>Majör Gölyaka</b><span>Avcılar &middot; 1.140 daire</span></div></td>
+                          <td>61.800 ₺</td><td>54.300 ₺</td><td><span class="pill wn">+%14</span></td>
+                          <td><span class="pill ok">Dahil</span></td></tr>
+                        <tr><td><div class="nm"><b>Anka Avcılar</b><span>Avcılar &middot; fiyat 72 gün eski</span></div></td>
+                          <td>49.700 ₺</td><td>54.300 ₺</td><td><span class="pill wn">bayat</span></td>
+                          <td><span class="pill ok">Dahil</span></td></tr>
+                      </tbody>
+                    </table>
+                    <div class="warn" style="margin-top:11px">
+                      <b>Kural</b>
+                      Bölge ortalamasından ±%50'den fazla sapan projeler hesaba katılmaz; kararı
+                      siz verirsiniz ve karar <b>gerekçesiyle birlikte</b> denetim günlüğüne düşer.
+                      Hariç tutulan projeler yayınlanan metodoloji notunda sayı olarak belirtilir.
+                    </div>
+                  </div>
+
+                  <div class="c sec">
+                    <div class="sh"><h3>Geçen döneme göre</h3><span>yayınlanacak değerler</span></div>
+                    <table class="t">
+                      <thead><tr><th>Bölge</th><th>Temmuz</th><th>Ağustos</th><th>Değişim</th><th>Proje</th><th>Dahil</th></tr></thead>
+                      <tbody>
+                        <tr><td>Türkiye</td><td>61.970 ₺</td><td><b>62.400 ₺</b></td><td><span class="pill ok">+%0,7</span></td><td>1.240</td><td>1.236</td></tr>
+                        <tr><td>İstanbul</td><td>107.730 ₺</td><td><b>108.700 ₺</b></td><td><span class="pill ok">+%0,9</span></td><td>499</td><td>497</td></tr>
+                        <tr><td>İzmir</td><td>72.330 ₺</td><td><b>71.900 ₺</b></td><td><span class="pill dg">&minus;%0,6</span></td><td>141</td><td>141</td></tr>
+                        <tr><td>Ankara</td><td>48.010 ₺</td><td><b>48.200 ₺</b></td><td><span class="pill ok">+%0,4</span></td><td>91</td><td>91</td></tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+
+                <div style="display:grid;gap:11px">
+                  <div class="c sec">
+                    <div class="sh"><h3>Yayın kontrol listesi</h3></div>
+                    <table class="t">
+                      <tbody>
+                        <tr><td>Aykırı değer kararı</td><td><span class="pill ok">4/4 verildi</span></td></tr>
+                        <tr><td>Bayat fiyat oranı</td><td><span class="pill ok">%2,7</span></td></tr>
+                        <tr><td>Eşik altı bölge</td><td><span class="pill wn">6 il gizlenecek</span></td></tr>
+                        <tr><td>Metodoloji sürümü</td><td><span class="pill nt">1.0 &middot; değişmedi</span></td></tr>
+                        <tr><td>Aylık rapor metni</td><td><span class="pill wn">Taslak</span></td></tr>
+                      </tbody>
+                    </table>
+                    <span class="btn" style="display:block;text-align:center;margin-top:11px;padding:9px">
+                      Endeksi yayınla ve raporu üret</span>
+                    <p style="margin:9px 0 0;font-size:9.5px;color:var(--tx3);line-height:1.5">
+                      Yayınlandığında endeks sayfası, ana sayfa bandı ve şehir sayfalarındaki
+                      rakamlar aynı anda güncellenir. Yayınlanan değer geriye dönük değiştirilemez;
+                      düzeltme yeni sürüm olarak yayınlanır.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="viewport" style="margin-top:22px">
+      <div class="chrome">
+        <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+        <span class="urlbar">yonetim.konutprojeleri.com/denetim-gunlugu</span>
+      </div>
+      <div class="stage">
+        <div class="ap">
+          <aside class="side">
+            <div class="brand"><b>konut<span>projeleri</span></b><em>Yönetim</em></div>
+            <div class="cmd">Ara veya komut&hellip; <kbd>Ctrl K</kbd></div>
+            <nav class="menu">
+              <span>Kontrol paneli</span><span>Projeler <em class="q">1.240</em></span>
+              <span>Firmalar <em class="q">318</em></span><span>Medya</span>
+              <u>Akış</u><span>Onay kuyruğu <em>9</em></span><span>Moderasyon <em>7</em></span><span>Talepler <em>28</em></span>
+              <u>Veri</u><span>Fiyat arşivi</span><span>Endeks</span><span class="on">Denetim günlüğü</span>
+              <u>Yönetim</u><span>SEO</span><span>Kullanıcılar</span><span>Ayarlar ve ekip</span>
+            </nav>
+            <div class="who"><i>MÇ</i><div><b>M. Çelik</b><span>Site sahibi</span></div></div>
+          </aside>
+
+          <div class="main">
+            <div class="top">
+              <h2>Denetim günlüğü</h2>
+              <span class="pill nt">Salt okunur</span>
+              <span class="dt">2.184.902 kayıt &middot; en eski 12.03.2026</span>
+              <div class="act"><span class="btn sec">CSV dışa aktar</span></div>
+            </div>
+
+            <div class="body">
+              <div class="c sec">
+                <div style="display:flex;gap:5px;margin-bottom:11px;flex-wrap:wrap">
+                  <span class="chip on">Tümü</span>
+                  <span class="chip">Fiyat değişimi</span>
+                  <span class="chip">Onay / ret</span>
+                  <span class="chip">Karne verisi</span>
+                  <span class="chip">Endeks</span>
+                  <span class="chip">Yetki</span>
+                  <span class="chip" style="margin-left:auto">Kullanıcı: Tümü</span>
+                  <span class="chip">Son 7 gün</span>
+                </div>
+                <table class="t log">
+                  <thead><tr><th>Zaman</th><th>Kim</th><th>İşlem</th><th>Kayıt</th><th>Eski</th><th>Yeni</th><th>IP</th></tr></thead>
+                  <tbody>
+                    <tr><td>17.08 16:05:12</td><td>M. Çelik</td><td>onayladı</td>
+                      <td>proje/benesta-benleo &middot; fiyat</td><td>8.400.000</td><td>8.820.000</td><td>88.24.*.*</td></tr>
+                    <tr><td>17.08 14:22:48</td><td>Esat İnşaat</td><td>gönderdi</td>
+                      <td>proje/benesta-benleo &middot; fiyat</td><td>8.400.000</td><td>8.820.000</td><td>212.156.*.*</td></tr>
+                    <tr><td>17.08 11:04:03</td><td>sistem</td><td>işaretledi</td>
+                      <td>proje/isiltili-evler &middot; tazelik</td><td>teyitli</td><td>90 gün aşıldı</td><td>&mdash;</td></tr>
+                    <tr><td>17.08 09:40:17</td><td>A. Demir</td><td>düzeltti</td>
+                      <td>firma/esat-insaat &middot; teslim arşivi</td><td>2019 Q3</td><td>2019 Q2</td><td>88.24.*.*</td></tr>
+                    <tr><td>16.08 22:11:55</td><td>sistem</td><td>hesapladı</td>
+                      <td>endeks/2026-08 &middot; türkiye</td><td>61.970</td><td>62.400</td><td>&mdash;</td></tr>
+                    <tr><td>16.08 17:38:29</td><td>M. Çelik</td><td>reddetti</td>
+                      <td>proje/anka-avcilar &middot; stok</td><td>6</td><td>48</td><td>88.24.*.*</td></tr>
+                    <tr><td>16.08 15:02:41</td><td>M. Çelik</td><td>rol verdi</td>
+                      <td>kullanıcı/a.demir</td><td>&mdash;</td><td>veri operatörü</td><td>88.24.*.*</td></tr>
+                  </tbody>
+                </table>
+                <div class="warn" style="margin-top:12px">
+                  <b>Bu günlük değiştirilemez</b>
+                  Kayıtlar eklenir, silinmez ve düzenlenemez &mdash; site sahibi dahil hiçbir rol
+                  bu tabloya yazamaz. Firma bir fiyat girişini reddettiğinde, karne itirazında ve
+                  endeksin güvenilirliği sorgulandığında tek dayanağınız bu tablodur. Yedeklemesi
+                  ayrı tutulmalıdır.
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="sec-head">
+      <p class="eyebrow">Kapanış</p>
+      <h2>Şimdi tamam</h2>
+      <p>
+        Sitenin ve iki panelin tüm ekranları tasarlandı. Geriye yalnızca şablon türevleri ve
+        tasarım sisteminin dışında kalan bir kalem var.
+      </p>
+    </div>
+    <div class="scroller">
+      <table class="doc">
+        <thead><tr><th>Kalem</th><th>Durum</th></tr></thead>
+        <tbody>
+          <tr><td>Site &mdash; 15 sayfa tipi</td><td>Tasarlandı</td></tr>
+          <tr><td>Müteahhit paneli &mdash; 4 ekran</td><td>Tasarlandı, onay akışına göre güncellendi</td></tr>
+          <tr><td>Yönetim paneli &mdash; 9 ekran</td><td>Tasarlandı</td></tr>
+          <tr><td>Tasarım sistemi 1.0 + 1.1</td><td>Token, bileşen, koyu tema</td></tr>
+          <tr><td>Haber düzenleyici, mahalle sayfası, firma mobil, kurumsal sayfalar</td>
+            <td>Şablon türevi &mdash; mevcut bileşenlerle kurulur</td></tr>
+          <tr><td>E-posta ve bildirim şablonları</td>
+            <td><b>Tek açık kalem.</b> E-posta istemcileri modern CSS'i desteklemez; tablo tabanlı
+            ayrı bir kural setiyle yapılır</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="okbox">
+      <h4>Uygulamaya geçerken</h4>
+      <p>
+        Sıra değişmedi: önce <code>tokens.css</code> ve bileşen kütüphanesi, sonra tek bir sayfada
+        (arama sayfası) gerçek veriyle doğrulama. Panel tarafında ise en dar sürüm &mdash; giriş,
+        stok tablosu, onay kuyruğu ve otomatik onay kuralları. Bu dördü çalıştığında geri kalanı
+        aynı parçaların yeniden dizilmesi.
+      </p>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <p>
+      Proje adları, firma bilgileri ve ilçeler konutprojeleri.com envanterinden alınmıştır; bazı
+      proje adları örnek olarak üretilmiştir. Fiyat, m², endeks, karne, trafik ve talep rakamları
+      arayüzün nasıl davrandığını göstermek için üretilmiş temsili değerlerdir.
+    </p>
+  </div>
+</footer>

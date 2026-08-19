@@ -1,0 +1,797 @@
+<title>Vercel + Supabase + R2 Kurulumu</title>
+
+<style>
+:root{
+  --paper:#F6F5F2; --surface:#FFFFFF; --surface-2:#EFEDE7;
+  --ink:#14161C; --ink-2:#4A4E58; --ink-3:#7C8089;
+  --line:#DEDCD6; --line-2:#C9C6BD;
+  --accent:#A8741A; --accent-soft:#F3E7CF;
+  --ok:#1F6B4E; --ok-bg:#DFEFE6; --crit:#9E2B25; --crit-bg:#F6E3E1;
+  --warn:#8A6212; --warn-bg:#F6EBD3;
+  --shadow:0 1px 2px rgba(20,22,28,.05), 0 10px 30px -20px rgba(20,22,28,.3);
+  --f-display:Georgia,"Times New Roman",serif;
+  --f-body:system-ui,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  --f-mono:Consolas,"SF Mono",ui-monospace,"Courier New",monospace;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --paper:#0F1217; --surface:#171B21; --surface-2:#1E232B;
+    --ink:#ECEBE7; --ink-2:#A8ABB2; --ink-3:#767A82;
+    --line:#2A2F37; --line-2:#3A414B;
+    --accent:#D9A441; --accent-soft:#3A2E18;
+    --ok:#5FC79B; --ok-bg:#12332A; --crit:#E5837B; --crit-bg:#3A1F1D;
+    --warn:#D9A441; --warn-bg:#332912;
+    --shadow:0 1px 2px rgba(0,0,0,.4), 0 10px 30px -20px rgba(0,0,0,.9);
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#0F1217; --surface:#171B21; --surface-2:#1E232B;
+  --ink:#ECEBE7; --ink-2:#A8ABB2; --ink-3:#767A82;
+  --line:#2A2F37; --line-2:#3A414B;
+  --accent:#D9A441; --accent-soft:#3A2E18;
+  --ok:#5FC79B; --ok-bg:#12332A; --crit:#E5837B; --crit-bg:#3A1F1D;
+  --warn:#D9A441; --warn-bg:#332912;
+  --shadow:0 1px 2px rgba(0,0,0,.4), 0 10px 30px -20px rgba(0,0,0,.9);
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--f-body);
+  font-size:16px;line-height:1.6;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1000px;margin:0 auto;padding:0 28px}
+@media (max-width:640px){.wrap{padding:0 18px}}
+a{color:var(--accent)}
+:focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:2px}
+
+.masthead{border-bottom:1px solid var(--line);background:var(--surface);padding:52px 0 34px}
+.eyebrow{font-family:var(--f-mono);font-size:11.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-3);margin:0 0 18px}
+h1{font-family:var(--f-display);font-weight:400;font-size:clamp(31px,4.8vw,46px);line-height:1.08;
+  letter-spacing:-.015em;margin:0 0 18px;text-wrap:balance;max-width:19ch}
+h1 em{font-style:italic;color:var(--accent)}
+.standfirst{font-size:17.5px;line-height:1.55;color:var(--ink-2);max-width:64ch;margin:0}
+.stack{margin-top:28px;border-top:1px solid var(--line);padding-top:18px;display:grid;
+  grid-template-columns:repeat(4,1fr);gap:20px}
+@media (max-width:820px){.stack{grid-template-columns:1fr 1fr}}
+@media (max-width:520px){.stack{grid-template-columns:1fr}}
+.stack h3{font-family:var(--f-mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--accent);margin:0 0 6px;font-weight:400}
+.stack p{margin:0;font-size:13px;line-height:1.5;color:var(--ink-2)}
+.stack p b{color:var(--ink)}
+
+section{padding:48px 0;border-bottom:1px solid var(--line)}
+h2{font-family:var(--f-display);font-weight:400;font-size:clamp(24px,3.2vw,31px);line-height:1.15;
+  letter-spacing:-.01em;margin:0 0 12px;text-wrap:balance}
+.sec-head{margin-bottom:22px;max-width:70ch}
+.sec-head .eyebrow{margin-bottom:10px}
+.sec-head p{margin:0;color:var(--ink-2);font-size:16px;max-width:64ch}
+h3.sub{font-family:var(--f-body);font-size:15px;font-weight:650;margin:30px 0 12px;
+  padding-top:14px;border-top:1px solid var(--line)}
+h3.sub:first-of-type{margin-top:0;padding-top:0;border-top:0}
+p.rule{margin:11px 0 0;font-size:13.5px;color:var(--ink-2);line-height:1.6;max-width:74ch}
+p.rule b{color:var(--ink)}
+
+.scroller{overflow-x:auto;border:1px solid var(--line);border-radius:3px;background:var(--surface)}
+table{border-collapse:collapse;width:100%;min-width:640px;font-size:13px}
+thead th{text-align:left;font-family:var(--f-mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--ink-3);font-weight:400;padding:11px 13px;border-bottom:1px solid var(--line-2);
+  background:var(--surface-2);white-space:nowrap}
+tbody td{padding:10px 13px;border-bottom:1px solid var(--line);vertical-align:top;color:var(--ink-2);line-height:1.5}
+tbody tr:last-child td{border-bottom:0}
+tbody td:first-child{color:var(--ink);font-weight:600}
+code{font-family:var(--f-mono);font-size:12px;background:var(--surface-2);padding:1px 5px;border-radius:2px;color:var(--ink)}
+pre{margin:0;overflow-x:auto;background:var(--surface);border:1px solid var(--line);border-radius:3px;
+  padding:15px 17px;font-family:var(--f-mono);font-size:12px;line-height:1.65;color:var(--ink-2)}
+pre b{color:var(--ink);font-weight:600}
+pre i{color:var(--accent);font-style:normal}
+pre u{color:var(--ok);text-decoration:none}
+.cards3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+@media (max-width:820px){.cards3{grid-template-columns:1fr}}
+.cards3 article{background:var(--surface);border:1px solid var(--line);border-radius:3px;padding:16px}
+.cards3 h4{font-family:var(--f-body);font-size:14px;font-weight:650;margin:0 0 6px}
+.cards3 p{margin:0 0 8px;font-size:13px;color:var(--ink-2);line-height:1.55}
+.cards3 ul{margin:0;padding-left:16px;font-size:12.5px;color:var(--ink-2);display:grid;gap:4px}
+.warnbox{background:var(--crit-bg);border:1px solid rgba(158,43,37,.25);border-radius:3px;padding:16px 18px;margin-top:18px}
+.warnbox h4{margin:0 0 6px;font-size:14px;font-weight:650;color:var(--crit)}
+.warnbox p{margin:0 0 8px;font-size:13.5px;color:var(--ink-2);line-height:1.6;max-width:78ch}
+.warnbox p:last-child{margin-bottom:0}
+.okbox{background:var(--ok-bg);border:1px solid rgba(31,107,78,.22);border-radius:3px;padding:16px 18px;margin-top:18px}
+.okbox h4{margin:0 0 6px;font-size:14px;font-weight:650;color:var(--ok)}
+.okbox p{margin:0 0 8px;font-size:13.5px;color:var(--ink-2);line-height:1.6;max-width:78ch}
+.okbox p:last-child{margin-bottom:0}
+.chk{display:grid;gap:8px;margin-top:6px}
+.chk div{display:grid;grid-template-columns:26px 1fr;gap:11px;font-size:13.5px;color:var(--ink-2);
+  line-height:1.55;background:var(--surface);border:1px solid var(--line);border-radius:3px;padding:12px 14px}
+.chk i{font-style:normal;font-family:var(--f-mono);font-size:11px;color:var(--accent);font-weight:700;padding-top:2px}
+.chk b{color:var(--ink)}
+.diagram{background:var(--surface);border:1px solid var(--line);border-radius:3px;padding:20px;overflow-x:auto}
+.diagram svg{display:block;min-width:780px;width:100%;height:auto}
+.phase{display:grid;grid-template-columns:52px 1fr;gap:20px;padding:18px 0;border-top:1px solid var(--line)}
+.phase:first-child{border-top:0;padding-top:0}
+.phase-n{font-family:var(--f-display);font-size:30px;line-height:1;color:var(--accent);font-variant-numeric:tabular-nums}
+.phase-n small{display:block;font-family:var(--f-mono);font-size:9.5px;letter-spacing:.12em;
+  text-transform:uppercase;color:var(--ink-3);margin-top:5px}
+.phase h4{font-size:16px;margin:0 0 6px;font-weight:650}
+.phase p{margin:0 0 9px;font-size:14px;color:var(--ink-2);max-width:64ch}
+.phase ul{margin:0;padding-left:17px;font-size:13.5px;color:var(--ink-2);display:grid;gap:4px}
+
+footer{padding:32px 0 56px;color:var(--ink-3);font-size:13px}
+footer p{margin:0 0 6px;max-width:72ch;line-height:1.55}
+</style>
+
+<header class="masthead">
+  <div class="wrap">
+    <p class="eyebrow">Konutprojeleri.com &middot; Teknik temel &middot; Sürüm 2</p>
+    <h1>Vercel, Supabase <em>ve R2</em></h1>
+    <p class="standfirst">
+      Bu yığın sitenin ihtiyacına önceki seçenekten daha iyi oturuyor &mdash; ama bir bedeli var
+      ve baştan bilmeniz gerekiyor: <strong>Vercel PHP çalıştırmaz.</strong> Mevcut kod tabanı
+      kullanılamaz, uygulama TypeScript ile yeniden yazılır. Karşılığında sayfaların çoğu
+      statik üretilir, veritabanına hiç uğramaz ve arayüz belirgin biçimde hızlanır.
+    </p>
+
+    <div class="stack">
+      <div><h3>Uygulama</h3><p><b>Vercel</b> &middot; Next.js App Router, bölge <code>fra1</code></p></div>
+      <div><h3>Veritabanı</h3><p><b>Supabase</b> &middot; Postgres + PostGIS + pg_cron, Frankfurt</p></div>
+      <div><h3>Medya</h3><p><b>Cloudflare R2</b> &middot; kendi alan adıyla, çıkış ücretsiz</p></div>
+      <div><h3>Kimlik</h3><p><b>Supabase Auth</b> &middot; firma ve yönetim panelleri</p></div>
+    </div>
+  </div>
+</header>
+
+<!-- ============ NE DEĞİŞTİ ============ -->
+<section>
+  <div class="wrap">
+    <div class="sec-head">
+      <p class="eyebrow">Bölüm bir</p>
+      <h2>Bu kararın anlamı</h2>
+      <p>
+        Önceki planla arasındaki fark yalnızca sağlayıcı değişikliği değil; çalışma zamanı ve
+        render modeli baştan değişiyor. İkisi de sizin lehinize, biri maliyetli.
+      </p>
+    </div>
+
+    <div class="warnbox">
+      <h4>PHP kod tabanı kullanılamaz</h4>
+      <p>
+        Vercel PHP barındırmaz. Mevcut sitenin sunucu tarafı kodu &mdash; şablonlar, sorgular,
+        form işleyicileri &mdash; <strong>tamamen yeniden yazılır.</strong> Next.js ve TypeScript
+        ile. Bunu bir kayıp olarak görmeyin: zaten Bootstrap 3 ve jQuery 3.2 üzerine kurulu,
+        2016 mimarisine sahip bir kod tabanından bahsediyoruz ve tasarım tarafında sıfırdan bir
+        sistem kurduk. Ama <strong>iş yükü tahmininizi buna göre yapın</strong> &mdash;
+        &ldquo;tasarımı giydiririz&rdquo; senaryosu bu yığında yok.
+      </p>
+      <p>
+        Taşınabilen tek şey <strong>veri</strong>: proje, firma, haber arşivi ve teslim
+        kayıtları. Onlar da zaten yeni şemaya göç edecekti.
+      </p>
+    </div>
+
+    <div class="okbox">
+      <h4>Karşılığında iki kazanç</h4>
+      <p>
+        <strong>Bir &mdash; gecikme neredeyse sıfırlanıyor.</strong> Hostinger Hollanda'dan
+        Frankfurt'a ~10 ms vardı. Vercel'in <code>fra1</code> bölgesi Supabase'in
+        <code>eu-central-1</code> bölgesiyle aynı şehirde: <strong>1&ndash;2 ms.</strong>
+        Önceki belgenin yarısı bu 10 ms'yi telafi etmek üzerineydi; o sorun ortadan kalkıyor.
+      </p>
+      <p>
+        <strong>İki &mdash; ISR tam sizin siteniz için tasarlanmış gibi.</strong> Sayfalarınızın
+        çoğu nadiren değişiyor: bir proje detayı ancak firma fiyat güncellediğinde değişir.
+        Next.js bu sayfaları statik üretip kenarda tutuyor ve <b>yalnızca o proje onaylandığında</b>
+        yeniden üretiyor. Tasarımda &ldquo;etiketli önbellek temizleme&rdquo; diye anlattığım
+        mekanizmanın yerleşik hali.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ MİMARİ ============ -->
+<section>
+  <div class="wrap">
+    <div class="sec-head">
+      <p class="eyebrow">Bölüm iki</p>
+      <h2>Mimari</h2>
+      <p>
+        İki ayrı yol var ve birbirine hiç değmiyor: HTML yolu Vercel'den, medya yolu doğrudan
+        R2'den geçiyor. Medyanın Vercel'e uğramaması bilinçli bir karar &mdash; sebebi altıncı
+        bölümde.
+      </p>
+    </div>
+
+    <div class="diagram">
+      <svg viewBox="0 0 920 340" aria-hidden="true">
+        <defs>
+          <marker id="a1" markerWidth="9" markerHeight="9" refX="7" refY="3" orient="auto">
+            <path d="M0,0 L7,3 L0,6 Z" fill="#A8741A"/></marker>
+          <marker id="a2" markerWidth="9" markerHeight="9" refX="7" refY="3" orient="auto">
+            <path d="M0,0 L7,3 L0,6 Z" fill="#8B8FA0"/></marker>
+        </defs>
+
+        <rect x="10" y="130" width="110" height="66" rx="6" fill="#EFEDE7" stroke="#C9C6BD"/>
+        <text x="65" y="158" text-anchor="middle" font-size="13" font-weight="700" fill="#14161C"
+              font-family="system-ui,sans-serif">Ziyaretçi</text>
+        <text x="65" y="176" text-anchor="middle" font-size="10" fill="#7C8089"
+              font-family="Consolas,monospace">%71 mobil</text>
+
+        <rect x="170" y="72" width="160" height="86" rx="6" fill="#F3E7CF" stroke="#A8741A"/>
+        <text x="250" y="98" text-anchor="middle" font-size="13" font-weight="700" fill="#14161C"
+              font-family="system-ui,sans-serif">Vercel Edge</text>
+        <text x="250" y="117" text-anchor="middle" font-size="10.5" fill="#4A4E58"
+              font-family="system-ui,sans-serif">ISR &middot; statik HTML</text>
+        <text x="250" y="140" text-anchor="middle" font-size="10" fill="#1F6B4E"
+              font-family="Consolas,monospace">isteklerin ~%90'ı burada biter</text>
+
+        <rect x="390" y="72" width="160" height="86" rx="6" fill="#FFFFFF" stroke="#C9C6BD"/>
+        <text x="470" y="98" text-anchor="middle" font-size="13" font-weight="700" fill="#14161C"
+              font-family="system-ui,sans-serif">Vercel Function</text>
+        <text x="470" y="117" text-anchor="middle" font-size="10.5" fill="#4A4E58"
+              font-family="system-ui,sans-serif">Next.js &middot; sunucu bileşeni</text>
+        <text x="470" y="140" text-anchor="middle" font-size="10" fill="#7C8089"
+              font-family="Consolas,monospace">bölge fra1</text>
+
+        <rect x="610" y="72" width="160" height="86" rx="6" fill="#FFFFFF" stroke="#C9C6BD"/>
+        <text x="690" y="98" text-anchor="middle" font-size="13" font-weight="700" fill="#14161C"
+              font-family="system-ui,sans-serif">Supabase</text>
+        <text x="690" y="117" text-anchor="middle" font-size="10.5" fill="#4A4E58"
+              font-family="system-ui,sans-serif">Postgres &middot; Supavisor</text>
+        <text x="690" y="140" text-anchor="middle" font-size="10" fill="#7C8089"
+              font-family="Consolas,monospace">eu-central-1</text>
+
+        <rect x="390" y="248" width="380" height="66" rx="6" fill="#EFEDE7" stroke="#C9C6BD"/>
+        <text x="580" y="274" text-anchor="middle" font-size="13" font-weight="700" fill="#14161C"
+              font-family="system-ui,sans-serif">cdn.konutprojeleri.com &mdash; Cloudflare R2</text>
+        <text x="580" y="294" text-anchor="middle" font-size="10" fill="#7C8089"
+              font-family="Consolas,monospace">görsel, kat planı, belge &middot; çıkış ücretsiz</text>
+
+        <path d="M122 155 H166" stroke="#A8741A" stroke-width="4" marker-end="url(#a1)"/>
+        <path d="M332 115 H386" stroke="#8B8FA0" stroke-width="2" marker-end="url(#a2)"/>
+        <path d="M552 115 H606" stroke="#8B8FA0" stroke-width="2" marker-end="url(#a2)"/>
+        <path d="M65 200 V281 H386" stroke="#A8741A" stroke-width="3" fill="none" marker-end="url(#a1)"/>
+
+        <text x="359" y="107" text-anchor="middle" font-size="9.5" fill="#7C8089"
+              font-family="Consolas,monospace">%10</text>
+        <text x="579" y="107" text-anchor="middle" font-size="9.5" fill="#1F6B4E"
+              font-family="Consolas,monospace">1&ndash;2 ms</text>
+        <text x="150" y="273" font-size="10" fill="#A8741A" font-family="Consolas,monospace">medya doğrudan</text>
+
+        <path d="M690 168 V210 H560" stroke="#8B8FA0" stroke-width="1.5" fill="none" stroke-dasharray="5 4"/>
+        <text x="700" y="196" font-size="9.5" fill="#7C8089" font-family="Consolas,monospace">pg_cron</text>
+        <text x="700" y="210" font-size="9.5" fill="#7C8089" font-family="Consolas,monospace">bakım işleri</text>
+
+        <text x="10" y="40" font-size="10.5" fill="#7C8089" font-family="Consolas,monospace">HTML YOLU</text>
+        <path d="M10 52 H770" stroke="#DEDCD6" stroke-width="1" stroke-dasharray="4 4"/>
+        <text x="10" y="232" font-size="10.5" fill="#7C8089" font-family="Consolas,monospace">MEDYA YOLU</text>
+      </svg>
+    </div>
+
+    <p class="rule">
+      Kritik nokta: <b>medya hiçbir zaman Vercel'den geçmiyor.</b> Vercel bant genişliğini
+      faturalandırır ve görsel trafiği o kotayı hızla yer. Kendi alt alan adınızla R2'den
+      servis edildiğinde Vercel bu trafiği hiç görmez.
+    </p>
+  </div>
+</section>
+
+<!-- ============ RENDER ============ -->
+<section>
+  <div class="wrap">
+    <div class="sec-head">
+      <p class="eyebrow">Bölüm üç</p>
+      <h2>Render stratejisi</h2>
+      <p>
+        Bu yığının asıl kazancı burada. Her sayfa tipi için doğru stratejiyi baştan seçin;
+        sonradan değiştirmek sayfa mimarisini bozar.
+      </p>
+    </div>
+
+    <div class="scroller">
+      <table>
+        <thead><tr><th>Sayfa tipi</th><th>Strateji</th><th>Yenileme</th><th>Neden</th></tr></thead>
+        <tbody>
+          <tr><td>Proje detay</td><td>ISR &middot; statik</td><td>Etiketle, onay anında</td>
+            <td>Ayda bir değişir; en çok görüntülenen sayfa</td></tr>
+          <tr><td>Kat planı</td><td>ISR &middot; statik</td><td>Etiketle</td>
+            <td>Neredeyse hiç değişmez</td></tr>
+          <tr><td>Şehir / ilçe</td><td>ISR</td><td>1 saat + etiket</td>
+            <td>Proje sayısı ve ortalamalar günde birkaç kez değişir</td></tr>
+          <tr><td>Firma sayfası</td><td>ISR</td><td>Etiketle</td>
+            <td>Karne gece hesaplanır</td></tr>
+          <tr><td>Arşiv projesi</td><td>Tam statik</td><td>Yok</td>
+            <td>Veri donmuş; yeniden üretmeye gerek yok</td></tr>
+          <tr><td>Haber / makale</td><td>ISR</td><td>Etiketle</td>
+            <td>Yayın ve güncelleme anında</td></tr>
+          <tr><td>Endeks</td><td>ISR</td><td>Yayın anında</td>
+            <td>Haftalık</td></tr>
+          <tr><td>Arama sonuçları</td><td>Dinamik + kenar önbelleği</td><td>5 dakika</td>
+            <td>Filtre kombinasyonu sonsuz; statik üretilemez</td></tr>
+          <tr><td>Harita görünümü</td><td>Dinamik</td><td>Yok</td>
+            <td>Sınır kutusuna göre sorgu</td></tr>
+          <tr><td>Paneller</td><td>Dinamik &middot; önbelleksiz</td><td>&mdash;</td>
+            <td>Kişiye özel, kimlik doğrulamalı</td></tr>
+          <tr><td>Talep formu</td><td>Server action</td><td>&mdash;</td>
+            <td>Yazma işlemi</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3 class="sub">Etiketli yenileme</h3>
+    <p class="rule">
+      Yönetim panelinde bir proje onaylandığında tüm siteyi değil, yalnızca o projeye bağlı
+      sayfaları yeniden üretin. Tasarımda anlattığım hedefli temizleme tam olarak bu:
+    </p>
+
+<pre><i>// app/api/onay/route.ts — onay kuyruğunda "Onayla" basıldığında</i>
+import { revalidateTag } from 'next/cache';
+
+export async function POST(req: Request) {
+  const { projeId, ilce, il, firmaSlug } = await onayla(req);
+
+  <u>// yalnızca etkilenen sayfalar yeniden üretilir</u>
+  revalidateTag(<b>`proje-${projeId}`</b>);        <i>// detay + kat planı sayfaları</i>
+  revalidateTag(<b>`ilce-${ilce}`</b>);            <i>// ilçe sayfası ve listeleri</i>
+  revalidateTag(<b>`il-${il}`</b>);                <i>// şehir sayfası ortalamaları</i>
+  revalidateTag(<b>`firma-${firmaSlug}`</b>);      <i>// firma portföyü</i>
+
+  return Response.json({ ok: true });
+}
+
+<i>// app/[il]/[ilce]/[slug]/page.tsx — veri çekerken etiket verilir</i>
+const proje = await fetch(url, {
+  next: { <b>tags: [`proje-${id}`, `ilce-${ilce}`]</b> }
+});</pre>
+
+    <div class="warnbox">
+      <h4>Tüm siteyi temizlemeyin</h4>
+      <p>
+        <code>revalidatePath('/', 'layout')</code> gibi geniş bir temizleme her onaydan sonra
+        4.800 sayfayı geçersiz kılar. Ertesi gün ilk ziyaretçiler soğuk sayfalara düşer, her biri
+        veritabanına gider ve mimarinin tüm faydası kaybolur. <strong>Her yenileme hedefli
+        olmalı</strong> ve hangi etiketlerin tetiklendiği denetim günlüğüne yazılmalı.
+      </p>
+    </div>
+
+    <p class="rule">
+      Bir uyarı daha: 1.240 proje &times; ortalama 4 daire tipi + bölge sayfaları toplamda
+      <b>5 bine yakın statik sayfa</b> demek. Vercel'de ISR önbelleğinin plan bazlı bir üst sınırı
+      var; kurulumdan önce güncel belgeden teyit edin. Sınır sorun çıkarırsa kat planı sayfalarını
+      ISR yerine kenar önbellekli dinamik yapmak en kolay tavizdir.
+    </p>
+  </div>
+</section>
+
+<!-- ============ BAĞLANTI ============ -->
+<section>
+  <div class="wrap">
+    <div class="sec-head">
+      <p class="eyebrow">Bölüm dört</p>
+      <h2>Veritabanı bağlantısı</h2>
+      <p>
+        Serverless'ta bağlantı yönetimi en sık batırılan konu. Fonksiyonlar anlık olarak
+        yüzlerce örneğe çıkabilir; her biri doğrudan Postgres'e bağlanmaya çalışırsa
+        bağlantı havuzu dolar ve site komple durur.
+      </p>
+    </div>
+
+<pre><i>// lib/db.ts</i>
+import postgres from 'postgres';
+
+<u>// Modül kapsamında tek istemci — sıcak fonksiyon örnekleri arasında yeniden kullanılır</u>
+export const sql = postgres(process.env.DATABASE_URL!, {
+  <b>prepare: false,</b>        <i>// ZORUNLU: transaction-mode havuzda prepared statement çalışmaz</i>
+  <b>max: 1,</b>                <i>// serverless örneği başına tek bağlantı</i>
+  idle_timeout: 20,
+  connect_timeout: 10,
+});
+
+<i>// .env — iki ayrı URL tutun</i>
+<b>DATABASE_URL</b>="postgres://...@aws-0-eu-central-1.pooler.supabase.com:<b>6543</b>/postgres"
+<b>DIRECT_URL</b>="postgres://...@aws-0-eu-central-1.pooler.supabase.com:<b>5432</b>/postgres"
+<i>// 6543 → uygulama · 5432 → göçler, pg_dump, CREATE INDEX CONCURRENTLY</i></pre>
+
+    <div class="scroller" style="margin-top:16px">
+      <table>
+        <thead><tr><th>Katman</th><th>Ayar</th><th>Gerekçe</th></tr></thead>
+        <tbody>
+          <tr><td>Havuz modu</td><td>Transaction &middot; port 6543</td>
+            <td>Kısa ömürlü fonksiyonlar için tek doğru seçenek</td></tr>
+          <tr><td>Prepared statement</td><td><code>prepare: false</code></td>
+            <td>Açık kalırsa yük altında rastgele hata verir, testte görünmez</td></tr>
+          <tr><td>Bağlantı sayısı</td><td><code>max: 1</code></td>
+            <td>Havuzlama Supavisor'ın işi; fonksiyon içinde havuz kurulmaz</td></tr>
+          <tr><td>Prisma kullanılırsa</td><td><code>?pgbouncer=true&amp;connection_limit=1</code></td>
+            <td>Aynı sorunun Prisma karşılığı</td></tr>
+          <tr><td>Bölge</td><td><code>fra1</code> sabitlenir</td>
+            <td>Fonksiyon başka bölgede çalışırsa gecikme 10 katına çıkar</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+<pre><i>// vercel.json — fonksiyonların bölgesi sabitlenmeli</i>
+{
+  "<b>regions</b>": ["<b>fra1</b>"],
+  "crons": [
+    { "path": "/api/cron/sitemap",  "schedule": "0 3 * * *" },
+    { "path": "/api/cron/endeks",   "schedule": "0 4 * * 1" }
+  ]
+}</pre>
+
+    <p class="rule">
+      <b>Bölgeyi sabitlemeyi unutmayın.</b> Varsayılan bölge genelde ABD'dir; fonksiyon
+      Washington'da, veritabanı Frankfurt'ta çalışırsa her sorgu 90 ms sürer ve neden yavaş
+      olduğunuzu günlerce ararsınız. Bu tek satır, bu mimarinin en önemli yapılandırması.
+    </p>
+  </div>
+</section>
+
+<!-- ============ CRON ============ -->
+<section>
+  <div class="wrap">
+    <div class="sec-head">
+      <p class="eyebrow">Bölüm beş</p>
+      <h2>Zamanlanmış işler: çoğu Postgres'in içinde</h2>
+      <p>
+        Vercel fonksiyonlarının çalışma süresi sınırlı. <code>REFRESH MATERIALIZED VIEW</code>
+        gibi işler bu sınırı aşabilir ve yarıda kesilir. Çözüm: veritabanı bakımını
+        veritabanının içinde çalıştırmak.
+      </p>
+    </div>
+
+<pre><i>-- Supabase'de pg_cron etkinleştirilir</i>
+create extension if not exists <b>pg_cron</b>;
+
+<i>-- Gecelik: materyalize görünümler</i>
+select cron.schedule('mv-yenile', '0 2 * * *', $$
+  refresh materialized view concurrently mv_ilce_m2;
+  refresh materialized view concurrently mv_firma_karne;
+$$);
+
+<i>-- Saatlik: 90 gün tazelik kuralı</i>
+select cron.schedule('tazelik', '0 * * * *', $$
+  update proje set fiyat_teyit_durumu = 'teyit_edilmedi'
+  where fiyat_teyit_tarihi &lt; current_date - interval '90 days'
+    and fiyat_teyit_durumu &lt;&gt; 'teyit_edilmedi';
+$$);
+
+<i>-- Gecelik: teslim tarihi geçen projeleri arşive al</i>
+select cron.schedule('arsivle', '30 2 * * *', $$
+  update proje set durum = 'arsiv'
+  where durum = 'satista' and teslim_tarihi &lt; current_date - interval '3 months';
+$$);</pre>
+
+    <div class="scroller" style="margin-top:16px">
+      <table>
+        <thead><tr><th>İş</th><th>Nerede</th><th>Neden orada</th></tr></thead>
+        <tbody>
+          <tr><td>Materyalize görünüm yenileme</td><td>pg_cron</td><td>Uzun sürer, fonksiyon zaman aşımına uğrar</td></tr>
+          <tr><td>Tazelik ve veri skoru</td><td>pg_cron</td><td>Saf SQL, uygulama mantığı yok</td></tr>
+          <tr><td>Arşive alma</td><td>pg_cron</td><td>Saf SQL</td></tr>
+          <tr><td>Faset sayaçları</td><td>pg_cron</td><td>Materyalize görünüm yenilemesi</td></tr>
+          <tr><td>Site haritası üretimi</td><td>Vercel Cron</td><td>Beyaz liste ve eşik kuralları uygulama mantığı</td></tr>
+          <tr><td>Endeks hesabı</td><td>pg_cron + Vercel</td><td>Hesap SQL'de, aykırı değer bildirimi uygulamada</td></tr>
+          <tr><td>Yönlendirme testi</td><td>Vercel Cron</td><td>HTTP isteği atması gerekir</td></tr>
+          <tr><td>Yedek doğrulama</td><td>Vercel Cron</td><td>R2'ye erişim gerekir</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="rule">
+      Bir işi <code>pg_cron</code>'a koyabiliyorsanız koyun. Fonksiyon süresi, soğuk başlatma ve
+      ağ hatası gibi üç sorun tek hamlede ortadan kalkar.
+    </p>
+  </div>
+</section>
+
+<!-- ============ MEDYA ============ -->
+<section>
+  <div class="wrap">
+    <div class="sec-head">
+      <p class="eyebrow">Bölüm altı</p>
+      <h2>Medya akışı</h2>
+      <p>
+        20 GB'lık görsel ve belge arşivi R2'de. İki kural var ve ikisi de Vercel'e özgü
+        kısıtlardan doğuyor.
+      </p>
+    </div>
+
+    <div class="cards3">
+      <article>
+        <h4>Yükleme doğrudan R2'ye</h4>
+        <p>Vercel fonksiyonlarının istek gövdesi sınırlıdır; 4 MB'lık bir render bu sınırı aşar.</p>
+        <ul>
+          <li>Fonksiyon yalnızca <b>imzalı URL</b> üretir</li>
+          <li>Tarayıcı dosyayı doğrudan R2'ye yükler</li>
+          <li>Yükleme bitince fonksiyona kayıt bildirilir</li>
+          <li>Dosya hiçbir zaman fonksiyondan geçmez</li>
+        </ul>
+      </article>
+      <article>
+        <h4>Varyantlar kenarda</h4>
+        <p>Vercel'in görsel optimizasyonu kaynak görsel başına ücretlendirilir; bu ölçekte pahalı.</p>
+        <ul>
+          <li><b>Cloudflare Images</b> veya Bunny Optimizer</li>
+          <li>320 / 640 / 1280 / 2400 px &middot; AVIF + WebP</li>
+          <li>Next <code>&lt;Image&gt;</code> için özel loader</li>
+          <li><code>unoptimized</code> değil &mdash; loader ile yönlendirin</li>
+        </ul>
+      </article>
+      <article>
+        <h4>Orijinal asla servis edilmez</h4>
+        <p>20 GB'ın büyük kısmı soğuk veri; yalnızca varyant üretiminin kaynağı.</p>
+        <ul>
+          <li>Orijinaller ayrı önek altında</li>
+          <li>Kat planı: PDF + PNG önizleme</li>
+          <li>R2'de sürümleme açık</li>
+          <li>Alt metni olmayan dosya yayınlanamaz</li>
+        </ul>
+      </article>
+    </div>
+
+<pre><i>// next.config.ts — görselleri Cloudflare Images üzerinden servis et</i>
+export default {
+  images: {
+    <b>loader: 'custom',</b>
+    loaderFile: './lib/imageLoader.ts',
+  },
+};
+
+<i>// lib/imageLoader.ts</i>
+export default function loader({ src, width, quality }) {
+  const params = [`width=${width}`, `quality=${quality || 75}`, 'format=auto'];
+  return <b>`https://cdn.konutprojeleri.com/cdn-cgi/image/${params.join(',')}/${src}`</b>;
+}</pre>
+
+    <p class="rule">
+      Klasör yapısı önceki belgeyle aynı kalıyor:
+      <code>projeler/{id}/gorsel/</code>, <code>projeler/{id}/plan/</code>,
+      <code>projeler/{id}/santiye/{yyyy-mm}/</code>, <code>firmalar/{id}/</code>,
+      <code>haber/{yil}/</code>. Veritabanında yalnızca anahtar ve alt metin tutulur.
+    </p>
+  </div>
+</section>
+
+<!-- ============ ŞEMA VE YETKİ ============ -->
+<section>
+  <div class="wrap">
+    <div class="sec-head">
+      <p class="eyebrow">Bölüm yedi</p>
+      <h2>Şema ve yetkilendirme</h2>
+      <p>
+        Veritabanı şeması sağlayıcıdan bağımsız &mdash; önceki belgede tanımladığım tablolar
+        aynen geçerli. Değişen tek şey yetkilendirme katmanı: Supabase Auth devreye girdiği için
+        satır seviyesi güvenlik (RLS) artık kullanılabilir.
+      </p>
+    </div>
+
+    <p class="rule">
+      Değişmeyen kurallar: <code>fiyat_kaydi</code> ve <code>denetim_gunlugu</code> tablolarında
+      <code>UPDATE</code> ve <code>DELETE</code> yetkisi iptal edilir; <code>m2_birim</code>
+      hesaplanan sütundur; <code>ozellikler</code> <code>jsonb</code> + GIN indeksiyle 60 filtreyi
+      taşır; konum <code>geography(Point,4326)</code> ve GIST indeksli.
+    </p>
+
+<pre><i>-- Firma paneli: firma yalnızca kendi projesini görebilir ve düzenleyebilir</i>
+alter table proje enable row level security;
+
+create policy firma_kendi_projesi on proje
+  for select using (
+    <b>firma_id = (auth.jwt() -&gt;&gt; 'firma_id')::bigint</b>
+    or auth.jwt() -&gt;&gt; 'rol' in ('admin','editor')
+  );
+
+create policy firma_kendi_projesini_duzenler on proje
+  for update using (
+    firma_id = (auth.jwt() -&gt;&gt; 'firma_id')::bigint
+  ) with check (
+    <u>-- firma yayına alamaz; yalnızca taslak ve onay kuyruğu</u>
+    <b>yayinda = false</b>
+  );
+
+<i>-- Talepler: firma yalnızca kendisine iletilen talebi görür</i>
+create policy talep_firma on talep
+  for select using (
+    firma_id = (auth.jwt() -&gt;&gt; 'firma_id')::bigint
+  );</pre>
+
+    <div class="okbox">
+      <h4>RLS'yi tek savunma katmanı saymayın</h4>
+      <p>
+        Sunucu bileşenleri servis rolüyle bağlanırsa RLS devreye girmez; yetki kontrolü uygulama
+        kodunda yapılır. RLS burada <strong>ikinci katman</strong>: bir uygulama hatası veya
+        yanlış yapılandırılmış istemci çağrısı olduğunda veriyi korur. Servis rolü anahtarı
+        yalnızca sunucu tarafında bulunmalı, <code>NEXT_PUBLIC_</code> önekiyle asla
+        tanımlanmamalı.
+      </p>
+    </div>
+
+    <h3 class="sub">KVKK &mdash; şemaya şimdi girmesi gereken tablo</h3>
+    <p class="rule">
+      Supabase Frankfurt demek, talep formundaki ad ve telefonun Almanya'da tutulması demek.
+      Açık rıza metnini yurt dışı aktarımını kapsayacak şekilde yazdırın ve
+      <b>onay kaydını veritabanında tutun</b> &mdash; metin sürümü, zaman damgası, IP.
+      Sonradan eklemek çok daha zor.
+    </p>
+<pre>create table kvkk_onay (
+  id            bigserial primary key,
+  talep_id      bigint references talep,
+  metin_surumu  text not null,      <i>-- 'v1.2 · 2026-08-01'</i>
+  metin_hash    text not null,      <i>-- o anki metnin özeti</i>
+  onay_zamani   timestamptz not null default now(),
+  ip            inet,
+  user_agent    text
+);
+<b>revoke update, delete on kvkk_onay from app_rw;</b></pre>
+    <p class="rule">
+      Hukukçu değilim; metinleri ve aktarım evrakını bir avukata hazırlatın. Ama tabloyu
+      şimdi koyun.
+    </p>
+  </div>
+</section>
+
+<!-- ============ KURULUM ============ -->
+<section>
+  <div class="wrap">
+    <div class="sec-head">
+      <p class="eyebrow">Bölüm sekiz</p>
+      <h2>Kurulum sırası</h2>
+      <p>
+        Sıra değişti: artık ilk aşamada doğrulanacak şey eklenti desteği değil, bölge eşleşmesi
+        ve bağlantı davranışı.
+      </p>
+    </div>
+
+    <div class="phase">
+      <div class="phase-n">1<small>1 gün</small></div>
+      <div>
+        <h4>Bölge ve bağlantı doğrulaması</h4>
+        <p>Kod yazmadan önce yığının doğru konumlandığını kanıtlayın.</p>
+        <ul>
+          <li>Supabase projesi <code>eu-central-1</code>, PostGIS + pg_trgm + pg_cron</li>
+          <li>Vercel projesi <code>regions: ["fra1"]</code></li>
+          <li>Supavisor 6543 üzerinden <code>select now()</code> ve gecikme ölçümü</li>
+          <li><b>3 ms'nin üzerinde çıkarsa bölge yapılandırması yanlıştır</b> &mdash; devam etmeyin</li>
+          <li>R2 bucket ve <code>cdn.konutprojeleri.com</code> alan adı bağlantısı</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="phase">
+      <div class="phase-n">2<small>1&ndash;2 hafta</small></div>
+      <div>
+        <h4>Şema ve veri göçü</h4>
+        <p>Arayüz yok; yalnızca veri. Bu aşamanın çıktısı doğru doldurulmuş bir veritabanı.</p>
+        <ul>
+          <li>Şema, indeksler, append-only kısıtları, RLS politikaları</li>
+          <li>1.240 proje + 318 firma + haber arşivi aktarımı</li>
+          <li>İlan arşivinden teslim kayıtlarının çıkarılması</li>
+          <li>Görsellerin R2'ye taşınması ve varyant üretiminin test edilmesi</li>
+          <li>Eski URL &rarr; yeni URL yönlendirme haritası</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="phase">
+      <div class="phase-n">3<small>3&ndash;4 hafta</small></div>
+      <div>
+        <h4>Tasarım sistemi ve ilk iki sayfa</h4>
+        <p>Karar noktası burası: hem tasarım sistemi hem render stratejisi doğrulanır.</p>
+        <ul>
+          <li><code>tokens.css</code> ve bileşen kütüphanesi &mdash; React bileşenleri olarak</li>
+          <li><b>Arama sayfası</b> (dinamik + kenar önbelleği) ve <b>proje detay</b> (ISR)</li>
+          <li>Etiketli yenilemenin uçtan uca çalıştığının doğrulanması</li>
+          <li>Faset sayaçları için ilk materyalize görünüm</li>
+          <li><b>Hedef: proje detay LCP 1,5 sn altı, arama 2,0 sn altı</b></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="phase">
+      <div class="phase-n">4<small>4&ndash;5 hafta</small></div>
+      <div>
+        <h4>Site tamamlanır</h4>
+        <p>Aynı bileşenlerin yeniden dizilmesi.</p>
+        <ul>
+          <li>Kat planı, firma, şehir, kampanya, arşiv, haber, endeks sayfaları</li>
+          <li>Harita görünümü ve karşılaştırma</li>
+          <li>SEO: şablonlar, beyaz liste, yapısal veri, site haritası</li>
+          <li>Yönlendirmelerin devreye alınması ve izlenmesi</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="phase">
+      <div class="phase-n">5<small>5&ndash;7 hafta</small></div>
+      <div>
+        <h4>Paneller</h4>
+        <p>Önce yönetim, sonra firma. Onay kuyruğu olmadan firma paneli açılmaz.</p>
+        <ul>
+          <li>Supabase Auth ve rol tabanlı yetkilendirme</li>
+          <li>Yönetim: kontrol paneli, proje düzenleyici, onay kuyruğu, SEO</li>
+          <li>Firma paneli en dar sürüm: giriş, stok tablosu, Excel içe aktarma</li>
+          <li>Otomatik onay kuralları, 10 firmayla pilot</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SINIRLAR ============ -->
+<section>
+  <div class="wrap">
+    <div class="sec-head">
+      <p class="eyebrow">Bölüm dokuz</p>
+      <h2>Sınırlar ve maliyet</h2>
+      <p>
+        Bu yığın önceki seçenekten hızlı ama sürprizleri farklı yerlerde. Hepsi önceden
+        bilinebilir.
+      </p>
+    </div>
+
+    <div class="scroller">
+      <table>
+        <thead><tr><th>Belirti</th><th>Sebep</th><th>Çözüm</th></tr></thead>
+        <tbody>
+          <tr><td>Her sorgu ~90 ms</td><td>Fonksiyon bölgesi ABD'de kalmış</td>
+            <td><code>regions: ["fra1"]</code> &mdash; en sık yapılan hata</td></tr>
+          <tr><td>Yük altında rastgele SQL hatası</td><td><code>prepare: false</code> eksik</td>
+            <td>Havuz modu ve sürücü ayarı</td></tr>
+          <tr><td>Vercel faturası şişti</td><td>Görseller Vercel üzerinden geçiyor</td>
+            <td>Medya yalnızca <code>cdn.</code> alan adından servis edilmeli</td></tr>
+          <tr><td>Sayfalar sürekli soğuk</td><td>Geniş kapsamlı <code>revalidatePath</code></td>
+            <td>Etiketli, hedefli yenileme</td></tr>
+          <tr><td>ISR önbellek sınırı</td><td>5 bine yakın statik sayfa</td>
+            <td>Kat planı sayfalarını dinamiğe alın</td></tr>
+          <tr><td>Cron yarıda kesiliyor</td><td>Fonksiyon süre sınırı</td>
+            <td>İşi <code>pg_cron</code>'a taşıyın</td></tr>
+          <tr><td>Karmaşık arama gerekiyor</td><td>Postgres tam metin yetmiyor</td>
+            <td>Typesense Cloud gibi yönetilen servis &mdash; VPS gerekmez</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3 class="sub">Aylık maliyet beklentisi</h3>
+    <div class="scroller">
+      <table>
+        <thead><tr><th>Kalem</th><th>Yaklaşık</th><th>Not</th></tr></thead>
+        <tbody>
+          <tr><td>Vercel Pro</td><td>kullanıcı başına ~$20</td><td>Fonksiyon ve bant genişliği kullanıma göre eklenir</td></tr>
+          <tr><td>Supabase Pro</td><td>~$25</td><td>8 GB veritabanı dahil; PITR ayrı eklenti</td></tr>
+          <tr><td>Cloudflare R2</td><td>~$0,30</td><td>20 GB depolama &middot; çıkış ücretsiz</td></tr>
+          <tr><td>Cloudflare Images</td><td>~$5&ndash;10</td><td>Varyant üretimi ve servisi</td></tr>
+          <tr><td>Alan adı ve Cloudflare</td><td>~$0&ndash;20</td><td>Ücretsiz plan çoğu ihtiyacı karşılar</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="rule">
+      Fiyatlar sık değişiyor; bunlar büyüklük fikri versin diye. Asıl değişken Vercel'in
+      fonksiyon çalıştırma ve bant genişliği kullanımı &mdash; ISR oranı yükseldikçe düşer.
+      Sayfaların çoğunu statik tutmak sadece hız değil, <b>maliyet</b> kararıdır.
+    </p>
+
+    <div class="okbox">
+      <h4>Özet</h4>
+      <p>
+        Bu yığın sitenin ihtiyacına iyi oturuyor: SEO ağırlıklı, nadiren değişen, çok sayfalı bir
+        içerik sitesi ISR için ideal. Gecikme sorunu ortadan kalkıyor, ölçeklenme sizin işiniz
+        olmaktan çıkıyor.
+      </p>
+      <p>
+        Karşılığında ödediğiniz bedel net: <strong>uygulama sıfırdan TypeScript ile yazılıyor.</strong>
+        Bunu bir gecikme değil, zaten verilmiş bir kararın sonucu olarak görün &mdash; tasarım
+        sistemini de sıfırdan kurduk. Ama planlamayı buna göre yapın: bu belge 12&ndash;16 haftalık
+        bir iş tarif ediyor, &ldquo;tasarımı giydirme&rdquo; işi değil.
+      </p>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <p>
+      Bu belge, Hostinger Cloud için hazırlanan birinci sürümün yerini alır. Şema, veri kuralları
+      ve medya klasör yapısı değişmedi; çalışma zamanı, render stratejisi, bağlantı yapılandırması
+      ve zamanlanmış iş yerleşimi değişti.
+    </p>
+    <p>
+      Sağlayıcı limitleri, port adresleri, bölge kodları ve fiyatlar zamanla değişir; kurulum
+      sırasında güncel belgelerden teyit edin. KVKK bölümü bilgilendirme amaçlıdır, hukuki görüş
+      değildir.
+    </p>
+  </div>
+</footer>
