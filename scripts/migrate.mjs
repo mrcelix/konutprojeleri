@@ -51,7 +51,16 @@ async function calistir() {
 }
 
 calistir().catch(async (e) => {
-  console.error('\n', e.message ?? e);
+  // Postgres hataları position/detail/hint taşır; bunlar olmadan hangi
+  // ifadenin patladığını bulmak zor. Hepsini bas.
+  console.error('\nGÖÇ HATASI');
+  console.error('  mesaj   :', e.message ?? String(e));
+  if (e.severity) console.error('  seviye  :', e.severity);
+  if (e.code) console.error('  kod     :', e.code);
+  if (e.detail) console.error('  ayrıntı :', e.detail);
+  if (e.hint) console.error('  ipucu   :', e.hint);
+  if (e.position) console.error('  konum   :', e.position);
+  if (e.where) console.error('  bağlam  :', e.where);
   await sql.end();
   process.exit(1);
 });

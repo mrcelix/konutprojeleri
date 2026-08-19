@@ -88,6 +88,23 @@ create unique index mv_firma_karne_ix on mv_firma_karne (firma_id);
 -- İKİNCİ savunma katmanı. Sunucu bileşenleri servis rolüyle bağlandığında
 -- RLS devreye girmez; asıl yetki kontrolü uygulamadadır. RLS, bir uygulama
 -- hatası veya yanlış yapılandırılmış istemci çağrısında veriyi korur.
+--
+-- auth.jwt() Supabase'e özgüdür. Düz Postgres ve CI'da yok; politikaların
+-- her ortamda OLUŞTURULABİLMESİ için boş bir vekil tanımlanıyor.
+-- Böylece politika sözdizimi CI'da da doğrulanır, Supabase'de gerçek
+-- fonksiyon kullanılır.
+do $do$
+begin
+  if to_regprocedure('auth.jwt()') is null then
+    create schema if not exists auth;
+    execute $f$
+      create or replace function auth.jwt() returns jsonb
+      language sql stable as 'select ''{}''::jsonb'
+    $f$;
+    raise notice 'auth.jwt() vekili olusturuldu (Supabase disi ortam)';
+  end if;
+end
+$do$;
 
 alter table proje enable row level security;
 alter table talep enable row level security;
