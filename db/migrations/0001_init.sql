@@ -89,12 +89,26 @@ create table proje (
   guncellendi        timestamptz not null default now()
 );
 
+-- unaccent() STABLE'dır, IMMUTABLE değil: sözlük yapılandırmasına bağlı
+-- olduğu için Postgres onu indeks ifadesinde kabul etmez. Sözlüğü açıkça
+-- vererek IMMUTABLE bir sarmalayıcı tanımlıyoruz.
+--
+-- SORGULARDA DA BU FONKSİYON KULLANILMALI — düz unaccent() çağıran bir
+-- sorgu indeksi kullanamaz ve tablo taramasına düşer.
+create or replace function tr_unaccent(text)
+returns text
+language sql
+immutable
+strict
+parallel safe
+as $$ select public.unaccent('public.unaccent'::regdictionary, $1) $$;
+
 -- Coğrafi arama: haritada alan çizme, "metroya 10 dk"
 create index proje_konum_ix   on proje using gist (konum);
 -- 60 özellik filtresi için tek indeks
 create index proje_ozellik_ix on proje using gin (ozellikler jsonb_path_ops);
 -- Ad araması: "bagdat" → "Bağdat Yakası"
-create index proje_ad_ix      on proje using gin (unaccent(ad) gin_trgm_ops);
+create index proje_ad_ix      on proje using gin (tr_unaccent(ad) gin_trgm_ops);
 -- Liste sorgularının ana indeksi
 create index proje_liste_ix   on proje (il, ilce, durum, teslim_ceyrek) where yayinda;
 
