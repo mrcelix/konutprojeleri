@@ -91,6 +91,29 @@ Yerelden 40–80 ms normaldir (Türkiye → Frankfurt). Asıl ölçüm Vercel
 üzerinden yapılır; ana sayfadaki rozet onu gösterir ve **3 ms altı**
 olmalıdır.
 
+## 4b. İlk yönetici hesabı
+
+Panel (`/yonetim`) Supabase Auth ile çalışır. İlk hesabı **siz**
+açmalısınız — parola sizin dışınızda kimsenin eline geçmemeli.
+
+1. Supabase panelinde **Authentication → Users → Add user**
+   - E-postanızı girin, güçlü bir parola belirleyin
+   - **Auto Confirm User** işaretli olsun (doğrulama e-postası beklemeyin)
+2. Oluşan kullanıcının **UID**'sini kopyalayın
+3. **SQL Editor**'de yetkiyi tanımlayın:
+
+```sql
+insert into kullanici (id, eposta, ad, rol)
+values ('BURAYA-UID', 'siz@ornek.com', 'Adınız', 'admin');
+```
+
+Kimlik Supabase Auth'ta, yetki `kullanici` tablosunda. Auth'ta var olup
+bu tabloda olmayan bir hesap panele **giremez** — yeni kayıt olan birinin
+kendiliğinden yetki kazanmaması için.
+
+Firma kullanıcısı eklerken `rol` `'firma'` ve `firma_id` dolu olmalı;
+tablo kısıtı bunu zorunlu tutuyor.
+
 ## 5. Cloudflare R2
 
 1. R2 → bucket oluşturun: `konutprojeleri`

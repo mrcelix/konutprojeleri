@@ -18,6 +18,8 @@
     "kurulum": "npm run db:migrate && npm run db:seed && npm run db:dogrula"
   },
   "dependencies": {
+    "@supabase/ssr": "^0.12.4",
+    "@supabase/supabase-js": "^2.112.3",
     "leaflet": "^1.9.4",
     "leaflet.markercluster": "^1.5.3",
     "next": "^15.4.0",
