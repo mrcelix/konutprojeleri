@@ -9,6 +9,8 @@ import { sql } from '@/lib/db';
  * yerine 1 sorgu: ~90 ms yerine ~12 ms.
  */
 
+export type Oda = { ad: string; alan: number | null; cephe?: string | null; not?: string | null };
+
 export type DaireTipi = {
   tip: string;
   net_m2: number | null;
@@ -18,6 +20,12 @@ export type DaireTipi = {
   toplam_adet: number | null;
   kalan_adet: number | null;
   kat_plani_key: string | null;
+  plan_pdf_key: string | null;
+  /** Kat planı sayfasının özgün içeriği. Boşsa sayfa yine açılır, tablo basılmaz. */
+  odalar: Oda[];
+  cephe: string | null;
+  manzara: string | null;
+  bulundugu_katlar: string | null;
 };
 
 export type Cevre = { tip: string; ad: string; metre: number };
@@ -85,10 +93,18 @@ export async function projeDetayGetir(
           'tip', d.tip, 'net_m2', d.net_m2, 'brut_m2', d.brut_m2,
           'liste_fiyati', d.liste_fiyati, 'm2_birim', d.m2_birim,
           'toplam_adet', d.toplam_adet, 'kalan_adet', d.kalan_adet,
-          'kat_plani_key', m2.key
+          'kat_plani_key', m2.key,
+          'plan_pdf_key', mp.key,
+          'odalar', d.odalar,
+          'cephe', d.cephe,
+          'manzara', d.manzara,
+          'bulundugu_katlar',
+            case when d.bulundugu_katlar is null then null
+                 else lower(d.bulundugu_katlar) || '–' || (upper(d.bulundugu_katlar) - 1) end
         ) order by d.net_m2 nulls last)
         from daire_tipi d
         left join medya m2 on m2.id = d.kat_plani_id
+        left join medya mp on mp.id = d.plan_pdf_id
         where d.proje_id = p.id
       ), '[]') as daire_tipleri,
 

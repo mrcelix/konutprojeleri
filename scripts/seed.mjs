@@ -18,8 +18,12 @@ if (!url) {
 const sql = postgres(url, { max: 1 });
 
 const FIRMALAR = [
-  { slug: 'esat-insaat',      ad: 'Esat İnşaat',              yil: 1998, il: 'istanbul', ilce: 'atasehir', otomatik: true },
-  { slug: 'torunlar-gyo',     ad: 'Torunlar GYO',             yil: 1996, il: 'istanbul', ilce: 'basaksehir', otomatik: true },
+  { slug: 'esat-insaat', ad: 'Esat İnşaat', yil: 1998, il: 'istanbul', ilce: 'atasehir', otomatik: true,
+    ortakliklar: ['Emlak Konut GYO'],
+    hakkinda: 'Esat İnşaat 1998 yılından bu yana İstanbul Anadolu Yakası\'nda konut geliştiriyor. Portföyün ağırlığı Kadıköy ve Ümraniye\'de; iki projesini Emlak Konut GYO ortaklığıyla yürüttü. Son beş yıldaki projelerinde üç metre tavan yüksekliği ve geniş teras uygulaması firmanın tekrar eden tasarım tercihi.' },
+  { slug: 'torunlar-gyo', ad: 'Torunlar GYO', yil: 1996, il: 'istanbul', ilce: 'basaksehir', otomatik: true,
+    ortakliklar: ['Emlak Konut GYO'],
+    hakkinda: 'Halka açık gayrimenkul yatırım ortaklığı. İstanbul genelinde büyük ölçekli karma projeler geliştiriyor; portföyünde konut, ofis ve alışveriş merkezi bir arada bulunuyor.' },
   { slug: 'sur-yapi',         ad: 'Sur Yapı',                 yil: 2004, il: 'istanbul', ilce: 'umraniye', otomatik: true },
   { slug: 'hasanoglu-grup',   ad: 'Hasanoğlu Şirketler Grubu',yil: 1991, il: 'istanbul', ilce: 'avcilar', otomatik: false },
   { slug: 'baskent-insaat',   ad: 'Başkent İnşaat',           yil: 2015, il: 'istanbul', ilce: 'sancaktepe', otomatik: false },
@@ -40,10 +44,40 @@ const PROJELER = [
                   akilli_ev: true, deprem_2018: true },
     aciklama: 'Esat İnşaat tarafından Kadıköy Acıbadem\'de geliştiriliyor. İki blokta 186 konut ve 8 ticari bölüm yer alıyor; dairelerin tavan yüksekliği 3 metre. Acıbadem metro istasyonuna 7 dakika yürüme mesafesinde.',
     tipler: [
-      { tip: '1+1', net: 68,  brut: 86,  fiyat: 5_900_000,  toplam: 28, kalan: 6 },
-      { tip: '2+1', net: 104, brut: 128, fiyat: 8_400_000,  toplam: 74, kalan: 19 },
-      { tip: '3+1', net: 134, brut: 164, fiyat: 11_900_000, toplam: 56, kalan: 14 },
-      { tip: '4+1', net: 178, brut: 214, fiyat: 16_200_000, toplam: 22, kalan: 4 },
+      { tip: '1+1', net: 68, brut: 86, fiyat: 5_900_000, toplam: 28, kalan: 6,
+        cephe: 'kuzeydogu', katlar: '[3,13)', manzara: 'Şehir',
+        odalar: [
+          { ad: 'Salon + mutfak', alan: 31.2, cephe: 'kuzeydogu', not: 'Amerikan mutfak, ankastre' },
+          { ad: 'Yatak odası', alan: 16.4, cephe: 'kuzeydogu', not: 'Gömme dolap' },
+          { ad: 'Banyo', alan: 5.8 },
+          { ad: 'Antre ve koridor', alan: 9.6 },
+          { ad: 'Balkon', alan: 5.0, cephe: 'kuzeydogu', not: 'Net alana dahil değil' },
+        ] },
+      { tip: '2+1', net: 104, brut: 128, fiyat: 8_400_000, toplam: 74, kalan: 19,
+        cephe: 'guneybati', katlar: '[3,13)', manzara: 'Şehir · 9. kattan itibaren kısmi deniz',
+        odalar: [
+          { ad: 'Salon + mutfak', alan: 42.4, cephe: 'guneybati', not: 'Amerikan mutfak, ankastre' },
+          { ad: 'Ebeveyn yatak odası', alan: 18.6, cephe: 'guneybati', not: 'Giyinme odası ve banyo bağlantılı' },
+          { ad: 'Yatak odası', alan: 14.2, cephe: 'kuzeydogu', not: 'Gömme dolap' },
+          { ad: 'Ebeveyn banyo', alan: 5.4, not: 'Duşakabin' },
+          { ad: 'Banyo', alan: 6.1, not: 'Küvet' },
+          { ad: 'Antre ve koridor', alan: 17.3, not: 'Çelik kapı' },
+          { ad: 'Teras', alan: 17.0, cephe: 'guneybati', not: 'Net alana dahil değil' },
+        ] },
+      { tip: '3+1', net: 134, brut: 164, fiyat: 11_900_000, toplam: 56, kalan: 14,
+        cephe: 'guneybati', katlar: '[2,13)', manzara: 'Şehir',
+        odalar: [
+          { ad: 'Salon + mutfak', alan: 48.6, cephe: 'guneybati' },
+          { ad: 'Ebeveyn yatak odası', alan: 20.2, cephe: 'guneybati', not: 'Giyinme odalı' },
+          { ad: 'Yatak odası', alan: 15.4, cephe: 'kuzeydogu' },
+          { ad: 'Çocuk odası', alan: 13.8, cephe: 'kuzeydogu' },
+          { ad: 'Ebeveyn banyo', alan: 6.0 },
+          { ad: 'Banyo', alan: 6.4 },
+          { ad: 'Antre ve koridor', alan: 23.6 },
+          { ad: 'Teras', alan: 21.0, cephe: 'guneybati', not: 'Net alana dahil değil' },
+        ] },
+      { tip: '4+1', net: 178, brut: 214, fiyat: 16_200_000, toplam: 22, kalan: 4,
+        cephe: 'guneybati', katlar: '[10,15)', manzara: 'Deniz ve şehir' },
     ],
   },
   {
@@ -177,10 +211,14 @@ async function calistir() {
   const firmaId = {};
   for (const f of FIRMALAR) {
     const [row] = await sql`
-      insert into firma (slug, ad, kurulus_yili, merkez_il, merkez_ilce, dogrulandi, paket, otomatik_onay)
-      values (${f.slug}, ${f.ad}, ${f.yil}, ${f.il}, ${f.ilce}, true,
-              ${f.otomatik ? 'pro' : 'ucretsiz'}, ${f.otomatik})
-      returning id`;
+      insert into firma (
+        slug, ad, kurulus_yili, merkez_il, merkez_ilce, dogrulandi,
+        paket, otomatik_onay, ortakliklar, hakkinda
+      ) values (
+        ${f.slug}, ${f.ad}, ${f.yil}, ${f.il}, ${f.ilce}, true,
+        ${f.otomatik ? 'pro' : 'ucretsiz'}, ${f.otomatik},
+        ${f.ortakliklar ?? null}, ${f.hakkinda ?? null}
+      ) returning id`;
     firmaId[f.slug] = row.id;
   }
 
@@ -217,10 +255,27 @@ async function calistir() {
               ${`${p.ad} — ${p.ilce}, ${p.il}`}, 0, true)`;
 
     for (const t of p.tipler) {
+      // Kat planı görseli — plan yoksa kat planı sayfası hiç açılmaz
+      let planId = null;
+      if (t.odalar?.length) {
+        const [plan] = await sql`
+          insert into medya (proje_id, tur, key, alt, sira, varyant_hazir)
+          values (${proje.id}, 'kat_plani',
+                  ${`projeler/${proje.id}/plan/${t.tip.replace('+', '-')}.png`},
+                  ${`${p.ad} ${t.tip} kat planı, ${t.net} m² net`}, 0, true)
+          returning id`;
+        planId = plan.id;
+      }
+
       const [dt] = await sql`
-        insert into daire_tipi (proje_id, tip, net_m2, brut_m2, liste_fiyati, toplam_adet, kalan_adet)
-        values (${proje.id}, ${t.tip}, ${t.net}, ${t.brut}, ${t.fiyat}, ${t.toplam}, ${t.kalan})
-        returning id`;
+        insert into daire_tipi (
+          proje_id, tip, net_m2, brut_m2, liste_fiyati, toplam_adet, kalan_adet,
+          odalar, cephe, manzara, bulundugu_katlar, kat_plani_id
+        ) values (
+          ${proje.id}, ${t.tip}, ${t.net}, ${t.brut}, ${t.fiyat}, ${t.toplam}, ${t.kalan},
+          ${sql.json(t.odalar ?? [])}, ${t.cephe ?? null}, ${t.manzara ?? null},
+          ${t.katlar ?? null}, ${planId}
+        ) returning id`;
 
       // Fiyat arşivi — append-only. Endeksin geçmiş serisi burada birikir.
       if (t.fiyat) {
@@ -232,28 +287,78 @@ async function calistir() {
     }
   }
 
-  console.log('Teslim kayıtları (firma karnesinin kaynağı)…');
-  const teslimler = [
-    ['esat-insaat',    '2025Q2', '2025Q2', 0,   'ilan_arsivi'],
-    ['esat-insaat',    '2024Q3', '2024Q4', 1,   'ilan_arsivi'],
-    ['esat-insaat',    '2023Q4', '2023Q4', 0,   'ilan_arsivi'],
-    ['esat-insaat',    '2022Q2', '2022Q3', 3,   'ilan_arsivi'],
-    ['torunlar-gyo',   '2024Q1', '2024Q1', 0,   'ilan_arsivi'],
-    ['torunlar-gyo',   '2023Q2', '2023Q2', 0,   'ilan_arsivi'],
-    ['torunlar-gyo',   '2022Q4', '2023Q1', 1,   'haber'],
-    ['sur-yapi',       '2024Q2', '2024Q3', 2,   'ilan_arsivi'],
-    ['sur-yapi',       '2023Q1', '2023Q2', 1.5, 'ilan_arsivi'],
-    ['cevahir-yapi',   '2023Q3', '2024Q1', 4,   'ilan_arsivi'],
-    ['cevahir-yapi',   '2022Q1', '2022Q3', 5,   'ilan_arsivi'],
-    ['hasanoglu-grup', '2024Q4', '2025Q1', 2,   'ilan_arsivi'],
-    ['hasanoglu-grup', '2023Q2', '2023Q4', 4,   'ilan_arsivi'],
-    ['baskent-insaat', '2024Q2', '2024Q3', 2,   'firma_teyidi'],
+  // ── Teslim edilmiş projeler ──
+  // Proje SİLİNMEZ, arşive geçer. Fiyat geçmişi kalır ve firma karnesinin
+  // teslim isabeti bileşenini besler. "teslim m²" ile "bugünkü m²" farkı
+  // alıcıya firmanın geçmiş projelerinin getirisini gösterir.
+  console.log('Arşiv projeleri ve teslim kayıtları…');
+
+  const ARSIV = [
+    { slug: 'esat-koru-evleri', ad: 'Esat Koru Evleri', firma: 'esat-insaat',
+      ilce: 'umraniye', konut: 124, ilan: '2025Q2', ger: '2025Q2', gecikme: 0,
+      teslimM2: 41_200, guncelM2: 64_800, lng: 29.1201, lat: 41.0189 },
+    { slug: 'acibadem-loft', ad: 'Acıbadem Loft', firma: 'esat-insaat',
+      ilce: 'kadikoy', konut: 88, ilan: '2024Q3', ger: '2024Q4', gecikme: 1,
+      teslimM2: 34_600, guncelM2: 71_400, lng: 29.0522, lat: 40.9901 },
+    { slug: 'esat-park-residence', ad: 'Esat Park Residence', firma: 'esat-insaat',
+      ilce: 'atasehir', konut: 162, ilan: '2023Q4', ger: '2023Q4', gecikme: 0,
+      teslimM2: 22_900, guncelM2: 58_200, lng: 29.1264, lat: 40.9923 },
+    { slug: 'bostanci-sahil-evleri', ad: 'Bostancı Sahil Evleri', firma: 'esat-insaat',
+      ilce: 'kadikoy', konut: 96, ilan: '2022Q2', ger: '2022Q3', gecikme: 3,
+      teslimM2: 16_400, guncelM2: 79_600, lng: 29.0942, lat: 40.9541 },
+    { slug: 'torunlar-vadi-konaklari', ad: 'Torunlar Vadi Konakları', firma: 'torunlar-gyo',
+      ilce: 'basaksehir', konut: 420, ilan: '2024Q1', ger: '2024Q1', gecikme: 0,
+      teslimM2: 28_400, guncelM2: 52_100, lng: 28.8021, lat: 41.0937 },
+    { slug: 'torunlar-mahal-evleri', ad: 'Torunlar Mahal Evleri', firma: 'torunlar-gyo',
+      ilce: 'eyupsultan', konut: 268, ilan: '2023Q2', ger: '2023Q2', gecikme: 0,
+      teslimM2: 24_100, guncelM2: 49_800, lng: 28.9312, lat: 41.0688 },
+    { slug: 'sur-yapi-vega', ad: 'Sur Yapı Vega', firma: 'sur-yapi',
+      ilce: 'umraniye', konut: 340, ilan: '2024Q2', ger: '2024Q3', gecikme: 2,
+      teslimM2: 33_800, guncelM2: 61_200, lng: 29.1188, lat: 41.0261 },
+    { slug: 'cevahir-park-avcilar', ad: 'Cevahir Park Avcılar', firma: 'cevahir-yapi',
+      ilce: 'avcilar', konut: 210, ilan: '2023Q3', ger: '2024Q1', gecikme: 4,
+      teslimM2: 19_600, guncelM2: 42_300, lng: 28.7241, lat: 40.9821 },
+    { slug: 'cevahir-yasam-vadisi', ad: 'Cevahir Yaşam Vadisi', firma: 'cevahir-yapi',
+      ilce: 'avcilar', konut: 186, ilan: '2022Q1', ger: '2022Q3', gecikme: 5,
+      teslimM2: 12_800, guncelM2: 40_100, lng: 28.7108, lat: 40.9884 },
+    { slug: 'banu-evleri-ispartakule-3', ad: 'Banu Evleri Ispartakule 3', firma: 'hasanoglu-grup',
+      ilce: 'avcilar', konut: 64, ilan: '2024Q4', ger: '2025Q1', gecikme: 2,
+      teslimM2: 31_400, guncelM2: 48_900, lng: 28.7014, lat: 41.0281 },
+    { slug: 'isiltili-evler-1', ad: 'Işıltılı Evler 1. Etap', firma: 'baskent-insaat',
+      ilce: 'sancaktepe', konut: 58, ilan: '2024Q2', ger: '2024Q3', gecikme: 2,
+      teslimM2: 27_200, guncelM2: 46_400, lng: 29.2298, lat: 41.0002 },
   ];
-  for (const [firma, ilan, ger, gecikme, kaynak] of teslimler) {
+
+  for (const a of ARSIV) {
+    const [proje] = await sql`
+      insert into proje (
+        slug, ad, firma_id, il, ilce, konum, tip, durum, teslim_ceyrek,
+        teslim_tarihi, toplam_konut, teslim_m2_fiyati, guncel_m2_fiyati,
+        ozellikler, veri_skoru, yayinda
+      ) values (
+        ${a.slug}, ${a.ad}, ${firmaId[a.firma]}, 'istanbul', ${a.ilce},
+        st_setsrid(st_makepoint(${a.lng}, ${a.lat}), 4326)::geography,
+        'konut', 'arsiv', ${a.ger},
+        ${`${a.ger.slice(0, 4)}-0${(Number(a.ger.slice(5)) * 3)}-01`}::date,
+        ${a.konut}, ${a.teslimM2}, ${a.guncelM2},
+        '{}'::jsonb, 96, true
+      ) returning id`;
+
     await sql`
-      insert into teslim_kaydi (firma_id, ilan_edilen, gerceklesen, gecikme_ay, kaynak, durum)
-      values (${firmaId[firma]}, ${ilan}, ${ger}, ${gecikme}, ${kaynak}, 'teyitli')`;
+      insert into teslim_kaydi (
+        firma_id, proje_id, ilan_edilen, gerceklesen, gecikme_ay, kaynak, durum
+      ) values (
+        ${firmaId[a.firma]}, ${proje.id}, ${a.ilan}, ${a.ger}, ${a.gecikme},
+        'ilan_arsivi', 'teyitli'
+      )`;
   }
+
+  // Açık itiraz örneği — firma sayfasında "itiraz edildi" olarak görünür
+  await sql`
+    update teslim_kaydi set durum = 'itiraz',
+      itiraz_aciklama = 'Gecikme ruhsat revizyonundan kaynaklandı, belediye yazısı ekte.',
+      itiraz_son_tarih = current_date + 2
+    where proje_id = (select id from proje where slug = 'cevahir-yasam-vadisi')`;
 
   console.log('Bölge metinleri…');
   await sql`
