@@ -3,26 +3,43 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { ilSlugCoz } from '@/lib/routing';
 import { ilceler, ilOzet, bolgeIcerik } from '@/lib/queries/bolge';
+import { filtreCoz, seciliSayisi } from '@/lib/filtre';
+import { AramaSayfasi } from '@/components/arama/AramaSayfasi';
 import { para, yuzde } from '@/lib/format';
 
 /**
  * Şehir sayfası — /istanbul-konut-projeleri
  *
- * Bu bir arama sonucu değil, REHBER. Filtre paneli yok; pazar özeti,
- * ilçe ızgarası ve hazır seçkiler var. En yüksek hacimli sayfa tipi.
+ * KANONİK ADRESTE bu bir arama sonucu değil, REHBER: pazar özeti, ilçe
+ * ızgarası ve hazır seçkiler. En yüksek hacimli sayfa tipi.
+ *
+ * Ama bir SÜZGEÇ varsa (ör. /antalya-konut-projeleri?kategori=villa)
+ * arama sonucuna dönüşür. Aksi halde segment bağlantıları çıkmaz sokak
+ * olurdu: süzgeç sessizce düşer ve kullanıcı neden aradığı şeyi
+ * göremediğini anlamaz. Süzgeçli hâl arama motoruna kapalıdır;
+ * kanonik adres rehber olarak kalır.
  */
 
 export const revalidate = 3600; // 1 saat + onay anında etiketle yenilenir
 
-type Params = { params: Promise<{ il: string }> };
+type Params = {
+  params: Promise<{ il: string }>;
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
+};
 
-export async function generateMetadata({ params }: Params): Promise<Metadata> {
+export async function generateMetadata({ params, searchParams }: Params): Promise<Metadata> {
   const { il: ilSlug } = await params;
   const il = ilSlugCoz(ilSlug);
   if (!il) return {};
 
   const ozet = await ilOzet(il);
   if (!ozet) return {};
+
+  // Süzgeçli hâl indekslenmez: aynı içerik sayısız parametre
+  // kombinasyonunda görünürse kanonik sayfa kendi kopyalarıyla yarışır.
+  if (suzgecVar(await searchParams)) {
+    return { robots: { index: false, follow: true }, alternates: { canonical: `/${ilSlug}` } };
+  }
 
   const ad = il.charAt(0).toUpperCase() + il.slice(1);
   // Başlıktaki sayı ve fiyat DEĞİŞKENDEN gelir — sabit yazılmaz.
@@ -36,10 +53,33 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
   };
 }
 
-export default async function IlSayfasi({ params }: Params) {
+/** Rehber mi sonuç mu: adreste süzgeç var mı? */
+function suzgecVar(q: Record<string, string | string[] | undefined>): boolean {
+  return Object.keys(q).some(
+    (k) => k !== 'sayfa' && q[k] !== undefined && q[k] !== ''
+  );
+}
+
+export default async function IlSayfasi({ params, searchParams }: Params) {
   const { il: ilSlug } = await params;
   const il = ilSlugCoz(ilSlug);
   if (!il) notFound();
+
+  const q = await searchParams;
+  const ad0 = il.charAt(0).toUpperCase() + il.slice(1);
+
+  if (suzgecVar(q)) {
+    const filtre = filtreCoz({ il }, q);
+    const icerik0 = await bolgeIcerik(il).catch(() => null);
+    return (
+      <AramaSayfasi
+        taban={`/${ilSlug}`}
+        baslik={`${ad0} Konut Projeleri`}
+        filtre={filtre}
+        girisMetni={seciliSayisi(filtre) === 0 ? icerik0?.metin ?? null : null}
+      />
+    );
+  }
 
   const [ozet, liste, icerik] = await Promise.all([
     ilOzet(il),

@@ -103,7 +103,10 @@ export function filtreCoz(
     il: konum.il,
     ilce: konum.ilce,
     mahalle: konum.mahalle,
-    kategori: konum.kategori,
+    // Kategori normalde YOLDAN gelir (/istanbul/kadikoy/villa-konut-projeleri).
+    // Sorgu dizesinden okunması yalnızca /ara yönlendirmesi için:
+    // hero'daki tip seçimi kanonik yola çevrilemediğinde buraya düşer.
+    kategori: konum.kategori ?? (Array.isArray(q.kategori) ? q.kategori[0] : q.kategori),
     daireTipi: konum.daireTipi ? [konum.daireTipi] : liste(q.tip),
     minFiyat: sayi(q.minf),
     maxFiyat: sayi(q.maxf),

@@ -42,8 +42,18 @@
   --tint-blush: #f3dce0;  --tint-blush-ink: #7a4550;
   --tint-stone: #e2ecef;  --tint-stone-ink: #3d5a60;
 
-  /* tipografi */
-  --font-sans: "Segoe UI", system-ui, Roboto, Helvetica, Arial, sans-serif;
+  /* Lüks aksanı. YALNIZCA premium sinyali taşır: adım numaraları,
+     endeks son noktası, "projemi ekle" bandı. Marka moru yerine
+     geçmez — ikisi aynı yerde kullanılırsa ikisi de zayıflar. */
+  --bronz: #9a7f4e;
+
+  /* tipografi
+     --font-sans ve --font-serif next/font ile yüklenir (app/layout.tsx);
+     değişkenler orada tanımlanmazsa aşağıdaki yedek yığın devreye girer.
+     Serif YALNIZCA başlıklarda: lüks segmentte ağırlığı renk değil
+     tipografi taşıyor, ama gövde metninde serif okunabilirliği düşürür. */
+  --font-sans: var(--yazi-sans), "Segoe UI", system-ui, Roboto, Helvetica, Arial, sans-serif;
+  --font-serif: var(--yazi-serif), Georgia, "Times New Roman", serif;
   --font-mono: Consolas, "SF Mono", ui-monospace, monospace;
   --text-display: 28px;
   --text-h1: 26px;
@@ -109,6 +119,7 @@
     --tint-butter: #332b18; --tint-butter-ink: #dcbe72;
     --tint-blush: #372028;  --tint-blush-ink: #dfa3ae;
     --tint-stone: #202b2e;  --tint-stone-ink: #9fbdc4;
+    --bronz: #cbab72;
 
     --elev-1: none;
     --elev-1-border: 1px solid #2e2a38;
@@ -149,6 +160,7 @@
   --tint-butter: #332b18; --tint-butter-ink: #dcbe72;
   --tint-blush: #372028;  --tint-blush-ink: #dfa3ae;
   --tint-stone: #202b2e;  --tint-stone-ink: #9fbdc4;
+  --bronz: #cbab72;
   --elev-1: none;
   --elev-1-border: 1px solid #2e2a38;
   --elev-2: 0 10px 32px rgba(0, 0, 0, 0.6);

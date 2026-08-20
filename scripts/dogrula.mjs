@@ -432,6 +432,50 @@ async function calistir() {
     }
     return sonuc === true || 'damga ikinci güncellemede değişti ya da süre yanlış hesaplandı';
   });
+
+  console.log('\nVilla segmenti');
+
+  await kontrol('Villa tipleri kısıtta tanımlı', async () => {
+    // 0006 kısıtı yeniden kurdu. Yeni tipler kabul edilmezse villa
+    // projesi hiç kaydedilemez ve hata ancak panelde görülür.
+    let sonuc = null;
+    try {
+      await sql.begin(async (tx) => {
+        const [f] = await tx`select id from firma limit 1`;
+        for (const tip of ['villa', 'mustakil', 'yali', 'rezidans']) {
+          await tx`
+            insert into proje (slug, ad, firma_id, il, ilce, tip, durum)
+            values (${'__deneme_' + tip}, 'Deneme', ${f.id}, 'test', 'test', ${tip}, 'taslak')`;
+        }
+        const [{ n }] = await tx`
+          select count(*)::int as n from proje where slug like '__deneme%'`;
+        sonuc = n === 4;
+        throw new Error('__geri_al__');
+      });
+    } catch (e) {
+      if (e.message !== '__geri_al__') throw e;
+    }
+    return sonuc === true || 'yeni proje tipleri kısıt tarafından reddediliyor';
+  });
+
+  await kontrol('Villa alanları şemada var', async () => {
+    const s = await sql`
+      select column_name from information_schema.columns
+      where (table_name = 'daire_tipi' and column_name = 'arsa_m2')
+         or (table_name = 'proje' and column_name in ('denize_mesafe_m','havuz_tipi'))`;
+    return s.length === 3 || `beklenen 3 kolon, ${s.length} bulundu`;
+  });
+
+  await kontrol('Sahil bölgesi tablosu sorgulanabiliyor', async () => {
+    // Ana sayfadaki sahil bölgesi kutusu bu sorguya bağlı.
+    const r = await sql`
+      select sb.slug::text as slug, sb.ad,
+             (select count(*)::int from proje p
+               where p.yayinda and p.durum in ('lansman','satista')
+                 and p.il = sb.il and p.ilce = any(sb.ilceler)) as n
+      from sahil_bolgesi sb where sb.yayinda order by sb.sira`;
+    return Array.isArray(r) || 'sahil bölgesi sorgusu dizi döndürmedi';
+  });
   await sql.end();
 
   if (hata > 0) {
