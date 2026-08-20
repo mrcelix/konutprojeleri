@@ -373,6 +373,65 @@ async function calistir() {
     }
     return sonuc === true || 'jsonb paketi beklenen şekilde okunamadı';
   });
+
+  console.log('\nTalepler');
+
+  await kontrol('Telefon maskesi ham numarayı sızdırmıyor', async () => {
+    // Maskeleme SQL tarafında; ham numara sorgudan hiç çıkmıyor.
+    // Maske ortadaki haneleri gizlemezse KVKK gerekçesi çöker.
+    let sonuc = null;
+    try {
+      await sql.begin(async (tx) => {
+        const [p] = await tx`select id, firma_id from proje limit 1`;
+        const [t] = await tx`
+          insert into talep (proje_id, firma_id, ad, telefon, durum)
+          values (${p.id}, ${p.firma_id}, 'Deneme', '05321234567', 'yeni')
+          returning id`;
+        const [m] = await tx`
+          select (left(telefon, 4) || ' ••• •• ' || right(telefon, 2)) as maske
+          from talep where id = ${t.id}`;
+        sonuc =
+          m.maske === '0532 ••• •• 67' &&
+          !m.maske.includes('123') &&
+          !m.maske.includes('456');
+        throw new Error('__geri_al__');
+      });
+    } catch (e) {
+      if (e.message !== '__geri_al__') throw e;
+    }
+    return sonuc === true || 'maske beklenen biçimde değil ya da orta haneleri sızdırıyor';
+  });
+
+  await kontrol('Yanıt süresi damgası bir kez yazılıyor', async () => {
+    // coalesce olmadan her görüntüleme damgayı sıfırlar ve firma
+    // karnesindeki yanıt süresi ölçümü işe yaramaz hale gelir.
+    let sonuc = null;
+    try {
+      await sql.begin(async (tx) => {
+        const [p] = await tx`select id, firma_id from proje limit 1`;
+        const [t] = await tx`
+          insert into talep (proje_id, firma_id, ad, telefon, durum, olusturuldu)
+          values (${p.id}, ${p.firma_id}, 'Deneme', '05321234567', 'yeni',
+                  now() - interval '3 hours')
+          returning id`;
+        await tx`update talep set acilma_zamani = coalesce(acilma_zamani, now())
+                 where id = ${t.id}`;
+        const [ilk] = await tx`select acilma_zamani from talep where id = ${t.id}`;
+        await tx`update talep set acilma_zamani = coalesce(acilma_zamani, now())
+                 where id = ${t.id}`;
+        const [ikinci] = await tx`select acilma_zamani from talep where id = ${t.id}`;
+        const [s] = await tx`
+          select round(extract(epoch from acilma_zamani - olusturuldu) / 3600)::int as saat
+          from talep where id = ${t.id}`;
+        sonuc =
+          ilk.acilma_zamani.getTime() === ikinci.acilma_zamani.getTime() && s.saat === 3;
+        throw new Error('__geri_al__');
+      });
+    } catch (e) {
+      if (e.message !== '__geri_al__') throw e;
+    }
+    return sonuc === true || 'damga ikinci güncellemede değişti ya da süre yanlış hesaplandı';
+  });
   await sql.end();
 
   if (hata > 0) {
