@@ -14,11 +14,21 @@ import { sql } from '@/lib/db';
 
 export async function SiteAltBilgi() {
   // Alt bilgideki tek dinamik parça: en çok projesi olan iller.
-  const iller = await sql<{ il: string; n: number }[]>`
-    select il, count(*)::int as n from proje
-    where yayinda and durum in ('lansman','satista')
-    group by il order by count(*) desc limit 6
-  `.catch(() => []);
+  //
+  // try/catch, `.catch()` DEĞİL. lib/db.ts bağlantıyı tembel kuruyor ve
+  // DATABASE_URL yoksa sql çağrısı EŞZAMANLI fırlatıyor — yani
+  // sql`...`.catch(...) zinciri kurulamadan hata atılıyor ve yakalanmıyor.
+  // Bu, veritabanısız derlemede ana sayfanın tamamını düşürüyordu.
+  let iller: { il: string; n: number }[] = [];
+  try {
+    iller = await sql<{ il: string; n: number }[]>`
+      select il, count(*)::int as n from proje
+      where yayinda and durum in ('lansman','satista')
+      group by il order by count(*) desc limit 6
+    `;
+  } catch {
+    iller = [];
+  }
 
   const ilAdi = (s: string) => s.charAt(0).toLocaleUpperCase('tr') + s.slice(1);
 

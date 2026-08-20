@@ -65,22 +65,32 @@ export type AnaSayfaVerisi = {
   karne: KarneSatiri[];
 };
 
-const AKTIF = sql`p.yayinda and p.durum in ('lansman','satista')`;
+/**
+ * Aktif proje koşulu.
+ *
+ * FONKSİYON OLMAK ZORUNDA, sabit değil. Modül seviyesinde
+ * `const AKTIF = sql\`...\`` yazmak sql'i import anında çağırır ve
+ * DATABASE_URL olmayan ortamda (CI, önizleme derlemesi) bağlantı
+ * kurulmaya çalışıldığı için `next build` daha veri çekmeden kırılır.
+ * Aynı hata lib/queries/arama.ts'te de yaşandı; kalite işi tam olarak
+ * bunu yakalamak için veritabanısız çalışıyor.
+ */
+const aktif = () => sql`p.yayinda and p.durum in ('lansman','satista')`;
 
 export async function anaSayfaVerisi(): Promise<AnaSayfaVerisi> {
   const [r] = await sql<[AnaSayfaVerisi]>`
     select
-      (select count(*)::int from proje p where ${AKTIF}) as "toplamProje",
-      (select count(distinct p.firma_id)::int from proje p where ${AKTIF}) as "toplamFirma",
-      (select count(distinct p.il)::int from proje p where ${AKTIF}) as "toplamIl",
+      (select count(*)::int from proje p where ${aktif()}) as "toplamProje",
+      (select count(distinct p.firma_id)::int from proje p where ${aktif()}) as "toplamFirma",
+      (select count(distinct p.il)::int from proje p where ${aktif()}) as "toplamIl",
       (select count(*)::int from proje p
-        where ${AKTIF} and p.olusturuldu > now() - interval '7 days') as "buHafta",
+        where ${aktif()} and p.olusturuldu > now() - interval '7 days') as "buHafta",
 
       -- Önümüzdeki iki çeyrekte teslim edilecekler. Villa alıcısı için
       -- "yakında teslim" ayrı bir segment: bekleyecek vakti olmayan
       -- alıcı doğrudan buraya bakar.
       (select count(*)::int from proje p
-        where ${AKTIF} and p.teslim_ceyrek is not null
+        where ${aktif()} and p.teslim_ceyrek is not null
           and p.teslim_ceyrek <= to_char(now() + interval '6 months', 'YYYY') || 'Q' ||
               (floor((extract(month from now() + interval '6 months')::int - 1) / 3) + 1)::text
       ) as "yakindaTeslim",
@@ -118,14 +128,14 @@ export async function anaSayfaVerisi(): Promise<AnaSayfaVerisi> {
                    (array_agg(d.tip order by coalesce(d.net_m2, 0) desc))[1] as odalar
             from daire_tipi d where d.proje_id = p.id
           ) fx on true
-          where ${AKTIF} and fx.min_fiyat is not null
+          where ${aktif()} and fx.min_fiyat is not null
           order by p.one_cikarma desc nulls last, p.fiyat_teyit_tarihi desc nulls last
           limit 6
         ) v
       ) as vitrin,
 
       (select coalesce(json_agg(s order by s.n desc), '[]') from (
-        select p.tip, count(*)::int as n from proje p where ${AKTIF}
+        select p.tip, count(*)::int as n from proje p where ${aktif()}
         group by p.tip
       ) s) as segmentler,
 
@@ -133,22 +143,22 @@ export async function anaSayfaVerisi(): Promise<AnaSayfaVerisi> {
       -- tema alıcının NE ARADIĞI. Aynı proje birden çok temaya girer.
       (select coalesce(json_agg(t order by t.n desc), '[]') from (
         select 'denize_sifir' as anahtar, count(*)::int as n from proje p
-          where ${AKTIF} and p.denize_mesafe_m is not null and p.denize_mesafe_m <= 300
+          where ${aktif()} and p.denize_mesafe_m is not null and p.denize_mesafe_m <= 300
         union all
         select 'ozel_havuz', count(*)::int from proje p
-          where ${AKTIF} and p.havuz_tipi = 'ozel'
+          where ${aktif()} and p.havuz_tipi = 'ozel'
         union all
         select 'mustakil', count(*)::int from proje p
-          where ${AKTIF} and p.tip in ('villa','mustakil','yali')
+          where ${aktif()} and p.tip in ('villa','mustakil','yali')
         union all
         select 'yakinda', count(*)::int from proje p
-          where ${AKTIF} and p.teslim_ceyrek is not null
+          where ${aktif()} and p.teslim_ceyrek is not null
             and p.teslim_ceyrek <= to_char(now() + interval '6 months', 'YYYY') || 'Q' ||
                 (floor((extract(month from now() + interval '6 months')::int - 1) / 3) + 1)::text
       ) t where t.n > 0) as temalar,
 
       (select coalesce(json_agg(s order by s.n desc), '[]') from (
-        select p.il, count(*)::int as n from proje p where ${AKTIF}
+        select p.il, count(*)::int as n from proje p where ${aktif()}
         group by p.il order by count(*) desc limit 12
       ) s) as sehirler,
 
@@ -158,7 +168,7 @@ export async function anaSayfaVerisi(): Promise<AnaSayfaVerisi> {
       (select coalesce(json_agg(b order by b.sira, b.n desc), '[]') from (
         select sb.slug::text as slug, sb.ad, sb.il, sb.sira,
                (select count(*)::int from proje p
-                 where ${AKTIF} and p.il = sb.il and p.ilce = any(sb.ilceler)) as n
+                 where ${aktif()} and p.il = sb.il and p.ilce = any(sb.ilceler)) as n
         from sahil_bolgesi sb where sb.yayinda
       ) b where b.n > 0) as sahiller,
 
