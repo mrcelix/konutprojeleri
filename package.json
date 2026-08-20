@@ -15,7 +15,8 @@
     "db:seed": "node --env-file=.env.local scripts/seed.mjs",
     "db:dogrula": "node --env-file=.env.local scripts/dogrula.mjs",
     "db:gecikme": "node --env-file=.env.local scripts/gecikme.mjs",
-    "kurulum": "npm run db:migrate && npm run db:seed && npm run db:dogrula"
+    "kurulum": "npm run db:migrate && npm run db:seed && npm run db:dogrula",
+    "panel:kontrol": "node --env-file=.env.local scripts/panel-kontrol.mjs"
   },
   "dependencies": {
     "@supabase/ssr": "^0.12.4",
