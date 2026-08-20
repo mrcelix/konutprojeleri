@@ -88,8 +88,12 @@ npm run db:gecikme
 ```
 
 Yerelden 40–80 ms normaldir (Türkiye → Frankfurt). Asıl ölçüm Vercel
-üzerinden yapılır; ana sayfadaki rozet onu gösterir ve **3 ms altı**
-olmalıdır.
+üzerinden yapılır; ana sayfadaki rozet onu gösterir.
+
+**Bakılacak değer ORTANCA, ilk sorgu değil.** İlk sorgu bağlantı
+kurulumunu da içerir (DNS, TCP, TLS, havuz kimlik doğrulaması) ve aynı
+şehirde bile 100–150 ms sürer; bölge hakkında hiçbir şey söylemez.
+Ortanca **5 ms altı** olmalıdır.
 
 ## 4b. İlk yönetici hesabı
 

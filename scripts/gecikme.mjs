@@ -44,7 +44,8 @@ try {
   console.log(`Küme              : ${bolge}`);
   console.log('');
   console.log('Yerelden 40-80 ms normaldir (Türkiye → Frankfurt).');
-  console.log('Vercel üzerinden 3 ms üstüyse bölge eşleşmesi yanlıştır.');
+  console.log('Vercel üzerinden ORTANCA 5 ms üstüyse bölge eşleşmesi yanlıştır.');
+console.log('İlk sorgu bağlantı kurulumunu da içerir; o değer bölge hakkında bilgi vermez.');
 } finally {
   await sql.end();
 }

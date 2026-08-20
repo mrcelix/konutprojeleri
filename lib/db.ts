@@ -107,8 +107,42 @@ export function directSql(): Sql {
 }
 
 /** Bölge yapılandırmasının doğruluğunu ölçer. Beklenen: < 3 ms. */
-export async function gecikmeOlc(): Promise<number> {
+export type Gecikme = {
+  /** İlk sorgu: DNS + TCP + TLS + havuz kimlik doğrulaması dahil. */
+  ilk: number;
+  /** Bağlantı kurulduktan sonraki ortanca. Bölge eşleşmesinin ölçüsü budur. */
+  ortanca: number;
+};
+
+/**
+ * Ağ gecikmesi ölçümü.
+ *
+ * TEK SORGU ÖLÇMEK YANLIŞTI. İlk sorgu bağlantı kurulumunu da içerir:
+ * DNS, TCP, TLS el sıkışması ve Supavisor kimlik doğrulaması. Bu, aynı
+ * şehirde bile 100-150 ms sürer ve bölge eşleşmesi hakkında hiçbir şey
+ * söylemez — rozet doğru yapılandırılmış bir kurulumda bile alarm
+ * veriyordu.
+ *
+ * Bölge eşleşmesinin ölçüsü, bağlantı kurulduktan SONRAKİ gidiş-dönüş
+ * süresidir. İkisi de döndürülüyor: ilk sorgu soğuk başlatmada gerçekten
+ * ödenen bedel, ortanca ise altyapının doğru kurulduğunun kanıtı.
+ */
+export async function gecikmeOlc(orneklem = 5): Promise<Gecikme> {
   const t0 = performance.now();
   await sql`select 1`;
-  return Math.round((performance.now() - t0) * 100) / 100;
+  const ilk = performance.now() - t0;
+
+  const olcumler: number[] = [];
+  for (let i = 0; i < orneklem; i++) {
+    const t = performance.now();
+    await sql`select 1`;
+    olcumler.push(performance.now() - t);
+  }
+  olcumler.sort((a, b) => a - b);
+
+  const yuvarla = (n: number) => Math.round(n * 100) / 100;
+  return {
+    ilk: yuvarla(ilk),
+    ortanca: yuvarla(olcumler[Math.floor(olcumler.length / 2)] ?? ilk),
+  };
 }

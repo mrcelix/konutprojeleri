@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { sql } from '@/lib/db';
+import { gecikmeOlc } from '@/lib/db';
 
 /**
  * GEÇİCİ TANI UCU — kurulum bitince SİLİNECEK.
@@ -59,11 +59,9 @@ export async function GET() {
   }
 
   let veritabani: string;
-  let gecikmeMs: number | null = null;
+  let gecikme: { ilk: number; ortanca: number } | null = null;
   try {
-    const t = Date.now();
-    await sql`select 1`;
-    gecikmeMs = Date.now() - t;
+    gecikme = await gecikmeOlc();
     veritabani = 'bağlandı';
   } catch (e) {
     veritabani = `bağlanamadı: ${(e as Error).message.slice(0, 140)}`;
@@ -78,7 +76,7 @@ export async function GET() {
       derlemeAni,
       sunucu,
       veritabani,
-      gecikmeMs,
+      gecikme,
     },
     { headers: { 'cache-control': 'no-store' } }
   );
