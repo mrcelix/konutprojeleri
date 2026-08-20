@@ -3,6 +3,8 @@ import { notFound } from 'next/navigation';
 import { panelGerekli, yonetici } from '@/lib/yetki';
 import { duzenlenirProje, sonIslemler } from '@/lib/queries/duzenleyici';
 import { ProjeFormu } from './ProjeFormu';
+import { MedyaPaneli } from './MedyaPaneli';
+import { r2Hazir } from '@/lib/r2';
 
 /**
  * /yonetim/projeler/[id] — proje düzenleyici.
@@ -54,6 +56,15 @@ export default async function DuzenleyiciSayfasi({
         admin={admin}
         kaydedildi={q.kaydedildi === '1'}
       />
+
+      <div style={{ marginTop: 'var(--s-5)' }}>
+        <MedyaPaneli
+          projeId={proje.id}
+          medya={proje.medya ?? []}
+          cdn={process.env.NEXT_PUBLIC_CDN_URL ?? 'https://cdn.konutprojeleri.com'}
+          r2Var={r2Hazir()}
+        />
+      </div>
 
       {islemler.length > 0 && (
         <section className="kp-card dz-blok" style={{ marginTop: 'var(--s-5)' }}>

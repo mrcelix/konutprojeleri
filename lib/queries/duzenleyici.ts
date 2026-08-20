@@ -57,6 +57,7 @@ export type DuzenlenirProje = {
   veri_skoru: number;
   gorsel_sayisi: number;
   daire_tipleri: DuzenlenirDaire[];
+  medya: { id: number; key: string; alt: string | null; sira: number; varyant_hazir: boolean }[];
 };
 
 export async function duzenlenirProje(id: number): Promise<DuzenlenirProje | null> {
@@ -83,7 +84,14 @@ export async function duzenlenirProje(id: number): Promise<DuzenlenirProje | nul
           'toplam_adet', d.toplam_adet, 'kalan_adet', d.kalan_adet
         ) order by d.net_m2 nulls last, d.tip)
         from daire_tipi d where d.proje_id = p.id
-      ), '[]') as daire_tipleri
+      ), '[]') as daire_tipleri,
+      coalesce((
+        select json_agg(json_build_object(
+          'id', m.id, 'key', m.key, 'alt', m.alt,
+          'sira', m.sira, 'varyant_hazir', m.varyant_hazir
+        ) order by m.sira, m.id)
+        from medya m where m.proje_id = p.id and m.tur = 'gorsel'
+      ), '[]') as medya
     from proje p
     join firma f on f.id = p.firma_id
     where p.id = ${id}

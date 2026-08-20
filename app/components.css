@@ -1384,3 +1384,41 @@ a.tk-etiket:hover b { color: var(--brand); }
   .sa-ic { grid-template-columns: repeat(2, 1fr); }
   .hr-gorsel { height: 400px; }
 }
+
+/* ── Medya paneli ── */
+.my-yukle {
+  display: flex; align-items: center; gap: var(--s-3);
+  margin: var(--s-3) 0 var(--s-4); flex-wrap: wrap;
+}
+.my-hata { font-size: 11.5px; color: var(--danger); font-weight: 600; margin: 0; }
+
+.my-liste { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--s-3); }
+.my-satir {
+  display: grid; align-items: start; gap: var(--s-3);
+  grid-template-columns: 108px minmax(0, 1fr) auto;
+  padding: var(--s-3); border: 1px solid var(--border);
+  border-radius: var(--r-block); background: var(--surface-sunken);
+}
+.my-onizleme {
+  width: 108px; height: 76px; object-fit: cover;
+  border-radius: var(--r-pill); background: var(--surface-raised);
+  display: block;
+}
+.my-form {
+  display: grid; grid-template-columns: minmax(0, 1fr) 78px auto;
+  gap: var(--s-3); align-items: end;
+}
+.my-form .dz-alan .kp-label i {
+  font-style: normal; text-transform: none; letter-spacing: 0;
+  color: var(--danger); font-weight: 600;
+}
+.my-sira input { text-align: center; font-variant-numeric: tabular-nums; }
+.my-sil { display: flex; align-items: flex-end; height: 100%; }
+.my-sil .kp-btn { border-color: var(--danger); color: var(--danger); background: transparent; }
+.my-satir .my-hata { grid-column: 1 / -1; }
+
+@media (max-width: 860px) {
+  .my-satir { grid-template-columns: 88px minmax(0, 1fr); }
+  .my-form { grid-template-columns: 1fr; }
+  .my-sil { grid-column: 1 / -1; }
+}

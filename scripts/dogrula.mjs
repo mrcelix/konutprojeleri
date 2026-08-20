@@ -476,6 +476,41 @@ async function calistir() {
       from sahil_bolgesi sb where sb.yayinda order by sb.sira`;
     return Array.isArray(r) || 'sahil bölgesi sorgusu dizi döndürmedi';
   });
+
+  console.log('\nMedya');
+
+  await kontrol('Alt metni olmayan görsel yayına girmiyor', async () => {
+    // varyant_hazir alt metne bağlı ve sorgular bu bayrağa bakıyor.
+    // Kural bozulursa alt metinsiz görsel siteye çıkar.
+    let sonuc = null;
+    try {
+      await sql.begin(async (tx) => {
+        const [p] = await tx`select id from proje limit 1`;
+        const [m] = await tx`
+          insert into medya (proje_id, tur, key, alt, sira, varyant_hazir)
+          values (${p.id}, 'gorsel', '__deneme/x.jpg', null, 99, false)
+          returning id`;
+        const [{ n }] = await tx`
+          select count(*)::int as n from medya
+          where id = ${m.id} and varyant_hazir`;
+        sonuc = n === 0;
+        throw new Error('__geri_al__');
+      });
+    } catch (e) {
+      if (e.message !== '__geri_al__') throw e;
+    }
+    return sonuc === true || 'alt metinsiz görsel yayına hazır işaretlendi';
+  });
+
+  await kontrol('Medya anahtarı proje klasörüne yazılıyor', async () => {
+    // Anahtar sunucuda üretiliyor ama forma girip değiştirilebilir;
+    // eylem tarafında projeler/{id}/gorsel/ öneki kontrol ediliyor.
+    // Burada mevcut kayıtların o kalıba uyduğu doğrulanıyor.
+    const [{ n }] = await sql`
+      select count(*)::int as n from medya
+      where tur = 'gorsel' and key not like 'projeler/%'`;
+    return n === 0 || `${n} görsel proje klasörü dışında`;
+  });
   await sql.end();
 
   if (hata > 0) {

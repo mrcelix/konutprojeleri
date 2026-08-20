@@ -126,6 +126,29 @@ tablo kısıtı bunu zorunlu tutuyor.
 4. `.env.local` içine: `R2_ACCOUNT_ID`, `R2_ACCESS_KEY_ID`,
    `R2_SECRET_ACCESS_KEY`, `R2_BUCKET`, `NEXT_PUBLIC_CDN_URL`
 
+### CORS ayarı — atlanırsa yükleme sessizce başarısız olur
+
+Panelden görsel yükleme, dosyayı **tarayıcıdan doğrudan R2'ye** gönderir
+(Vercel fonksiyonlarının 4,5 MB gövde sınırı yüzünden başka yolu yok).
+Tarayıcının bunu yapabilmesi için kovada CORS tanımlı olmalı.
+
+R2 → kova → **Settings → CORS Policy**:
+
+```json
+[
+  {
+    "AllowedOrigins": ["https://konutprojeleri.com", "http://localhost:3000"],
+    "AllowedMethods": ["PUT", "GET", "HEAD"],
+    "AllowedHeaders": ["content-type"],
+    "MaxAgeSeconds": 3600
+  }
+]
+```
+
+Vercel önizleme dağıtımlarından da yükleme yapacaksanız
+`https://*.vercel.app` ekleyin. Bu ayar yoksa yükleme düğmesi
+"R2 yüklemeyi reddetti" hatası verir; ortam değişkenleri doğru olsa bile.
+
 Görseller **Vercel'in resim optimizasyonundan geçmez** —
 `next.config.ts` özel bir yükleyici kullanır. 20 GB medya Vercel'in
 dönüşüm kotasını dakikalar içinde tüketirdi; R2'de çıkış trafiği zaten
