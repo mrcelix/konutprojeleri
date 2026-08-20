@@ -936,3 +936,41 @@ a.tk-etiket:hover b { color: var(--brand); }
   .dz-duzen { grid-template-columns: 1fr; }
   .dz-yan { position: static; }
 }
+
+/* ── Onay kuyruğu ── */
+.on-liste { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--s-4); }
+.on-kart { padding: var(--s-5); }
+
+.on-ust {
+  display: flex; align-items: flex-start; gap: var(--s-4);
+  margin-bottom: var(--s-4); flex-wrap: wrap;
+}
+.on-ad {
+  display: block; font-size: 15px; font-weight: 750; letter-spacing: -0.02em;
+  color: var(--text-primary); text-decoration: none;
+}
+.on-ad:hover { color: var(--brand); }
+.on-isaretler { margin-left: auto; display: flex; gap: 4px; flex-wrap: wrap; }
+
+.on-fark { width: 100%; border-collapse: collapse; font-size: 12.5px; }
+.on-fark th {
+  text-align: left; font-size: 9.5px; font-weight: 700; letter-spacing: 0.06em;
+  text-transform: uppercase; color: var(--text-muted);
+  padding: 0 var(--s-3) 5px 0;
+}
+.on-fark td {
+  padding: 6px var(--s-3) 6px 0; border-top: 1px solid var(--border);
+  vertical-align: top;
+}
+.on-eski { color: var(--text-muted); text-decoration: line-through; }
+.on-yeni { color: var(--text-primary); font-weight: 700; }
+
+.on-form { margin-top: var(--s-4); display: grid; gap: var(--s-3); }
+.on-form textarea {
+  width: 100%; box-sizing: border-box; padding: 8px var(--s-3);
+  font: inherit; font-size: 12.5px; line-height: 1.55; resize: vertical;
+  background: var(--surface-raised); color: var(--text-primary);
+  border: 1px solid var(--border); border-radius: var(--r-input);
+}
+.on-form textarea:focus-visible { outline: 2px solid var(--brand); outline-offset: 1px; }
+.on-eylem { display: flex; gap: var(--s-3); flex-wrap: wrap; }

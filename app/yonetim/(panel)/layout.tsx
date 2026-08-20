@@ -23,7 +23,7 @@ const BAGLANTILAR = [
   { yol: '/yonetim', ad: 'Kontrol paneli', herkes: true, hazir: true },
   { yol: '/yonetim/projeler', ad: 'Projeler', herkes: true, hazir: true },
   { yol: '/yonetim/talepler', ad: 'Talepler', herkes: true, hazir: false },
-  { yol: '/yonetim/onay', ad: 'Onay kuyruğu', herkes: false, hazir: false },
+  { yol: '/yonetim/onay', ad: 'Onay kuyruğu', herkes: false, hazir: true },
   { yol: '/yonetim/firmalar', ad: 'Firmalar', herkes: false, hazir: false },
   { yol: '/yonetim/icerik', ad: 'İçerik', herkes: false, hazir: false },
 ];

@@ -298,6 +298,81 @@ async function calistir() {
       ) t`;
     return n === 0 || `${n} slug birden fazla projede kullanılıyor`;
   });
+
+  console.log('\nOnay kuyruğu');
+
+  await kontrol('Dinamik alan güncellemesi çalışıyor', async () => {
+    // lib/queries/onay.ts, onaylanan alanları sql(nesne, ...anahtarlar)
+    // ile yazıyor. Alan adları paketten geldiği için beyaz listeden
+    // geçiyorlar; burada doğrulanan şey yardımcının SQL ürettiği.
+    // İşlem sonunda geri alınır, veri değişmez.
+    let sonuc = null;
+    try {
+      await sql.begin(async (tx) => {
+        const [p] = await tx`select id, ad from proje limit 1`;
+        const yazilacak = { ad: p.ad + ' (deneme)', santiye_yuzde: 42 };
+        await tx`update proje set ${tx(yazilacak, 'ad', 'santiye_yuzde')} where id = ${p.id}`;
+        const [k] = await tx`select ad, santiye_yuzde from proje where id = ${p.id}`;
+        sonuc = k.santiye_yuzde === 42 && k.ad.endsWith('(deneme)');
+        throw new Error('__geri_al__');
+      });
+    } catch (e) {
+      if (e.message !== '__geri_al__') throw e;
+    }
+    return sonuc === true || 'dinamik güncelleme beklenen sonucu vermedi';
+  });
+
+  await kontrol('Daire tipi upsert çakışmayı çözüyor', async () => {
+    // Onay uygulanırken yeni daire tipi eklenirken aynı tip zaten
+    // eklenmiş olabilir (iki onay arka arkaya). unique (proje_id, tip)
+    // kısıtı olmadan bu yol patlardı.
+    let sonuc = null;
+    try {
+      await sql.begin(async (tx) => {
+        const [p] = await tx`select id from proje limit 1`;
+        for (let i = 0; i < 2; i++) {
+          await tx`
+            insert into daire_tipi (proje_id, tip, net_m2, liste_fiyati)
+            values (${p.id}, '__deneme__', 80, 1000000)
+            on conflict (proje_id, tip) do update set
+              net_m2 = excluded.net_m2, liste_fiyati = excluded.liste_fiyati`;
+        }
+        const [{ n }] = await tx`
+          select count(*)::int as n from daire_tipi
+          where proje_id = ${p.id} and tip = '__deneme__'`;
+        sonuc = n === 1;
+        throw new Error('__geri_al__');
+      });
+    } catch (e) {
+      if (e.message !== '__geri_al__') throw e;
+    }
+    return sonuc === true || 'upsert ikinci eklemede yeni satır üretti';
+  });
+
+  await kontrol('Onay kaydı jsonb paketi okunabiliyor', async () => {
+    // degisiklik alanı {alanlar:{...}, daireler:[...]} biçiminde
+    // yazılıyor ve okunurken bu şekle güveniliyor.
+    let sonuc = null;
+    try {
+      await sql.begin(async (tx) => {
+        const [f] = await tx`select id from firma limit 1`;
+        const [p] = await tx`select id from proje limit 1`;
+        const paket = { alanlar: { aidat: { eski: 100, yeni: 200 } }, daireler: [] };
+        const [o] = await tx`
+          insert into onay_kaydi (firma_id, varlik, varlik_id, degisiklik, isaretler)
+          values (${f.id}, 'proje', ${p.id}, ${tx.json(paket)}::jsonb, ${['fiyat_sicramasi']})
+          returning id`;
+        const [okunan] = await tx`select degisiklik, isaretler from onay_kaydi where id = ${o.id}`;
+        sonuc =
+          okunan.degisiklik?.alanlar?.aidat?.yeni === 200 &&
+          okunan.isaretler[0] === 'fiyat_sicramasi';
+        throw new Error('__geri_al__');
+      });
+    } catch (e) {
+      if (e.message !== '__geri_al__') throw e;
+    }
+    return sonuc === true || 'jsonb paketi beklenen şekilde okunamadı';
+  });
   await sql.end();
 
   if (hata > 0) {
