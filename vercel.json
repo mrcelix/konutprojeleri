@@ -1,18 +1,12 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
-
-  "//": "KRİTİK: Fonksiyonlar Supabase ile aynı şehirde çalışmalı. Bu satır olmazsa varsayılan bölge ABD olur ve her sorgu ~90 ms sürer. İlk dağıtımdan sonra ana sayfadaki gecikme rozetiyle DOĞRULAYIN.",
   "regions": ["fra1"],
-
-  "//crons": "Hobby planı en fazla 2 cron işine izin verir ve her biri günde bir kez tetiklenir; haftalık ifadeler kabul edilmez. Üçüncü iş (/api/cron/yonlendirme-testi) bu yüzden buradan çıkarıldı — ucu duruyor, elle veya harici bir zamanlayıcıyla çağrılabilir. Pro'ya geçilirse geri eklenir ve endeks kontrolü haftalığa (0 5 * * 1) döndürülür.",
   "crons": [
     {
-      "//": "Site haritası — beyaz liste ve eşik kuralları uygulama mantığı olduğu için Vercel'de",
       "path": "/api/cron/sitemap",
       "schedule": "0 3 * * *"
     },
     {
-      "//": "Endeks sağlık kontrolü. Hesabın kendisi pg_cron'da; bu iş yalnızca sonucun makul olup olmadığına bakar. Hobby sınırı yüzünden günlük — kontrol ucuz ve tekrarlanabilir olduğu için sakıncası yok.",
       "path": "/api/cron/endeks-bildirim",
       "schedule": "0 5 * * *"
     }

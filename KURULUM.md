@@ -144,6 +144,26 @@ koymaktır.
 Bölge ayarı `vercel.json` içinde `"regions": ["fra1"]` olarak sabit —
 panelden değiştirmeyin.
 
+### vercel.json neden bu kadar kısa
+
+**Dosyaya yorum eklemeyin.** JSON yorum desteklemez ve Vercel şemayı
+katı doğruluyor; `"//"` gibi anahtarlar dağıtımı şu hatayla düşürür:
+
+```
+Invalid request: should NOT have additional property `//`
+```
+
+Açıklamalar bu yüzden burada. İki ayarın anlamı:
+
+`"regions": ["fra1"]` — **bu mimarinin tek kritik ayarı.** Fonksiyonlar
+Supabase ile aynı şehirde çalışmalı. Bu satır olmazsa varsayılan bölge
+ABD olur ve her sorgu ~90 ms sürer; sayfa başına 4–5 sorguyla yarım
+saniye kaybedilir. Panelden değiştirmeyin.
+
+`crons` — site haritası yenilemesi (03:00) ve endeks sağlık kontrolü
+(05:00). Ağır veritabanı işleri Vercel'de değil `pg_cron`'da çalışır;
+buradakiler yalnızca uygulama mantığı gerektiren işler.
+
 ### Hobby planı notları
 
 `vercel.json` Hobby'ye göre ayarlandı: **2 cron**, ikisi de günlük.
