@@ -14,8 +14,7 @@ import Link from 'next/link';
 
 const NAV = [
   { yol: '/ara?tip=villa', ad: 'Villa projeleri' },
-  { yol: '/ara?tip=mustakil', ad: 'Müstakil & yalı' },
-  { yol: '/ara?tip=rezidans', ad: 'Rezidans' },
+  { yol: '/ara?tip=konut', ad: 'Konut projeleri' },
   { yol: '/teslim-takvimi', ad: 'Teslim takvimi' },
   { yol: '/firmalar', ad: 'Firmalar' },
 ];
@@ -42,6 +41,11 @@ export function SiteBasligi({ aktif }: { aktif?: string }) {
         </nav>
 
         <div className="sb-eylem">
+          {/* Dil seçici görsel olarak duruyor; ikinci dil eklenene
+              kadar bağlantı değil, etiket. Tıklanan ama hiçbir şey
+              yapmayan düğme koymaktan iyidir. */}
+          <span className="sb-dil">TR</span>
+          <Link href="/karsilastir" className="kp-btn is-ghost is-small">Karşılaştırma</Link>
           <Link href="/yonetim/giris" className="kp-btn is-ghost is-small">Giriş yap</Link>
           <Link href="/yonetim/giris" className="kp-btn is-small">Projemi ekle</Link>
         </div>

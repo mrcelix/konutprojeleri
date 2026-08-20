@@ -7,53 +7,52 @@
 :root {
   color-scheme: light dark;
 
-  /* yüzey */
-  --surface-page: #f8f7fb;
+  /* yüzey — beyaz zemin, ferah. Kart ve sayfa aynı beyaz:
+     ayrımı gölge ve çizgi yapıyor, ton farkı değil. */
+  --surface-page: #ffffff;
   --surface-card: #ffffff;
-  --surface-sunken: #f1eff6;
+  --surface-sunken: #f5f8f9;
   --surface-raised: #ffffff;
 
-  /* metin */
-  --text-primary: #2c2838;
-  --text-secondary: #5f5a6e;
-  --text-muted: #6e6879;   /* mockuplardaki #948FA3 AA'yı geçmiyordu, üretim değeri bu */
+  /* metin — lacivert. Saf siyah bu paletle sert duruyor. */
+  --text-primary: #17303f;
+  --text-secondary: #55707f;
+  --text-muted: #667f8d;   /* beyaz üstünde AA sınırı; daha açığı geçmiyor */
   --text-inverse: #ffffff;
 
   /* çizgi */
-  --border: #ebe8f2;
-  --border-strong: #dcd7e6;
+  --border: #e3ebee;
+  --border-strong: #cfdde2;
 
-  /* marka */
-  --brand: #6e5c82;
-  --brand-strong: #584568;
-  --brand-soft: #dfdbef;
+  /* marka — turkuaz */
+  --brand: #0d9494;
+  --brand-strong: #0b8383;
+  --brand-soft: #e6f5f5;
 
   /* anlam — zemin / metin çifti. Yalnızca durum bildirir, dekorasyon değil. */
-  --success-bg: #d2e7dc;  --success: #2f5c48;
-  --warning-bg: #f6ebcd;  --warning: #7a5e12;
-  --danger-bg:  #f3dce0;  --danger:  #8a3444;
-  --info-bg:    #cfe0f0;  --info:    #2f5675;
+  --success-bg: #e4f2ea;  --success: #1f7a52;
+  --warning-bg: #f9efdc;  --warning: #8a6a24;
+  --danger-bg:  #fbeae6;  --danger:  #b4442f;
+  --info-bg:    #e2eff5;  --info:    #1f6480;
 
   /* kategori tonları — sıra sabit, anlam taşımaz */
-  --tint-blue: #cfe0f0;   --tint-blue-ink: #2f5675;
-  --tint-mint: #d2e7dc;   --tint-mint-ink: #2f5c48;
-  --tint-lav: #dfdbef;    --tint-lav-ink: #584568;
-  --tint-butter: #f6ebcd; --tint-butter-ink: #7a5e12;
-  --tint-blush: #f3dce0;  --tint-blush-ink: #7a4550;
-  --tint-stone: #e2ecef;  --tint-stone-ink: #3d5a60;
+  --tint-blue: #dceef4;   --tint-blue-ink: #1f6480;
+  --tint-mint: #e0f2ea;   --tint-mint-ink: #1f7a52;
+  --tint-lav: #e6f5f5;    --tint-lav-ink: #0b8383;
+  --tint-butter: #f7f0e6; --tint-butter-ink: #8a6a3a;
+  --tint-blush: #fbeae6;  --tint-blush-ink: #a04a35;
+  --tint-stone: #eef3f5;  --tint-stone-ink: #45606d;
 
-  /* Lüks aksanı. YALNIZCA premium sinyali taşır: adım numaraları,
-     endeks son noktası, "projemi ekle" bandı. Marka moru yerine
-     geçmez — ikisi aynı yerde kullanılırsa ikisi de zayıflar. */
-  --bronz: #9a7f4e;
+  /* Koyu lacivert — hero perdesi, CTA bandı, alt bant zemini.
+     Metin rengiyle aynı değil: zemin olarak daha koyusu gerekiyor. */
+  --lacivert: #0f2a3a;
 
   /* tipografi
-     --font-sans ve --font-serif next/font ile yüklenir (app/layout.tsx);
-     değişkenler orada tanımlanmazsa aşağıdaki yedek yığın devreye girer.
-     Serif YALNIZCA başlıklarda: lüks segmentte ağırlığı renk değil
-     tipografi taşıyor, ama gövde metninde serif okunabilirliği düşürür. */
+     Tek aile, hiyerarşi AĞIRLIKLA kuruluyor (800 başlık / 400 gövde).
+     İkinci bir başlık ailesi eklemek bu temada gereksiz: villahane
+     düzeninde ferahlık ve ağırlık farkı zaten hiyerarşiyi taşıyor,
+     iki aile yüklemek yalnızca sayfa ağırlığı ekler. */
   --font-sans: var(--yazi-sans), "Segoe UI", system-ui, Roboto, Helvetica, Arial, sans-serif;
-  --font-serif: var(--yazi-serif), Georgia, "Times New Roman", serif;
   --font-mono: Consolas, "SF Mono", ui-monospace, monospace;
   --text-display: 28px;
   --text-h1: 26px;
@@ -91,83 +90,83 @@
 /* İşletim sistemi koyu diyorsa — ama kullanıcı açık seçmediyse */
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    --surface-page: #16141c;
-    --surface-card: #1e1b26;
-    --surface-sunken: #121017;
-    --surface-raised: #262231;
+    --surface-page: #0d1820;
+    --surface-card: #14212a;
+    --surface-sunken: #0a141b;
+    --surface-raised: #1b2c37;
 
-    --text-primary: #edeaf2;
-    --text-secondary: #b4aec0;
-    --text-muted: #8b8499;
-    --text-inverse: #1a1622;
+    --text-primary: #e2edf2;
+    --text-secondary: #9db4c0;
+    --text-muted: #86a0ad;
+    --text-inverse: #0d1820;
 
-    --border: #2e2a38;
-    --border-strong: #423c50;
+    --border: #22333f;
+    --border-strong: #334856;
 
-    --brand: #a493bc;
-    --brand-strong: #beb0d0;
-    --brand-soft: #2e2739;
+    --brand: #35c4c4;
+    --brand-strong: #5ad6d6;
+    --brand-soft: #12333a;
 
-    --success-bg: #1b3329;  --success: #7fc7a5;
-    --warning-bg: #332b18;  --warning: #e0b75e;
-    --danger-bg:  #3a2028;  --danger:  #e8909e;
-    --info-bg:    #1b2a3a;  --info:    #8cbbe0;
+    --success-bg: #14301f;  --success: #6fc79a;
+    --warning-bg: #2f2717;  --warning: #dcb46e;
+    --danger-bg:  #33191a;  --danger:  #e8917c;
+    --info-bg:    #12293a;  --info:    #7fb8d6;
 
-    --tint-blue: #1e2c3b;   --tint-blue-ink: #9cc2e4;
-    --tint-mint: #1c3229;   --tint-mint-ink: #8ecbab;
-    --tint-lav: #2a2437;    --tint-lav-ink: #b7a9ce;
-    --tint-butter: #332b18; --tint-butter-ink: #dcbe72;
-    --tint-blush: #372028;  --tint-blush-ink: #dfa3ae;
-    --tint-stone: #202b2e;  --tint-stone-ink: #9fbdc4;
-    --bronz: #cbab72;
+    --tint-blue: #12293a;   --tint-blue-ink: #7fb8d6;
+    --tint-mint: #14301f;   --tint-mint-ink: #6fc79a;
+    --tint-lav: #12333a;    --tint-lav-ink: #5ad6d6;
+    --tint-butter: #2c2519; --tint-butter-ink: #d9b57e;
+    --tint-blush: #33191a;  --tint-blush-ink: #e8917c;
+    --tint-stone: #1a2830;  --tint-stone-ink: #9db4c0;
+    --lacivert: #0a1720;
 
     --elev-1: none;
-    --elev-1-border: 1px solid #2e2a38;
+    --elev-1-border: 1px solid #22333f;
     --elev-2: 0 10px 32px rgba(0, 0, 0, 0.6);
 
     /* Koyu temada birincil düğme tersine döner: en parlak öğe en önemli öğedir */
-    --btn-primary-bg: #a493bc;
-    --btn-primary-text: #1a1622;
+    --btn-primary-bg: #35c4c4;
+    --btn-primary-text: #072026;
 
     --image-filter: brightness(0.92);
-    --chart-grid: #2a2634;
+    --chart-grid: #22333f;
     --chart-fill-opacity: 0.14;
   }
 }
 
 /* Kullanıcı açıkça koyu seçtiyse — işletim sistemi ne derse desin */
 :root[data-theme="dark"] {
-  --surface-page: #16141c;
-  --surface-card: #1e1b26;
-  --surface-sunken: #121017;
-  --surface-raised: #262231;
-  --text-primary: #edeaf2;
-  --text-secondary: #b4aec0;
-  --text-muted: #8b8499;
-  --text-inverse: #1a1622;
-  --border: #2e2a38;
-  --border-strong: #423c50;
-  --brand: #a493bc;
-  --brand-strong: #beb0d0;
-  --brand-soft: #2e2739;
-  --success-bg: #1b3329;  --success: #7fc7a5;
-  --warning-bg: #332b18;  --warning: #e0b75e;
-  --danger-bg:  #3a2028;  --danger:  #e8909e;
-  --info-bg:    #1b2a3a;  --info:    #8cbbe0;
-  --tint-blue: #1e2c3b;   --tint-blue-ink: #9cc2e4;
-  --tint-mint: #1c3229;   --tint-mint-ink: #8ecbab;
-  --tint-lav: #2a2437;    --tint-lav-ink: #b7a9ce;
-  --tint-butter: #332b18; --tint-butter-ink: #dcbe72;
-  --tint-blush: #372028;  --tint-blush-ink: #dfa3ae;
-  --tint-stone: #202b2e;  --tint-stone-ink: #9fbdc4;
-  --bronz: #cbab72;
+  --surface-page: #0d1820;
+  --surface-card: #14212a;
+  --surface-sunken: #0a141b;
+  --surface-raised: #1b2c37;
+  --text-primary: #e2edf2;
+  --text-secondary: #9db4c0;
+  --text-muted: #86a0ad;
+  --text-inverse: #0d1820;
+  --border: #22333f;
+  --border-strong: #334856;
+  --brand: #35c4c4;
+  --brand-strong: #5ad6d6;
+  --brand-soft: #12333a;
+  --success-bg: #14301f;  --success: #6fc79a;
+  --warning-bg: #2f2717;  --warning: #dcb46e;
+  --danger-bg:  #33191a;  --danger:  #e8917c;
+  --info-bg:    #12293a;  --info:    #7fb8d6;
+  --tint-blue: #12293a;   --tint-blue-ink: #7fb8d6;
+  --tint-mint: #14301f;   --tint-mint-ink: #6fc79a;
+  --tint-lav: #12333a;    --tint-lav-ink: #5ad6d6;
+  --tint-butter: #2c2519; --tint-butter-ink: #d9b57e;
+  --tint-blush: #33191a;  --tint-blush-ink: #e8917c;
+  --tint-stone: #1a2830;  --tint-stone-ink: #9db4c0;
+  --lacivert: #0a1720;
   --elev-1: none;
-  --elev-1-border: 1px solid #2e2a38;
+  --elev-1-border: 1px solid #22333f;
   --elev-2: 0 10px 32px rgba(0, 0, 0, 0.6);
-  --btn-primary-bg: #a493bc;
-  --btn-primary-text: #1a1622;
+  --btn-primary-bg: #35c4c4;
+  --btn-primary-text: #072026;
   --image-filter: brightness(0.92);
-  --chart-grid: #2a2634;
+  --chart-grid: #22333f;
   --chart-fill-opacity: 0.14;
 }
 

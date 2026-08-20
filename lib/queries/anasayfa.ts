@@ -40,6 +40,7 @@ export type VitrinProjesi = {
 };
 
 export type Segment = { tip: string; n: number };
+export type Tema = { anahtar: string; n: number };
 export type SehirOzeti = { il: string; n: number };
 export type SahilBolgesi = { slug: string; ad: string; il: string; n: number };
 export type EndeksNoktasi = { donem: string; m2: number };
@@ -56,6 +57,7 @@ export type AnaSayfaVerisi = {
   yakindaTeslim: number;
   vitrin: VitrinProjesi[];
   segmentler: Segment[];
+  temalar: Tema[];
   sehirler: SehirOzeti[];
   sahiller: SahilBolgesi[];
   endeks: EndeksNoktasi[];
@@ -127,6 +129,24 @@ export async function anaSayfaVerisi(): Promise<AnaSayfaVerisi> {
         group by p.tip
       ) s) as segmentler,
 
+      -- Temalar segmentlerden ayrı: segment projenin NE OLDUĞU,
+      -- tema alıcının NE ARADIĞI. Aynı proje birden çok temaya girer.
+      (select coalesce(json_agg(t order by t.n desc), '[]') from (
+        select 'denize_sifir' as anahtar, count(*)::int as n from proje p
+          where ${AKTIF} and p.denize_mesafe_m is not null and p.denize_mesafe_m <= 300
+        union all
+        select 'ozel_havuz', count(*)::int from proje p
+          where ${AKTIF} and p.havuz_tipi = 'ozel'
+        union all
+        select 'mustakil', count(*)::int from proje p
+          where ${AKTIF} and p.tip in ('villa','mustakil','yali')
+        union all
+        select 'yakinda', count(*)::int from proje p
+          where ${AKTIF} and p.teslim_ceyrek is not null
+            and p.teslim_ceyrek <= to_char(now() + interval '6 months', 'YYYY') || 'Q' ||
+                (floor((extract(month from now() + interval '6 months')::int - 1) / 3) + 1)::text
+      ) t where t.n > 0) as temalar,
+
       (select coalesce(json_agg(s order by s.n desc), '[]') from (
         select p.il, count(*)::int as n from proje p where ${AKTIF}
         group by p.il order by count(*) desc limit 12
@@ -172,7 +192,7 @@ export async function anaSayfaVerisi(): Promise<AnaSayfaVerisi> {
 
   return r ?? {
     toplamProje: 0, toplamFirma: 0, toplamIl: 0, buHafta: 0, yakindaTeslim: 0,
-    vitrin: [], segmentler: [], sehirler: [], sahiller: [],
+    vitrin: [], segmentler: [], temalar: [], sehirler: [], sahiller: [],
     endeks: [], endeksYillik: null, karne: [],
   };
 }
@@ -202,6 +222,21 @@ export const SEGMENT_ADLARI: Record<string, string> = {
   toki: 'TOKİ',
   emlak_konut: 'Emlak Konut',
   ofis: 'Ofis',
+};
+
+export const TEMA_ADLARI: Record<string, string> = {
+  denize_sifir: 'Denize sıfır',
+  ozel_havuz: 'Özel havuzlu',
+  mustakil: 'Müstakil ev',
+  yakinda: 'Yakında teslim',
+};
+
+/** Tema → süzgeç adresi. Tema bir kısayol, yeni bir sayfa değil. */
+export const TEMA_YOLLARI: Record<string, string> = {
+  denize_sifir: '/ara?tip=yali',
+  ozel_havuz: '/ara?tip=villa',
+  mustakil: '/ara?tip=mustakil',
+  yakinda: '/teslim-takvimi',
 };
 
 export const IL_ADLARI: Record<string, string> = {

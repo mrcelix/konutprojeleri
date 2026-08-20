@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from 'next';
-import { Fraunces, Figtree } from 'next/font/google';
+import { Plus_Jakarta_Sans } from 'next/font/google';
 import './globals.css';
 import './components.css';
 
@@ -9,21 +9,13 @@ import './components.css';
  * next/font dosyaları kendi alan adımızdan servis eder ve derleme
  * anında alt küme çıkarır: Google'a istek gitmez, düzen kayması olmaz.
  *
- * Fraunces yalnızca BAŞLIKLARDA. Lüks segmentte ağırlığı renk değil
- * tipografi taşıyor; ama gövde metninde serif, tablo ve rakam yoğun
- * sayfalarda okunabilirliği düşürür.
+ * TEK AİLE. Hiyerarşi ağırlıkla kuruluyor (800 başlık / 400 gövde).
+ * İkinci bir başlık ailesi bu temada gereksiz — ferahlık ve ağırlık
+ * farkı hiyerarşiyi zaten taşıyor.
  */
-const serif = Fraunces({
+const sans = Plus_Jakarta_Sans({
   subsets: ['latin-ext'],
-  weight: ['400', '500', '600'],
-  style: ['normal', 'italic'],
-  variable: '--yazi-serif',
-  display: 'swap',
-});
-
-const sans = Figtree({
-  subsets: ['latin-ext'],
-  weight: ['400', '500', '600', '700'],
+  weight: ['400', '500', '600', '700', '800'],
   variable: '--yazi-sans',
   display: 'swap',
 });
@@ -50,7 +42,7 @@ export const viewport: Viewport = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     // lang="tr" — uppercase dönüşümünde "i" harfinin "İ" olması için gerekli
-    <html lang="tr" className={`${serif.variable} ${sans.variable}`} suppressHydrationWarning>
+    <html lang="tr" className={sans.variable} suppressHydrationWarning>
       <head>
         {/* Tema ilk boyamadan önce uygulanır; aksi halde koyu temada beyaz parlama olur */}
         <script
