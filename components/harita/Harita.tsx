@@ -120,11 +120,17 @@ export function Harita({ noktalar, poi, merkez, yakinlik, onGorunur }: Props) {
       harita.addLayer(kume as unknown as L.Layer);
 
       // ── POI katmanları ──
+      // Leaflet CSS değişkeni kabul etmiyor, gerçek renk dizesi
+      // istiyor. Değeri kökten OKUYORUZ: sabit yazılan renk (eski
+      // temadan kalma adaçayı yeşili #5C8A76) tema değişince
+      // haritada tek başına kalıyordu.
+      const kokStil = getComputedStyle(document.documentElement);
+      const poiRengi = kokStil.getPropertyValue('--primary').trim() || '#3A45E0';
       const poiKatman: Record<string, L.LayerGroup> = {};
       for (const p of poi) {
         (poiKatman[p.tip] ??= L.layerGroup()).addLayer(
           L.circleMarker([p.lat, p.lng], {
-            radius: 5, weight: 2, color: '#5C8A76', fillColor: '#5C8A76', fillOpacity: 0.85,
+            radius: 5, weight: 2, color: poiRengi, fillColor: poiRengi, fillOpacity: 0.85,
           }).bindTooltip(`${POI_ADLARI[p.tip] ?? p.tip}: ${p.ad}`)
         );
       }

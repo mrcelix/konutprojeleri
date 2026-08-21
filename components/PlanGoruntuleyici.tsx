@@ -71,6 +71,8 @@ export function PlanGoruntuleyici({ kaynak, alt, pdfKaynak }: Props) {
         style={{
           overflow: 'auto',
           borderRadius: 'var(--r-block)',
+          // Beyaz KASITLI ve tokendan gelmiyor: kat planı teknik bir
+          // çizim, koyu temada da beyaz kağıt üstünde okunmalı.
           background: '#ffffff',
           maxHeight: 560,
         }}
