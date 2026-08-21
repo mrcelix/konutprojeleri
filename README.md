@@ -77,7 +77,6 @@ lib/
 components/
   ui/                            Pill, Chip, Button…
 db/migrations/                   şema, kurallar, materyalize görünümler
-mockuplar/                       tasarım belgeleri (HTML)
 ```
 
 ---
@@ -153,14 +152,15 @@ bozulmadığını her push'ta doğrular.
 | 4 | Kat planı, firma, şehir, kampanya, arşiv, haber, endeks | — |
 | 5 | Yönetim paneli, onay kuyruğu, firma paneli | — |
 
-Ekran tasarımlarının tamamı `mockuplar/` altında.
-
 ---
 
 ## Not
 
-Tasarım sistemi sürüm 1.1 (`mockuplar/tasarim-sistemi.html`,
-`mockuplar/koyu-tema.html`) bu depodaki token'ların kaynağıdır. Bileşen
-dosyalarında düz renk kodu bulunmaz; hepsi `globals.css` içindeki
-değişkenlerden okur. Yeni bir renk veya ölçek değeri gerekiyorsa önce
-tasarım sistemine eklenir.
+Tasarım sisteminin kaynağı `app/globals.css` içindeki token'lardır.
+Bileşen dosyalarında düz renk kodu bulunmaz; hepsi o değişkenlerden
+okur. Yeni bir renk veya ölçek değeri gerekiyorsa önce token olarak
+tanımlanır, sonra kullanılır.
+
+Tasarım HTML mockup'ları depodan çıkarıldı; uygulanan tasarım artık
+kodun kendisidir. Eski mockup'lara ihtiyaç olursa git geçmişinde
+duruyorlar (`git log -- mockuplar/`).
