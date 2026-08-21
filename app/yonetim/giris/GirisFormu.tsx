@@ -15,7 +15,7 @@ import { girisYap } from './eylem';
 function Dugme() {
   const { pending } = useFormStatus();
   return (
-    <button type="submit" className="kp-btn" style={{ width: '100%' }} disabled={pending}>
+    <button type="submit" className="btn btn-primary" style={{ width: '100%' }} disabled={pending}>
       {pending ? 'Giriş yapılıyor…' : 'Giriş yap'}
     </button>
   );
@@ -35,7 +35,7 @@ export function GirisFormu({ don }: { don: string }) {
       )}
 
       <label className="yn-alan">
-        <span className="kp-label">E-posta</span>
+        <span className="eyebrow">E-posta</span>
         <input
           type="email"
           name="eposta"
@@ -47,7 +47,7 @@ export function GirisFormu({ don }: { don: string }) {
       </label>
 
       <label className="yn-alan">
-        <span className="kp-label">Parola</span>
+        <span className="eyebrow">Parola</span>
         <input type="password" name="parola" autoComplete="current-password" required />
       </label>
 

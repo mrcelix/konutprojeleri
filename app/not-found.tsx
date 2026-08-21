@@ -10,9 +10,9 @@ import Link from 'next/link';
 
 export default function NotFound() {
   return (
-    <main className="kp-wrap" style={{ paddingBlock: 'var(--s-8)', maxWidth: 560 }}>
-      <div className="kp-card kp-empty">
-        <p className="kp-label">404</p>
+    <main className="wrap" style={{ paddingBlock: 'var(--s-8)', maxWidth: 560 }}>
+      <div className="kart empty">
+        <p className="eyebrow">404</p>
         <h1 className="kp-empty__title" style={{ fontSize: 22 }}>
           Bu sayfa artık yayında değil
         </h1>

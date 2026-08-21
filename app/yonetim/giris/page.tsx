@@ -26,8 +26,8 @@ export default async function GirisSayfasi({
   return (
     <main className="yn-giris">
       <div className="yn-giris__kart">
-        <p className="kp-label" style={{ marginBottom: 4 }}>konutprojeleri.com</p>
-        <h1 className="kp-h2" style={{ marginBottom: 'var(--s-4)' }}>Panel girişi</h1>
+        <p className="eyebrow" style={{ marginBottom: 4 }}>konutprojeleri.com</p>
+        <h1 className="h2" style={{ marginBottom: 'var(--s-4)' }}>Panel girişi</h1>
 
         <GirisFormu don={don} />
 

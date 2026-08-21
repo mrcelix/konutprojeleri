@@ -84,13 +84,13 @@ export default async function ProjelerSayfasi({
     <main className="yn-sayfa">
       <header className="yn-baslik">
         <div>
-          <h1 className="kp-h2">Projeler</h1>
-          <p className="kp-lead" style={{ fontSize: 13 }}>
+          <h1 className="h2">Projeler</h1>
+          <p className="prose" style={{ fontSize: 13 }}>
             {toplam} proje{suzgecVar && ' (süzülmüş)'}
           </p>
         </div>
         {admin && (
-          <Link href="/yonetim/projeler/yeni" className="kp-btn is-small">
+          <Link href="/yonetim/projeler/yeni" className="btn btn-primary btn-sm">
             Yeni proje
           </Link>
         )}
@@ -107,16 +107,16 @@ export default async function ProjelerSayfasi({
         />
         {suzgec.durum && <input type="hidden" name="durum" value={suzgec.durum} />}
         {suzgec.sorun && <input type="hidden" name="sorun" value={suzgec.sorun} />}
-        <button type="submit" className="kp-btn is-small">Ara</button>
+        <button type="submit" className="btn btn-primary btn-sm">Ara</button>
       </form>
 
       <div className="yn-cipler">
-        <span className="kp-label">Durum</span>
+        <span className="eyebrow">Durum</span>
         {durumlar.map((d) => (
           <Link
             key={d.durum}
             href={yol(q, { durum: suzgec.durum === d.durum ? undefined : d.durum })}
-            className={`kp-chip${suzgec.durum === d.durum ? ' is-selected' : ''}`}
+            className={`chip${suzgec.durum === d.durum ? ' is-selected' : ''}`}
           >
             {DURUM_ADLARI[d.durum] ?? d.durum} <em>{d.n}</em>
           </Link>
@@ -124,24 +124,24 @@ export default async function ProjelerSayfasi({
       </div>
 
       <div className="yn-cipler">
-        <span className="kp-label">Eksik</span>
+        <span className="eyebrow">Eksik</span>
         {Object.entries(SORUN_ADLARI).map(([anahtar, ad]) => (
           <Link
             key={anahtar}
             href={yol(q, { sorun: suzgec.sorun === anahtar ? undefined : anahtar })}
-            className={`kp-chip${suzgec.sorun === anahtar ? ' is-selected' : ''}`}
+            className={`chip${suzgec.sorun === anahtar ? ' is-selected' : ''}`}
           >
             {ad}
           </Link>
         ))}
         {suzgecVar && (
-          <Link href="/yonetim/projeler" className="kp-chip">Süzgeçleri temizle</Link>
+          <Link href="/yonetim/projeler" className="chip">Süzgeçleri temizle</Link>
         )}
       </div>
 
       {/* ── Liste ── */}
       {satirlar.length === 0 ? (
-        <div className="kp-card kp-empty">
+        <div className="kart empty">
           <p className="kp-empty__title">Bu süzgeçlerle proje yok</p>
           <Link href="/yonetim/projeler" className="kp-empty__option is-primary">
             Süzgeçleri temizle
@@ -173,13 +173,13 @@ export default async function ProjelerSayfasi({
                       </Link>
                     </td>
                     <td>
-                      <span className={`kp-pill${p.yayinda ? ' is-success' : ''}`}>
+                      <span className={`badge${p.yayinda ? ' is-success' : ''}`}>
                         {DURUM_ADLARI[p.durum] ?? p.durum}
                       </span>
                       {!p.yayinda && <em className="yn-mini">yayında değil</em>}
                     </td>
-                    <td className="tabular">{teslim(p.teslim_ceyrek) ?? '—'}</td>
-                    <td className="tabular">{para(p.min_fiyat) ?? '—'}</td>
+                    <td className="sayi">{teslim(p.teslim_ceyrek) ?? '—'}</td>
+                    <td className="sayi">{para(p.min_fiyat) ?? '—'}</td>
                     <td>
                       {eksik.length === 0 ? (
                         <span className="yn-tam">tam</span>
@@ -187,7 +187,7 @@ export default async function ProjelerSayfasi({
                         <span className="yn-eksik">{eksik.join(', ')}</span>
                       )}
                     </td>
-                    <td className="tabular yn-mini">{tarih(p.guncellendi) ?? '—'}</td>
+                    <td className="sayi yn-mini">{tarih(p.guncellendi) ?? '—'}</td>
                     <td>
                       <Link
                         href={`/${p.il}/${p.ilce}/${p.slug}`}
@@ -208,13 +208,13 @@ export default async function ProjelerSayfasi({
       {sonSayfa > 1 && (
         <nav className="yn-sayfalar" aria-label="Sayfalar">
           {sayfa > 1 && (
-            <Link href={yol(q, { sayfa: String(sayfa - 1) })} className="kp-chip">
+            <Link href={yol(q, { sayfa: String(sayfa - 1) })} className="chip">
               ← Önceki
             </Link>
           )}
-          <span className="kp-label">{sayfa} / {sonSayfa}</span>
+          <span className="eyebrow">{sayfa} / {sonSayfa}</span>
           {sayfa < sonSayfa && (
-            <Link href={yol(q, { sayfa: String(sayfa + 1) })} className="kp-chip">
+            <Link href={yol(q, { sayfa: String(sayfa + 1) })} className="chip">
               Sonraki →
             </Link>
           )}

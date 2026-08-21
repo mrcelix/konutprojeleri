@@ -1,7 +1,7 @@
 import type { Metadata, Viewport } from 'next';
 import { Inter, Nunito } from 'next/font/google';
 import './globals.css';
-import './components.css';
+import './uygulama.css';
 
 /**
  * Tipografi — İKİ AİLE.
@@ -15,16 +15,16 @@ import './components.css';
  * anında alt küme çıkarır: Google'a istek gitmez, düzen kayması olmaz.
  */
 const sans = Inter({
-  subsets: ['latin-ext'],
+  subsets: ['latin', 'latin-ext'],
   weight: ['400', '500', '600', '700'],
-  variable: '--yazi-sans',
+  variable: '--font-inter',
   display: 'swap',
 });
 
 const display = Nunito({
-  subsets: ['latin-ext'],
-  weight: ['600', '700', '800', '900'],
-  variable: '--yazi-display',
+  subsets: ['latin', 'latin-ext'],
+  weight: ['600', '700', '800'],
+  variable: '--font-nunito',
   display: 'swap',
 });
 
@@ -50,7 +50,7 @@ export const viewport: Viewport = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     // lang="tr" — uppercase dönüşümünde "i" harfinin "İ" olması için gerekli
-    <html lang="tr" className={`${sans.variable} ${display.variable}`} suppressHydrationWarning>
+    <html lang="tr" data-theme="light" className={`${sans.variable} ${display.variable}`} suppressHydrationWarning>
       <head>
         {/* Tema ilk boyamadan önce uygulanır; aksi halde koyu temada beyaz parlama olur */}
         <script

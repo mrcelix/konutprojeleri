@@ -193,7 +193,7 @@ export function Harita({ noktalar, poi, merkez, yakinlik, onGorunur }: Props) {
               type="button"
               onClick={() => katmanDegistir(tip)}
               aria-pressed={!!katmanlar[tip]}
-              className={`kp-chip${katmanlar[tip] ? ' is-selected' : ''}`}
+              className={`chip${katmanlar[tip] ? ' is-selected' : ''}`}
               style={{ boxShadow: 'var(--elev-1)' }}
             >
               {POI_ADLARI[tip] ?? tip}
@@ -211,7 +211,7 @@ export function Harita({ noktalar, poi, merkez, yakinlik, onGorunur }: Props) {
             padding: 'var(--s-3)', boxShadow: 'var(--elev-2)', fontSize: 10.5,
           }}
         >
-          <b className="kp-label" style={{ display: 'block', marginBottom: 5 }}>m² birim fiyatı</b>
+          <b className="eyebrow" style={{ display: 'block', marginBottom: 5 }}>m² birim fiyatı</b>
           {[
             ['ucuz', '60 bin ₺ altı'],
             ['orta', '60–90 bin ₺'],

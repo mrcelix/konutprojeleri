@@ -78,17 +78,17 @@ export default async function KatPlaniSayfasi({ params }: Params) {
   const digerTipler = p.daire_tipleri.filter((x) => x.tip !== tip);
 
   return (
-    <main className="kp-wrap" style={{ paddingBlock: 'var(--s-5)' }}>
+    <main className="wrap" style={{ paddingBlock: 'var(--s-5)' }}>
       <JsonLd p={p} d={d} tip={tip} />
 
-      <nav className="kp-label" style={{ marginBottom: 'var(--s-3)' }}>
+      <nav className="eyebrow" style={{ marginBottom: 'var(--s-3)' }}>
         <Link href={`/${p.il}-konut-projeleri`}>{p.il}</Link> ›{' '}
         <Link href={`/${p.il}/${p.ilce}-konut-projeleri`}>{p.ilce}</Link> ›{' '}
         <Link href={projeYolu(p)}>{p.ad}</Link> › {tip} Kat Planı
       </nav>
 
-      <h1 className="kp-h1">{p.ad} {tip} Kat Planı</h1>
-      <p className="kp-lead" style={{ marginBottom: 'var(--s-4)' }}>
+      <h1 className="h1">{p.ad} {tip} Kat Planı</h1>
+      <p className="prose" style={{ marginBottom: 'var(--s-4)' }}>
         {alan(d.net_m2, d.brut_m2)} net kullanım alanına sahip {tip} tipi
         {d.cephe ? `, ${CEPHE_ADLARI[d.cephe] ?? d.cephe} cepheli` : ''}
         {d.bulundugu_katlar ? ` · ${d.bulundugu_katlar} katlarında` : ''}.
@@ -99,23 +99,23 @@ export default async function KatPlaniSayfasi({ params }: Params) {
       </p>
 
       <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0,1fr) 300px', gap: 'var(--s-4)', alignItems: 'start' }}>
-        <div className="kp-stack">
+        <div className="izgara">
           {/* Tip geçişi */}
           {digerTipler.length > 0 && (
-            <nav className="kp-row" style={{ gap: 5 }} aria-label="Daire tipleri">
-              <span className="kp-chip is-selected">{tip}</span>
+            <nav className="satir" style={{ gap: 5 }} aria-label="Daire tipleri">
+              <span className="chip is-selected">{tip}</span>
               {digerTipler.map((x) =>
                 x.kat_plani_key ? (
-                  <Link key={x.tip} href={katPlaniYolu(p, x.tip)} className="kp-chip">
+                  <Link key={x.tip} href={katPlaniYolu(p, x.tip)} className="chip">
                     {x.tip}
                   </Link>
                 ) : (
-                  <span key={x.tip} className="kp-chip is-empty" title="Plan yüklenmedi">
+                  <span key={x.tip} className="chip is-empty" title="Plan yüklenmedi">
                     {x.tip}
                   </span>
                 )
               )}
-              <Link href={`${projeYolu(p)}#daireler`} className="kp-chip" style={{ marginLeft: 'auto' }}>
+              <Link href={`${projeYolu(p)}#daireler`} className="chip" style={{ marginLeft: 'auto' }}>
                 Tüm tipleri karşılaştır
               </Link>
             </nav>
@@ -129,15 +129,15 @@ export default async function KatPlaniSayfasi({ params }: Params) {
 
           {/* ── Sayfanın özgün içeriği ── */}
           {odalar.length > 0 && (
-            <section className="kp-card" style={{ padding: 'var(--s-5)' }}>
-              <h2 className="kp-h2">Oda oda alanlar</h2>
-              <p className="kp-label" style={{ marginBottom: 'var(--s-3)' }}>net kullanım alanı</p>
+            <section className="kart" style={{ padding: 'var(--s-5)' }}>
+              <h2 className="h2">Oda oda alanlar</h2>
+              <p className="eyebrow" style={{ marginBottom: 'var(--s-3)' }}>net kullanım alanı</p>
               <div style={{ overflowX: 'auto' }}>
-                <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 12.5 }} className="tabular">
+                <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 12.5 }} className="sayi">
                   <thead>
                     <tr>
                       {['Mahal', 'Alan', 'Cephe', 'Not'].map((h) => (
-                        <th key={h} className="kp-label" style={{ textAlign: 'left', padding: '0 9px 8px' }}>{h}</th>
+                        <th key={h} className="eyebrow" style={{ textAlign: 'left', padding: '0 9px 8px' }}>{h}</th>
                       ))}
                     </tr>
                   </thead>
@@ -164,7 +164,7 @@ export default async function KatPlaniSayfasi({ params }: Params) {
                   </tfoot>
                 </table>
               </div>
-              <p className="kp-label" style={{ marginTop: 'var(--s-3)', textTransform: 'none', letterSpacing: 0 }}>
+              <p className="eyebrow" style={{ marginTop: 'var(--s-3)', textTransform: 'none', letterSpacing: 0 }}>
                 Çizim ölçeklidir ancak imalat toleransı nedeniyle gerçekleşen ölçüler
                 yaklaşık %2&apos;ye kadar farklılık gösterebilir.
               </p>
@@ -173,23 +173,23 @@ export default async function KatPlaniSayfasi({ params }: Params) {
         </div>
 
         {/* Yan sütun */}
-        <aside className="kp-stack" style={{ position: 'sticky', top: 16 }}>
-          <div className="kp-card" style={{ padding: 'var(--s-5)' }}>
+        <aside className="izgara" style={{ position: 'sticky', top: 16 }}>
+          <div className="kart" style={{ padding: 'var(--s-5)' }}>
             {d.liste_fiyati ? (
               <>
-                <span className="kp-label">{tip} fiyatları</span>
-                <span className="kp-num" style={{ display: 'block', fontSize: 24 }}>
+                <span className="eyebrow">{tip} fiyatları</span>
+                <span className="sayi" style={{ display: 'block', fontSize: 24 }}>
                   {para(d.liste_fiyati)}
                 </span>
-                <p className="kp-lead" style={{ fontSize: 11.5, marginTop: 3 }}>
+                <p className="prose" style={{ fontSize: 11.5, marginTop: 3 }}>
                   {m2Birim(d.liste_fiyati, d.net_m2)} net
                   {odeme && <> · aylık {para(odeme.senet)}&apos;den</>}
                 </p>
               </>
             ) : (
               <>
-                <span className="kp-label">Fiyat</span>
-                <p className="kp-lead" style={{ fontSize: 12 }}>Firma henüz açıklamadı.</p>
+                <span className="eyebrow">Fiyat</span>
+                <p className="prose" style={{ fontSize: 12 }}>Firma henüz açıklamadı.</p>
               </>
             )}
 
@@ -204,23 +204,23 @@ export default async function KatPlaniSayfasi({ params }: Params) {
               <Satir ad="Teslim" deger={teslim(p.teslim_ceyrek)} />
             </dl>
 
-            <Link href={`${projeYolu(p)}#odeme`} className="kp-btn" style={{ width: '100%', marginTop: 'var(--s-4)' }}>
+            <Link href={`${projeYolu(p)}#odeme`} className="btn btn-primary" style={{ width: '100%', marginTop: 'var(--s-4)' }}>
               Bu tip için fiyat listesi iste
             </Link>
           </div>
 
           {digerTipler.length > 0 && (
-            <div className="kp-card" style={{ padding: 'var(--s-4)' }}>
-              <h2 className="kp-label" style={{ marginBottom: 'var(--s-2)' }}>Projedeki diğer tipler</h2>
+            <div className="kart" style={{ padding: 'var(--s-4)' }}>
+              <h2 className="eyebrow" style={{ marginBottom: 'var(--s-2)' }}>Projedeki diğer tipler</h2>
               {digerTipler.map((x) => (
                 <Link
                   key={x.tip}
                   href={x.kat_plani_key ? katPlaniYolu(p, x.tip) : `${projeYolu(p)}#daireler`}
-                  className="kp-row"
+                  className="satir"
                   style={{ padding: '6px 0', borderBottom: '1px dashed var(--border)', fontSize: 11.5 }}
                 >
                   <span>{x.tip} · {x.net_m2 ?? '—'} m²</span>
-                  <b style={{ marginLeft: 'auto' }} className="tabular">
+                  <b style={{ marginLeft: 'auto' }} className="sayi">
                     {paraKisa(x.liste_fiyati) ?? 'Fiyat isteyin'}
                   </b>
                 </Link>
@@ -229,8 +229,8 @@ export default async function KatPlaniSayfasi({ params }: Params) {
           )}
 
           {p.benzer.length > 0 && (
-            <div className="kp-card" style={{ padding: 'var(--s-4)' }}>
-              <h2 className="kp-label" style={{ marginBottom: 'var(--s-2)' }}>
+            <div className="kart" style={{ padding: 'var(--s-4)' }}>
+              <h2 className="eyebrow" style={{ marginBottom: 'var(--s-2)' }}>
                 {p.ilce}&apos;de benzer planlar
               </h2>
               {p.benzer.map((b) => (
@@ -240,7 +240,7 @@ export default async function KatPlaniSayfasi({ params }: Params) {
                   style={{ display: 'block', padding: '6px 0', borderBottom: '1px dashed var(--border)' }}
                 >
                   <b style={{ fontSize: 12, display: 'block' }}>{b.ad}</b>
-                  <span style={{ fontSize: 10.5, color: 'var(--text-muted)' }} className="tabular">
+                  <span style={{ fontSize: 10.5, color: 'var(--text-muted)' }} className="sayi">
                     {paraKisa(b.min_fiyat) ?? 'Fiyat isteyin'}
                   </span>
                 </Link>
@@ -256,9 +256,9 @@ export default async function KatPlaniSayfasi({ params }: Params) {
 function Satir({ ad, deger }: { ad: string; deger: string | null | undefined }) {
   if (!deger) return null; // veri yoksa satır basılmaz
   return (
-    <div className="kp-row" style={{ padding: '5px 0', fontSize: 11.5 }}>
+    <div className="satir" style={{ padding: '5px 0', fontSize: 11.5 }}>
       <dt style={{ color: 'var(--text-muted)' }}>{ad}</dt>
-      <dd style={{ margin: '0 0 0 auto', fontWeight: 700 }} className="tabular">{deger}</dd>
+      <dd style={{ margin: '0 0 0 auto', fontWeight: 700 }} className="sayi">{deger}</dd>
     </div>
   );
 }

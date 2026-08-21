@@ -76,10 +76,10 @@ export default async function FirmaSayfasi({ params }: Params) {
   );
 
   return (
-    <main className="kp-wrap" style={{ paddingBlock: 'var(--s-5)' }}>
+    <main className="wrap" style={{ paddingBlock: 'var(--s-5)' }}>
       <JsonLd f={f} />
 
-      <nav className="kp-label" style={{ marginBottom: 'var(--s-3)' }}>
+      <nav className="eyebrow" style={{ marginBottom: 'var(--s-3)' }}>
         <Link href="/">Ana sayfa</Link> › <Link href="/firmalar">Firmalar</Link> › {f.ad}
       </nav>
 
@@ -104,14 +104,14 @@ export default async function FirmaSayfasi({ params }: Params) {
         </span>
 
         <div>
-          <h1 className="kp-h1" style={{ marginBottom: 4 }}>{f.ad}</h1>
+          <h1 className="h1" style={{ marginBottom: 4 }}>{f.ad}</h1>
           <p style={{ margin: '0 0 10px', fontSize: 12.5, color: 'var(--text-secondary)' }}>
             {f.kurulus_yili ? `${f.kurulus_yili}'de kuruldu · ` : ''}
             {f.merkez_ilce ? `${f.merkez_ilce} / ` : ''}{f.merkez_il ?? ''} ·{' '}
             {f.tamamlanan} tamamlanmış, {f.aktif_proje} aktif proje
             {f.toplam_konut > 0 && ` · toplam ${f.toplam_konut.toLocaleString('tr-TR')} konut`}
           </p>
-          <div className="kp-row" style={{ gap: 6 }}>
+          <div className="satir" style={{ gap: 6 }}>
             {notVar ? (
               <Pill durum="success">Sicil notu {f.sicil}</Pill>
             ) : (
@@ -124,20 +124,20 @@ export default async function FirmaSayfasi({ params }: Params) {
         </div>
 
         <div style={{ display: 'grid', gap: 6, minWidth: 180 }}>
-          <Link href={`/istanbul-konut-projeleri`} className="kp-btn">
+          <Link href={`/istanbul-konut-projeleri`} className="btn btn-primary">
             Projelerini gör ({f.aktif_proje})
           </Link>
-          <a href="#iletisim" className="kp-btn is-secondary">Firmadan bilgi iste</a>
+          <a href="#iletisim" className="btn btn-primary is-secondary">Firmadan bilgi iste</a>
         </div>
       </header>
 
       <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0,1fr) 310px', gap: 'var(--s-4)', alignItems: 'start' }}>
-        <div className="kp-stack">
+        <div className="izgara">
           {/* ── KARNE ── */}
-          <section className="kp-card" style={{ padding: 'var(--s-5)' }} id="karne">
-            <div className="kp-row" style={{ marginBottom: 'var(--s-4)' }}>
-              <h2 className="kp-h2" style={{ margin: 0 }}>Firma karnesi</h2>
-              <span className="kp-label" style={{ marginLeft: 'auto' }}>
+          <section className="kart" style={{ padding: 'var(--s-5)' }} id="karne">
+            <div className="satir" style={{ marginBottom: 'var(--s-4)' }}>
+              <h2 className="h2" style={{ margin: 0 }}>Firma karnesi</h2>
+              <span className="eyebrow" style={{ marginLeft: 'auto' }}>
                 <Link href="/firma-karnesi-metodoloji">Nasıl hesaplanır?</Link>
               </span>
             </div>
@@ -205,7 +205,7 @@ export default async function FirmaSayfasi({ params }: Params) {
                 </p>
               </>
             ) : (
-              <p className="kp-lead">
+              <p className="prose">
                 Bu firmanın not alabilmesi için en az <b>iki tamamlanmış projesi</b> gerekiyor.
                 Şu an {f.tamamlanan} tamamlanmış proje kayıtlı. Yetersiz veriyle not vermek,
                 düşük not vermekten daha yanıltıcı olurdu.
@@ -215,9 +215,9 @@ export default async function FirmaSayfasi({ params }: Params) {
 
           {/* ── TESLİM PERFORMANSI ── */}
           {teslimliler.length > 0 && (
-            <section className="kp-card" style={{ padding: 'var(--s-5)' }} id="teslim">
-              <h2 className="kp-h2">Teslim performansı</h2>
-              <p className="kp-label" style={{ marginBottom: 'var(--s-4)' }}>
+            <section className="kart" style={{ padding: 'var(--s-5)' }} id="teslim">
+              <h2 className="h2">Teslim performansı</h2>
+              <p className="eyebrow" style={{ marginBottom: 'var(--s-4)' }}>
                 İlan edilen teslim ile gerçekleşen teslim farkı
               </p>
               <TeslimGrafigi kayitlar={teslimliler} />
@@ -226,9 +226,9 @@ export default async function FirmaSayfasi({ params }: Params) {
 
           {/* ── AKTİF PROJELER ── */}
           {f.aktifler.length > 0 && (
-            <section className="kp-card" style={{ padding: 'var(--s-5)' }}>
-              <h2 className="kp-h2">Aktif projeler</h2>
-              <p className="kp-label" style={{ marginBottom: 'var(--s-3)' }}>
+            <section className="kart" style={{ padding: 'var(--s-5)' }}>
+              <h2 className="h2">Aktif projeler</h2>
+              <p className="eyebrow" style={{ marginBottom: 'var(--s-3)' }}>
                 {f.aktif_proje} proje · {f.musait_daire} daire müsait
               </p>
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(210px,1fr))', gap: 'var(--s-3)' }}>
@@ -238,7 +238,7 @@ export default async function FirmaSayfasi({ params }: Params) {
                     href={`/${p.il}/${p.ilce}/${p.slug}`}
                     style={{ border: '1px solid var(--border)', borderRadius: 'var(--r-block)', padding: 'var(--s-4)' }}
                   >
-                    <div className="kp-row" style={{ gap: 5, marginBottom: 6 }}>
+                    <div className="satir" style={{ gap: 5, marginBottom: 6 }}>
                       {p.durum === 'lansman'
                         ? <Pill durum="info">Lansman</Pill>
                         : <SantiyePill yuzde={p.santiye_yuzde} />}
@@ -248,7 +248,7 @@ export default async function FirmaSayfasi({ params }: Params) {
                       {p.ilce} · {teslim(p.teslim_ceyrek) ?? 'teslim açıklanmadı'}
                       {p.kalan ? ` · ${p.kalan} müsait` : ''}
                     </span>
-                    <span style={{ fontSize: 14, fontWeight: 800, letterSpacing: '-0.025em' }} className="tabular">
+                    <span style={{ fontSize: 14, fontWeight: 800, letterSpacing: '-0.025em' }} className="sayi">
                       {paraKisa(p.min_fiyat) ?? 'Fiyat isteyin'}
                     </span>
                   </Link>
@@ -259,14 +259,14 @@ export default async function FirmaSayfasi({ params }: Params) {
 
           {/* ── TAMAMLANAN PROJELER ── */}
           {f.teslimler.length > 0 && (
-            <section className="kp-card" style={{ padding: 'var(--s-5)' }}>
-              <h2 className="kp-h2">Tamamlanan projeler</h2>
+            <section className="kart" style={{ padding: 'var(--s-5)' }}>
+              <h2 className="h2">Tamamlanan projeler</h2>
               <div style={{ overflowX: 'auto' }}>
-                <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 12 }} className="tabular">
+                <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 12 }} className="sayi">
                   <thead>
                     <tr>
                       {['Proje', 'Konut', 'İlan edilen', 'Gerçekleşen', 'Fark', 'Teslim m²', 'Bugün'].map((h) => (
-                        <th key={h} className="kp-label" style={{ textAlign: 'left', padding: '0 9px 8px' }}>{h}</th>
+                        <th key={h} className="eyebrow" style={{ textAlign: 'left', padding: '0 9px 8px' }}>{h}</th>
                       ))}
                     </tr>
                   </thead>
@@ -294,7 +294,7 @@ export default async function FirmaSayfasi({ params }: Params) {
                   </tbody>
                 </table>
               </div>
-              <p className="kp-label" style={{ marginTop: 'var(--s-3)', textTransform: 'none', letterSpacing: 0, lineHeight: 1.55 }}>
+              <p className="eyebrow" style={{ marginTop: 'var(--s-3)', textTransform: 'none', letterSpacing: 0, lineHeight: 1.55 }}>
                 &ldquo;Bugün&rdquo; sütunu o projedeki dairelerin güncel ikinci el m² fiyatını gösterir —
                 alıcının yatırım getirisini görebilmesi için. Farklı bir veri kaynağıdır ve teslim
                 dönemi fiyatıyla doğrudan karşılaştırılamaz. Her satır bir kaynağa dayanır;
@@ -305,9 +305,9 @@ export default async function FirmaSayfasi({ params }: Params) {
 
           {/* ── FİYAT KONUMLANMASI ── */}
           {f.aktifler.some((p) => p.min_m2_birim && p.ilce_m2) && (
-            <section className="kp-card" style={{ padding: 'var(--s-5)' }}>
-              <h2 className="kp-h2">Fiyat konumlanması</h2>
-              <p className="kp-label" style={{ marginBottom: 'var(--s-4)' }}>
+            <section className="kart" style={{ padding: 'var(--s-5)' }}>
+              <h2 className="h2">Fiyat konumlanması</h2>
+              <p className="eyebrow" style={{ marginBottom: 'var(--s-4)' }}>
                 Aktif projeler, bulundukları ilçe ortalamasına göre
               </p>
               <div style={{ display: 'grid', gap: 'var(--s-3)' }}>
@@ -336,7 +336,7 @@ export default async function FirmaSayfasi({ params }: Params) {
                   );
                 })}
               </div>
-              <p className="kp-label" style={{ marginTop: 'var(--s-3)', textTransform: 'none', letterSpacing: 0, lineHeight: 1.55 }}>
+              <p className="eyebrow" style={{ marginTop: 'var(--s-3)', textTransform: 'none', letterSpacing: 0, lineHeight: 1.55 }}>
                 Ortalamanın altında olmak tek başına ucuzluk göstergesi değildir; konum ilçe
                 içinde daha az merkezi olabilir.
               </p>
@@ -345,12 +345,12 @@ export default async function FirmaSayfasi({ params }: Params) {
 
           {/* ── BÖLGELER ve HAKKINDA ── */}
           {(f.bolgeler.length > 0 || f.hakkinda) && (
-            <section className="kp-card" style={{ padding: 'var(--s-5)' }}>
-              <h2 className="kp-h2">Faaliyet bölgeleri ve kurumsal bilgiler</h2>
+            <section className="kart" style={{ padding: 'var(--s-5)' }}>
+              <h2 className="h2">Faaliyet bölgeleri ve kurumsal bilgiler</h2>
               {f.bolgeler.length > 0 && (
-                <div className="kp-row" style={{ gap: 6, marginBottom: 'var(--s-4)' }}>
+                <div className="satir" style={{ gap: 6, marginBottom: 'var(--s-4)' }}>
                   {f.bolgeler.map((b) => (
-                    <Link key={b.ilce} href={`/istanbul/${b.ilce}-konut-projeleri`} className="kp-chip">
+                    <Link key={b.ilce} href={`/istanbul/${b.ilce}-konut-projeleri`} className="chip">
                       {b.ilce}<span className="kp-chip__count">{b.adet}</span>
                     </Link>
                   ))}
@@ -362,15 +362,15 @@ export default async function FirmaSayfasi({ params }: Params) {
                 <Kurumsal ad="Ortaklıklar" deger={f.ortakliklar?.join(', ') ?? null} />
                 <Kurumsal ad="Doğrulama" deger={f.dogrulandi ? 'Vergi no teyitli' : null} />
               </dl>
-              {f.hakkinda && <p className="kp-lead" style={{ marginTop: 'var(--s-4)' }}>{f.hakkinda}</p>}
+              {f.hakkinda && <p className="prose" style={{ marginTop: 'var(--s-4)' }}>{f.hakkinda}</p>}
             </section>
           )}
         </div>
 
         {/* ── YAN SÜTUN ── */}
-        <aside className="kp-stack" style={{ position: 'sticky', top: 16 }}>
-          <div className="kp-card" style={{ padding: 'var(--s-4)' }}>
-            <h2 className="kp-label" style={{ marginBottom: 'var(--s-3)' }}>Özet</h2>
+        <aside className="izgara" style={{ position: 'sticky', top: 16 }}>
+          <div className="kart" style={{ padding: 'var(--s-4)' }}>
+            <h2 className="eyebrow" style={{ marginBottom: 'var(--s-3)' }}>Özet</h2>
             <Satir ad="Sicil notu" deger={notVar ? f.sicil : 'Yeni firma'} vurgulu={notVar} />
             <Satir ad="Ort. gecikme" deger={f.ort_gecikme != null ? `${f.ort_gecikme.toFixed(1)} ay` : null} />
             <Satir ad="Zamanında teslim" deger={f.zamaninda_orani != null ? yuzde(f.zamaninda_orani * 100) : null} />
@@ -378,18 +378,18 @@ export default async function FirmaSayfasi({ params }: Params) {
             <Satir ad="Müsait daire" deger={f.musait_daire ? String(f.musait_daire) : null} />
           </div>
 
-          <form className="kp-card" style={{ padding: 'var(--s-5)' }} id="iletisim" action="/api/talep" method="post">
-            <h2 className="kp-h3" style={{ marginBottom: 4 }}>Firmadan bilgi isteyin</h2>
-            <p className="kp-lead" style={{ fontSize: 11.5, marginBottom: 'var(--s-3)' }}>
+          <form className="kart" style={{ padding: 'var(--s-5)' }} id="iletisim" action="/api/talep" method="post">
+            <h2 className="h3" style={{ marginBottom: 4 }}>Firmadan bilgi isteyin</h2>
+            <p className="prose" style={{ fontSize: 11.5, marginBottom: 'var(--s-3)' }}>
               Talebiniz doğrudan firmanın satış ekibine iletilir. Aracı yoktur.
             </p>
             <input type="hidden" name="firma_slug" value={f.slug} />
-            <label className="kp-field" style={{ display: 'block', marginBottom: 8 }}>
+            <label className="alan" style={{ display: 'block', marginBottom: 8 }}>
               <span className="kp-field__label">Ad Soyad *</span>
               <input name="ad" required className="kp-field__value"
                 style={{ border: 0, background: 'transparent', width: '100%', padding: 0, font: 'inherit', color: 'inherit' }} />
             </label>
-            <label className="kp-field" style={{ display: 'block', marginBottom: 8 }}>
+            <label className="alan" style={{ display: 'block', marginBottom: 8 }}>
               <span className="kp-field__label">Telefon *</span>
               <input name="telefon" type="tel" required className="kp-field__value"
                 style={{ border: 0, background: 'transparent', width: '100%', padding: 0, font: 'inherit', color: 'inherit' }} />
@@ -402,7 +402,7 @@ export default async function FirmaSayfasi({ params }: Params) {
                 okudum.
               </span>
             </label>
-            <button type="submit" className="kp-btn" style={{ width: '100%' }}>Bilgi talebi gönder</button>
+            <button type="submit" className="btn btn-primary" style={{ width: '100%' }}>Bilgi talebi gönder</button>
           </form>
 
           {/* B2B kancası — karneyi gören müteahhit panele girmek ister */}
@@ -414,12 +414,12 @@ export default async function FirmaSayfasi({ params }: Params) {
               Panele girip projelerinizi kendiniz güncelleyin, taleplerinizi görün,
               karne verilerine itiraz edin. İlk proje ücretsiz.
             </p>
-            <a href="/panel" className="kp-btn is-small" style={{ width: '100%', background: 'var(--tint-butter-ink)', borderColor: 'var(--tint-butter-ink)', color: '#fff' }}>
+            <a href="/panel" className="btn btn-primary btn-sm" style={{ width: '100%', background: 'var(--tint-butter-ink)', borderColor: 'var(--tint-butter-ink)', color: '#fff' }}>
               Firma panelini aç
             </a>
           </div>
 
-          <p className="kp-label" style={{ textTransform: 'none', letterSpacing: 0, lineHeight: 1.55, padding: '0 4px' }}>
+          <p className="eyebrow" style={{ textTransform: 'none', letterSpacing: 0, lineHeight: 1.55, padding: '0 4px' }}>
             Karne verileri konutprojeleri.com ilan arşivinden ve firmanın panel girişlerinden
             üretilir. Hatalı bilgi gördüğünüzü düşünüyorsanız{' '}
             <Link href="/duzeltme" style={{ color: 'var(--brand)', fontWeight: 650 }}>düzeltme talebi</Link>{' '}
@@ -439,10 +439,10 @@ function Metrik({
   if (!deger) return null; // veri yoksa alan basılmaz
   return (
     <div style={{ background: 'var(--surface-card)', padding: 'var(--s-4)' }}>
-      <dt className="kp-label">{baslik}</dt>
+      <dt className="eyebrow">{baslik}</dt>
       <dd style={{ margin: 0 }}>
-        <span className="kp-row" style={{ gap: 7, alignItems: 'baseline' }}>
-          <span className="kp-num tabular" style={{ fontSize: 20 }}>{deger}</span>
+        <span className="satir" style={{ gap: 7, alignItems: 'baseline' }}>
+          <span className="sayi sayi" style={{ fontSize: 20 }}>{deger}</span>
           {kiyas && <Pill durum={iyi ? 'success' : 'neutral'}>{kiyas}</Pill>}
         </span>
         {not && (
@@ -459,7 +459,7 @@ function Kurumsal({ ad, deger }: { ad: string; deger: string | null }) {
   if (!deger) return null;
   return (
     <div style={{ background: 'var(--surface-card)', padding: 'var(--s-4)' }}>
-      <dt className="kp-label">{ad}</dt>
+      <dt className="eyebrow">{ad}</dt>
       <dd style={{ margin: 0, fontSize: 13, fontWeight: 700 }}>{deger}</dd>
     </div>
   );
@@ -468,11 +468,11 @@ function Kurumsal({ ad, deger }: { ad: string; deger: string | null }) {
 function Satir({ ad, deger, vurgulu }: { ad: string; deger: string | null; vurgulu?: boolean }) {
   if (!deger) return null;
   return (
-    <div className="kp-row" style={{ padding: '6px 0', borderBottom: '1px dashed var(--border)', fontSize: 11.5 }}>
+    <div className="satir" style={{ padding: '6px 0', borderBottom: '1px dashed var(--border)', fontSize: 11.5 }}>
       <span style={{ color: 'var(--text-secondary)' }}>{ad}</span>
       <b
         style={{ marginLeft: 'auto', color: vurgulu ? 'var(--success)' : 'var(--text-primary)' }}
-        className="tabular"
+        className="sayi"
       >
         {deger}
       </b>
@@ -525,7 +525,7 @@ function TeslimGrafigi({ kayitlar }: { kayitlar: TeslimKaydi[] }) {
           );
         })}
       </div>
-      <p className="kp-label" style={{ marginTop: 'var(--s-3)', textTransform: 'none', letterSpacing: 0, lineHeight: 1.55 }}>
+      <p className="eyebrow" style={{ marginTop: 'var(--s-3)', textTransform: 'none', letterSpacing: 0, lineHeight: 1.55 }}>
         Dikey çizgi sektör ortalamasını gösterir: <b>{SEKTOR.ortGecikme} ay</b>. Gecikme, projenin
         satış aşamasında ilan edilen teslim çeyreğinin son ayı esas alınarak hesaplanır.
       </p>

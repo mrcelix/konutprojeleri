@@ -22,9 +22,9 @@ type Props = { taban: string; filtre: Filtre; fasetler: Fasetler };
 
 export function FiltrePaneli({ taban, filtre: f, fasetler }: Props) {
   return (
-    <aside className="kp-card" style={{ padding: 'var(--s-4) 0', alignSelf: 'start' }}>
+    <aside className="kart" style={{ padding: 'var(--s-4) 0', alignSelf: 'start' }}>
       <Grup baslik="Daire tipi" secili={f.daireTipi?.length}>
-        <div className="kp-row" style={{ gap: 5 }}>
+        <div className="satir" style={{ gap: 5 }}>
           {DAIRE_TIPLERI.map((tip) => {
             const adet = fasetler.daireTipi[tip] ?? 0;
             return (
@@ -32,7 +32,7 @@ export function FiltrePaneli({ taban, filtre: f, fasetler }: Props) {
                 key={tip}
                 href={degistir(taban, f, 'daireTipi', tip)}
                 className={[
-                  'kp-chip',
+                  'chip',
                   f.daireTipi?.includes(tip) && 'is-selected',
                   adet === 0 && 'is-empty',
                 ].filter(Boolean).join(' ')}
@@ -47,12 +47,12 @@ export function FiltrePaneli({ taban, filtre: f, fasetler }: Props) {
 
       <Grup baslik="Fiyat" secili={f.minFiyat || f.maxFiyat ? 1 : 0}>
         <Histogram veri={fasetler.fiyatHistogram} />
-        <div className="kp-row" style={{ gap: 6, marginTop: 'var(--s-3)' }}>
+        <div className="satir" style={{ gap: 6, marginTop: 'var(--s-3)' }}>
           {[4_000_000, 6_000_000, 9_000_000, 12_000_000, 20_000_000].map((v) => (
             <Link
               key={v}
               href={degistir(taban, f, 'maxFiyat', v)}
-              className={`kp-chip${f.maxFiyat === v ? ' is-selected' : ''}`}
+              className={`chip${f.maxFiyat === v ? ' is-selected' : ''}`}
             >
               {para(v)} altı
             </Link>
@@ -61,12 +61,12 @@ export function FiltrePaneli({ taban, filtre: f, fasetler }: Props) {
       </Grup>
 
       <Grup baslik="Aylık ödeme" secili={f.maxAylik ? 1 : 0}>
-        <div className="kp-row" style={{ gap: 6 }}>
+        <div className="satir" style={{ gap: 6 }}>
           {[60_000, 80_000, 100_000, 150_000].map((v) => (
             <Link
               key={v}
               href={degistir(taban, f, 'maxAylik', v)}
-              className={`kp-chip${f.maxAylik === v ? ' is-selected' : ''}`}
+              className={`chip${f.maxAylik === v ? ' is-selected' : ''}`}
             >
               {para(v)} altı
             </Link>
@@ -75,7 +75,7 @@ export function FiltrePaneli({ taban, filtre: f, fasetler }: Props) {
       </Grup>
 
       <Grup baslik="Teslim" secili={f.teslimYili?.length}>
-        <div className="kp-row" style={{ gap: 5 }}>
+        <div className="satir" style={{ gap: 5 }}>
           {Object.entries(fasetler.teslimYili)
             .sort(([a], [b]) => a.localeCompare(b))
             .map(([yil, adet]) => (
@@ -83,7 +83,7 @@ export function FiltrePaneli({ taban, filtre: f, fasetler }: Props) {
                 key={yil}
                 href={degistir(taban, f, 'teslimYili', Number(yil))}
                 className={[
-                  'kp-chip',
+                  'chip',
                   f.teslimYili?.includes(Number(yil)) && 'is-selected',
                   adet === 0 && 'is-empty',
                 ].filter(Boolean).join(' ')}
@@ -147,10 +147,10 @@ function Grup({
 }: { baslik: string; secili?: number; children: React.ReactNode }) {
   return (
     <section style={{ padding: 'var(--s-4) var(--s-5)', borderBottom: '1px solid var(--border)' }}>
-      <h3 className="kp-row" style={{ fontSize: 12.5, fontWeight: 700, margin: '0 0 var(--s-3)' }}>
+      <h3 className="satir" style={{ fontSize: 12.5, fontWeight: 700, margin: '0 0 var(--s-3)' }}>
         {baslik}
         {secili ? (
-          <span className="kp-pill is-brand" style={{ marginLeft: 'auto' }}>{secili}</span>
+          <span className="badge is-brand" style={{ marginLeft: 'auto' }}>{secili}</span>
         ) : null}
       </h3>
       {children}
@@ -184,7 +184,7 @@ function Secenek({
       />
       {children}
       {adet != null && (
-        <span style={{ marginLeft: 'auto', fontSize: 11, color: 'var(--text-muted)' }} className="tabular">
+        <span style={{ marginLeft: 'auto', fontSize: 11, color: 'var(--text-muted)' }} className="sayi">
           {adet}
         </span>
       )}

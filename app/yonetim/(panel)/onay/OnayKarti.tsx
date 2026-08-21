@@ -40,7 +40,7 @@ function Dugmeler({ retAcik, ac }: { retAcik: boolean; ac: () => void }) {
   return (
     <div className="on-eylem">
       <button type="submit" name="karar" value="onayla"
-        className="kp-btn is-small" disabled={pending}>
+        className="btn btn-primary btn-sm" disabled={pending}>
         {pending ? 'İşleniyor…' : 'Onayla ve uygula'}
       </button>
 
@@ -49,11 +49,11 @@ function Dugmeler({ retAcik, ac }: { retAcik: boolean; ac: () => void }) {
           yoluydu. */}
       {retAcik ? (
         <button type="submit" name="karar" value="reddet"
-          className="kp-btn is-ghost is-small" disabled={pending}>
+          className="btn btn-ghost btn-sm" disabled={pending}>
           {pending ? 'İşleniyor…' : 'Reddi gönder'}
         </button>
       ) : (
-        <button type="button" className="kp-btn is-ghost is-small" onClick={ac}>
+        <button type="button" className="btn btn-ghost btn-sm" onClick={ac}>
           Reddet
         </button>
       )}
@@ -70,7 +70,7 @@ export function OnayKarti({ kayit }: { kayit: BekleyenOnay }) {
 
   if (durum?.bilgi) {
     return (
-      <li className="kp-card on-kart">
+      <li className="kart on-kart">
         <p className="dz-bildirim is-ok" role="status">
           <b>{kayit.proje_ad}</b> · {durum.bilgi}
         </p>
@@ -79,7 +79,7 @@ export function OnayKarti({ kayit }: { kayit: BekleyenOnay }) {
   }
 
   return (
-    <li className="kp-card on-kart">
+    <li className="kart on-kart">
       <header className="on-ust">
         <div>
           <Link href={`/yonetim/projeler/${kayit.proje_id}`} className="on-ad">
@@ -91,7 +91,7 @@ export function OnayKarti({ kayit }: { kayit: BekleyenOnay }) {
         </div>
         <div className="on-isaretler">
           {(kayit.isaretler ?? []).map((i) => (
-            <span key={i} className="kp-pill is-danger">
+            <span key={i} className="badge is-danger">
               {ISARET_ADLARI[i] ?? i}
             </span>
           ))}
@@ -119,7 +119,7 @@ export function OnayKarti({ kayit }: { kayit: BekleyenOnay }) {
 
       {daireler.length > 0 && (
         <>
-          <h3 className="kp-label" style={{ marginTop: 'var(--s-4)' }}>Daire tipleri</h3>
+          <h3 className="eyebrow" style={{ marginTop: 'var(--s-4)' }}>Daire tipleri</h3>
           <table className="on-fark">
             <thead>
               <tr><th>Tip</th><th>Net m²</th><th>Fiyat</th><th>Toplam</th><th>Kalan</th></tr>
@@ -128,10 +128,10 @@ export function OnayKarti({ kayit }: { kayit: BekleyenOnay }) {
               {daireler.map((d, i) => (
                 <tr key={d.id ?? `y${i}`}>
                   <td>{d.tip}{d.id == null && <em className="yn-mini"> yeni</em>}</td>
-                  <td className="tabular">{d.net_m2 ?? '—'}</td>
-                  <td className="tabular on-yeni">{para(d.liste_fiyati) ?? '—'}</td>
-                  <td className="tabular">{d.toplam_adet ?? '—'}</td>
-                  <td className="tabular">{d.kalan_adet ?? '—'}</td>
+                  <td className="sayi">{d.net_m2 ?? '—'}</td>
+                  <td className="sayi on-yeni">{para(d.liste_fiyati) ?? '—'}</td>
+                  <td className="sayi">{d.toplam_adet ?? '—'}</td>
+                  <td className="sayi">{d.kalan_adet ?? '—'}</td>
                 </tr>
               ))}
             </tbody>
@@ -151,7 +151,7 @@ export function OnayKarti({ kayit }: { kayit: BekleyenOnay }) {
         <input type="hidden" name="id" value={kayit.id} />
 
         <label className="dz-alan" hidden={!retAcik}>
-          <span className="kp-label">Ret gerekçesi <i>firmaya görünür</i></span>
+          <span className="eyebrow">Ret gerekçesi <i>firmaya görünür</i></span>
           <textarea name="gerekce" rows={2}
             placeholder="Neden reddedildiğini yazın; firma aynı hatayı tekrarlamasın." />
         </label>

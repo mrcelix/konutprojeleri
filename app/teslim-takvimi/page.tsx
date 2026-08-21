@@ -86,10 +86,10 @@ export default async function TakvimSayfasi({
   const temiz = !filtre.il && !filtre.daireTipi && !filtre.maxFiyat;
 
   return (
-    <main className="kp-wrap" style={{ paddingBlock: 'var(--s-5)' }}>
+    <main className="wrap" style={{ paddingBlock: 'var(--s-5)' }}>
       <header style={{ maxWidth: 640, marginBottom: 'var(--s-5)' }}>
-        <h1 className="kp-h1">Teslim takvimi</h1>
-        <p className="kp-lead">
+        <h1 className="h1">Teslim takvimi</h1>
+        <p className="prose">
           Konumdan değil tarihten başlayın. Satıştaki projeler teslim
           çeyreklerine göre tek eksende; şantiye ilerlemeleri ve her çeyrekte
           piyasaya çıkan daire sayısıyla birlikte.
@@ -99,12 +99,12 @@ export default async function TakvimSayfasi({
       {/* ── Süzgeçler ── */}
       <nav className="tk-suzgec" aria-label="Takvim süzgeçleri">
         <div className="tk-suzgec__grup">
-          <span className="kp-label">Şehir</span>
+          <span className="eyebrow">Şehir</span>
           {iller.map((i) => (
             <Link
               key={i.il}
               href={yol(filtre, { il: filtre.il === i.il ? undefined : i.il })}
-              className={`kp-chip${filtre.il === i.il ? ' is-selected' : ''}`}
+              className={`chip${filtre.il === i.il ? ' is-selected' : ''}`}
             >
               {ilAdi(i.il)} <em>{i.n}</em>
             </Link>
@@ -112,7 +112,7 @@ export default async function TakvimSayfasi({
         </div>
 
         <div className="tk-suzgec__grup">
-          <span className="kp-label">Daire tipi</span>
+          <span className="eyebrow">Daire tipi</span>
           {DAIRE_TIPLERI.map((t) => {
             const secili = filtre.daireTipi?.includes(t) ?? false;
             const yeni = secili
@@ -122,7 +122,7 @@ export default async function TakvimSayfasi({
               <Link
                 key={t}
                 href={yol(filtre, { daireTipi: yeni.length ? yeni : undefined })}
-                className={`kp-chip${secili ? ' is-selected' : ''}`}
+                className={`chip${secili ? ' is-selected' : ''}`}
               >
                 {t}
               </Link>
@@ -131,20 +131,20 @@ export default async function TakvimSayfasi({
         </div>
 
         <div className="tk-suzgec__grup">
-          <span className="kp-label">Bütçe</span>
+          <span className="eyebrow">Bütçe</span>
           {BUTCELER.map((b) => (
             <Link
               key={b.deger}
               href={yol(filtre, {
                 maxFiyat: filtre.maxFiyat === b.deger ? undefined : b.deger,
               })}
-              className={`kp-chip${filtre.maxFiyat === b.deger ? ' is-selected' : ''}`}
+              className={`chip${filtre.maxFiyat === b.deger ? ' is-selected' : ''}`}
             >
               {b.ad}
             </Link>
           ))}
           {!temiz && (
-            <Link href="/teslim-takvimi" className="kp-chip tk-temizle">
+            <Link href="/teslim-takvimi" className="chip tk-temizle">
               Süzgeçleri temizle
             </Link>
           )}
@@ -172,7 +172,7 @@ export default async function TakvimSayfasi({
 
       {/* ── Eksen ── */}
       {!veri || veri.projeler.length === 0 ? (
-        <div className="kp-card kp-empty">
+        <div className="kart empty">
           <p className="kp-empty__title">
             Bu süzgeçlerle önümüzdeki {CEYREK_SAYISI} çeyrekte teslim edilecek
             proje bulunamadı
@@ -196,8 +196,8 @@ export default async function TakvimSayfasi({
       {/* ── Teslim tarihi geçmiş projeler ── */}
       {geciken.length > 0 && (
         <section style={{ marginTop: 'var(--s-6)' }}>
-          <h2 className="kp-h3">Teslim tarihi geçmiş, hâlâ satışta</h2>
-          <p className="kp-body" style={{ maxWidth: '68ch', marginBottom: 'var(--s-3)' }}>
+          <h2 className="h3">Teslim tarihi geçmiş, hâlâ satışta</h2>
+          <p className="prose" style={{ maxWidth: '68ch', marginBottom: 'var(--s-3)' }}>
             Bu projelerin beyan edilen teslim çeyreği geride kaldı ama ilanları
             sürüyor. Eksene sığmadıkları için ayrı listeleniyorlar — takvimden
             düşürmek, gecikmeyi görünmez kılmak olurdu.
@@ -209,7 +209,7 @@ export default async function TakvimSayfasi({
                   <b>{p.ad}</b>
                   <span>{p.firma_ad} · {p.ilce}</span>
                 </Link>
-                <span className="kp-pill is-danger">
+                <span className="badge is-danger">
                   {p.gecikme_ay} ay geçti
                 </span>
                 <em>beyan: {ceyrekAdi(p.teslim_ceyrek)}</em>
@@ -220,15 +220,15 @@ export default async function TakvimSayfasi({
       )}
 
       {/* ── Not ── */}
-      <section className="kp-card" style={{ marginTop: 'var(--s-6)', maxWidth: 720 }}>
-        <h2 className="kp-h3">Teslim tarihleri neye göre</h2>
-        <p className="kp-body">
+      <section className="kart" style={{ marginTop: 'var(--s-6)', maxWidth: 720 }}>
+        <h2 className="h3">Teslim tarihleri neye göre</h2>
+        <p className="prose">
           Tarihler firmanın satış sözleşmesinde ya da tanıtımında beyan ettiği
           teslim çeyreğidir; taahhüt değildir. Bir firmanın geçmişte bu tarihlere
           ne kadar uyduğunu <Link href="/firmalar">firma karnelerinde</Link>{' '}
           görebilirsiniz — sektör ortalaması <b>2,7 ay</b> gecikmedir.
         </p>
-        <p className="kp-body">
+        <p className="prose">
           Teslim tarihi değişen projelerde eski tarih arşivde tutulur ve karneye
           işlenir. Yanlış gördüğünüz bir tarihi{' '}
           <Link href="/duzeltme">düzeltme formundan</Link> bildirebilirsiniz.

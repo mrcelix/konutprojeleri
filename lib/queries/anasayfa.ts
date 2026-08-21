@@ -87,6 +87,23 @@ export type AnaSayfaVerisi = {
  */
 const aktif = () => sql`p.yayinda and p.durum in ('lansman','satista')`;
 
+/**
+ * Veri gelmediğinde kullanılan boş küme.
+ *
+ * Sorgu HATAYI YUTMUYOR — gerçek bir kesintiyi sessizce gizlemek,
+ * ana sayfanın boş ama "çalışıyor" görünmesi demek olurdu. Bunun
+ * yerine çağıran taraf hatayı yakalayıp bu kümeyle çiziyor: bölümler
+ * kendiliğinden basılmıyor, sayfa yine ayakta kalıyor.
+ *
+ * Veritabanısız derleme (CI'daki `kalite` işi) tam olarak bu yolu
+ * kullanıyor.
+ */
+export const BOS_ANASAYFA: AnaSayfaVerisi = {
+  toplamProje: 0, toplamFirma: 0, toplamIl: 0, buHafta: 0, yakindaTeslim: 0,
+  vitrin: [], segmentler: [], temalar: [], sehirler: [], sahiller: [],
+  endeks: [], endeksYillik: null, karne: [], teslimler: [], takvim: [],
+};
+
 export async function anaSayfaVerisi(): Promise<AnaSayfaVerisi> {
   const [r] = await sql<[AnaSayfaVerisi]>`
     select

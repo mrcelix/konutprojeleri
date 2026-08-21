@@ -44,9 +44,9 @@ export function HaritaPanel({
       }}
     >
       {/* Liste */}
-      <div className="kp-card" style={{ display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
+      <div className="kart" style={{ display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
         <div
-          className="kp-row"
+          className="satir"
           style={{ padding: 'var(--s-3) var(--s-4)', borderBottom: '1px solid var(--border)' }}
         >
           <b style={{ fontSize: 12.5 }}>{liste.length} proje</b>
@@ -58,7 +58,7 @@ export function HaritaPanel({
 
         <div style={{ overflowY: 'auto', padding: 'var(--s-3)', display: 'grid', gap: 'var(--s-3)' }}>
           {liste.length === 0 ? (
-            <p className="kp-lead" style={{ fontSize: 12, padding: 'var(--s-3)' }}>
+            <p className="prose" style={{ fontSize: 12, padding: 'var(--s-3)' }}>
               Bu alanda proje yok. Haritayı kaydırın veya uzaklaştırın.
             </p>
           ) : (
@@ -76,12 +76,12 @@ export function HaritaPanel({
                   {n.ilce} · {n.firma_ad}
                   {teslim(n.teslim_ceyrek) ? ` · ${teslim(n.teslim_ceyrek)}` : ''}
                 </span>
-                <span className="kp-row" style={{ gap: 6 }}>
-                  <b style={{ fontSize: 13, letterSpacing: '-0.02em' }} className="tabular">
+                <span className="satir" style={{ gap: 6 }}>
+                  <b style={{ fontSize: 13, letterSpacing: '-0.02em' }} className="sayi">
                     {paraKisa(n.min_fiyat) ?? 'Fiyat isteyin'}
                   </b>
                   {n.m2_birim && (
-                    <span style={{ fontSize: 10, color: 'var(--text-muted)' }} className="tabular">
+                    <span style={{ fontSize: 10, color: 'var(--text-muted)' }} className="sayi">
                       {para(Math.round(n.m2_birim))}/m²
                     </span>
                   )}
@@ -93,7 +93,7 @@ export function HaritaPanel({
       </div>
 
       {/* Harita */}
-      <div className="kp-card" style={{ overflow: 'hidden' }}>
+      <div className="kart" style={{ overflow: 'hidden' }}>
         <Harita
           noktalar={noktalar}
           poi={poi}

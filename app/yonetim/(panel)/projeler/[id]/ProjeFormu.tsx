@@ -25,7 +25,7 @@ const DURUMLAR = ['taslak', 'lansman', 'satista', 'teslim_edildi', 'arsiv'];
 function Kaydet({ etiket }: { etiket: string }) {
   const { pending } = useFormStatus();
   return (
-    <button type="submit" className="kp-btn" disabled={pending}>
+    <button type="submit" className="btn btn-primary" disabled={pending}>
       {pending ? 'Kaydediliyor…' : etiket}
     </button>
   );
@@ -87,109 +87,109 @@ export function ProjeFormu({ proje, admin, kaydedildi }: Props) {
         <div className="dz-ana">
 
           {/* ── Genel bilgiler ── */}
-          <section className="kp-card dz-blok">
-            <h2 className="kp-h3">Genel bilgiler</h2>
+          <section className="kart dz-blok">
+            <h2 className="h3">Genel bilgiler</h2>
 
             <div className="dz-izgara">
               <label className="dz-alan dz-genis">
-                <span className="kp-label">Proje adı *</span>
+                <span className="eyebrow">Proje adı *</span>
                 <input name="ad" defaultValue={proje.ad} required
                   onChange={(e) => setAd(e.target.value)} />
               </label>
 
               <label className="dz-alan dz-genis">
-                <span className="kp-label">Slug * <i>adres bu değerden üretilir</i></span>
+                <span className="eyebrow">Slug * <i>adres bu değerden üretilir</i></span>
                 <input name="slug" defaultValue={proje.slug} required pattern="[a-z0-9][a-z0-9\-]*" />
               </label>
 
               <label className="dz-alan">
-                <span className="kp-label">İl *</span>
+                <span className="eyebrow">İl *</span>
                 <input name="il" defaultValue={proje.il} required />
               </label>
 
               <label className="dz-alan">
-                <span className="kp-label">İlçe *</span>
+                <span className="eyebrow">İlçe *</span>
                 <input name="ilce" defaultValue={proje.ilce} required
                   onChange={(e) => setIlce(e.target.value)} />
               </label>
 
               <label className="dz-alan">
-                <span className="kp-label">Mahalle</span>
+                <span className="eyebrow">Mahalle</span>
                 <input name="mahalle" defaultValue={proje.mahalle ?? ''} />
               </label>
 
               <label className="dz-alan">
-                <span className="kp-label">Tip</span>
+                <span className="eyebrow">Tip</span>
                 <select name="tip" defaultValue={proje.tip}>
                   {TIPLER.map((t) => <option key={t} value={t}>{t.replace(/_/g, ' ')}</option>)}
                 </select>
               </label>
 
               <label className="dz-alan">
-                <span className="kp-label">Durum</span>
+                <span className="eyebrow">Durum</span>
                 <select name="durum" defaultValue={proje.durum}>
                   {DURUMLAR.map((d) => <option key={d} value={d}>{d.replace(/_/g, ' ')}</option>)}
                 </select>
               </label>
 
               <label className="dz-alan">
-                <span className="kp-label">Teslim çeyreği <i>2027Q2</i></span>
+                <span className="eyebrow">Teslim çeyreği <i>2027Q2</i></span>
                 <input name="teslim_ceyrek" defaultValue={proje.teslim_ceyrek ?? ''}
                   placeholder="2027Q2" pattern="\d{4}Q[1-4]" />
               </label>
 
               <label className="dz-alan">
-                <span className="kp-label">Şantiye ilerlemesi <i>%</i></span>
+                <span className="eyebrow">Şantiye ilerlemesi <i>%</i></span>
                 <input name="santiye_yuzde" type="number" min={0} max={100}
                   defaultValue={proje.santiye_yuzde ?? ''} />
               </label>
 
               <label className="dz-alan">
-                <span className="kp-label">Enlem <i>lat</i></span>
+                <span className="eyebrow">Enlem <i>lat</i></span>
                 <input name="lat" defaultValue={proje.lat ?? ''} placeholder="41.0082" />
               </label>
 
               <label className="dz-alan">
-                <span className="kp-label">Boylam <i>lng</i></span>
+                <span className="eyebrow">Boylam <i>lng</i></span>
                 <input name="lng" defaultValue={proje.lng ?? ''} placeholder="28.9784" />
               </label>
             </div>
           </section>
 
           {/* ── Yapı ve ödeme ── */}
-          <section className="kp-card dz-blok">
-            <h2 className="kp-h3">Yapı ve ödeme planı</h2>
+          <section className="kart dz-blok">
+            <h2 className="h3">Yapı ve ödeme planı</h2>
             <div className="dz-izgara">
               <label className="dz-alan">
-                <span className="kp-label">Toplam konut</span>
+                <span className="eyebrow">Toplam konut</span>
                 <input name="toplam_konut" type="number" defaultValue={proje.toplam_konut ?? ''} />
               </label>
               <label className="dz-alan">
-                <span className="kp-label">Ticari birim</span>
+                <span className="eyebrow">Ticari birim</span>
                 <input name="ticari_birim" type="number" defaultValue={proje.ticari_birim ?? ''} />
               </label>
               <label className="dz-alan">
-                <span className="kp-label">Blok</span>
+                <span className="eyebrow">Blok</span>
                 <input name="blok_sayisi" type="number" defaultValue={proje.blok_sayisi ?? ''} />
               </label>
               <label className="dz-alan">
-                <span className="kp-label">Kat</span>
+                <span className="eyebrow">Kat</span>
                 <input name="kat_sayisi" type="number" defaultValue={proje.kat_sayisi ?? ''} />
               </label>
               <label className="dz-alan">
-                <span className="kp-label">Tavan yüksekliği <i>m</i></span>
+                <span className="eyebrow">Tavan yüksekliği <i>m</i></span>
                 <input name="tavan_yuksekligi" defaultValue={proje.tavan_yuksekligi ?? ''} />
               </label>
               <label className="dz-alan">
-                <span className="kp-label">Aidat <i>₺/ay</i></span>
+                <span className="eyebrow">Aidat <i>₺/ay</i></span>
                 <input name="aidat" defaultValue={proje.aidat ?? ''} />
               </label>
               <label className="dz-alan">
-                <span className="kp-label">Peşinat oranı <i>%</i></span>
+                <span className="eyebrow">Peşinat oranı <i>%</i></span>
                 <input name="pesinat_orani" defaultValue={proje.pesinat_orani ?? ''} />
               </label>
               <label className="dz-alan">
-                <span className="kp-label">Vade <i>ay</i></span>
+                <span className="eyebrow">Vade <i>ay</i></span>
                 <input name="vade_ay" type="number" defaultValue={proje.vade_ay ?? ''} />
               </label>
               <label className="dz-onay dz-genis">
@@ -204,8 +204,8 @@ export function ProjeFormu({ proje, admin, kaydedildi }: Props) {
           </section>
 
           {/* ── Daire tipleri ── */}
-          <section className="kp-card dz-blok">
-            <h2 className="kp-h3">Daire tipleri ve fiyatlar</h2>
+          <section className="kart dz-blok">
+            <h2 className="h3">Daire tipleri ve fiyatlar</h2>
             <p className="dz-not" style={{ marginTop: 0 }}>
               Fiyat değişikliği <b>fiyat arşivine kalıcı olarak</b> yazılır ve
               m² endeksine girer. Arşiv silinemez; yanlış girilen bir fiyat
@@ -246,15 +246,15 @@ export function ProjeFormu({ proje, admin, kaydedildi }: Props) {
               {DAIRE_TIPLERI.map((t) => <option key={t} value={t} />)}
             </datalist>
 
-            <button type="button" className="kp-btn is-ghost is-small"
+            <button type="button" className="btn btn-ghost btn-sm"
               onClick={() => setEkSatir((n) => n + 1)}>
               + Satır ekle
             </button>
           </section>
 
           {/* ── Özellikler ── */}
-          <section className="kp-card dz-blok">
-            <h2 className="kp-h3">Özellikler</h2>
+          <section className="kart dz-blok">
+            <h2 className="h3">Özellikler</h2>
             <div className="dz-ozellikler">
               {Object.entries(OZELLIKLER).map(([anahtar, ad2]) => (
                 <label key={anahtar} className="dz-onay">
@@ -267,8 +267,8 @@ export function ProjeFormu({ proje, admin, kaydedildi }: Props) {
           </section>
 
           {/* ── Açıklama ── */}
-          <section className="kp-card dz-blok">
-            <h2 className="kp-h3">Açıklama</h2>
+          <section className="kart dz-blok">
+            <h2 className="h3">Açıklama</h2>
             <textarea name="aciklama" rows={8} defaultValue={proje.aciklama ?? ''}
               onChange={(e) => setAciklama(e.target.value)}
               placeholder="Projenin kendi metni. Firmanın tanıtım broşüründen kopyalanmış metin arama motorunda kopya içerik sayılır." />
@@ -281,10 +281,10 @@ export function ProjeFormu({ proje, admin, kaydedildi }: Props) {
 
         {/* ── Yan sütun ── */}
         <aside className="dz-yan">
-          <section className="kp-card dz-blok">
-            <h2 className="kp-h3">Tamamlanma</h2>
+          <section className="kart dz-blok">
+            <h2 className="h3">Tamamlanma</h2>
             <div className="dz-skor">
-              <b className="tabular">{skor}</b>
+              <b className="sayi">{skor}</b>
               <span>/ 100</span>
             </div>
             <div className="dz-cubuk"><i style={{ width: `${skor}%` }} /></div>
@@ -307,8 +307,8 @@ export function ProjeFormu({ proje, admin, kaydedildi }: Props) {
             </p>
           </section>
 
-          <section className="kp-card dz-blok">
-            <h2 className="kp-h3">Arama sonucu önizlemesi</h2>
+          <section className="kart dz-blok">
+            <h2 className="h3">Arama sonucu önizlemesi</h2>
             <div className="dz-seo">
               <span className="dz-seo__url">
                 konutprojeleri.com › {proje.il} › {ilce}
@@ -322,14 +322,14 @@ export function ProjeFormu({ proje, admin, kaydedildi }: Props) {
           </section>
 
           {admin && (
-            <section className="kp-card dz-blok">
-              <h2 className="kp-h3">Yayın</h2>
+            <section className="kart dz-blok">
+              <h2 className="h3">Yayın</h2>
               <label className="dz-onay">
                 <input type="checkbox" name="yayinda" defaultChecked={proje.yayinda} />
                 <span><b>Yayında</b></span>
               </label>
               <label className="dz-alan" style={{ marginTop: 'var(--s-3)' }}>
-                <span className="kp-label">Fiyat teyit tarihi</span>
+                <span className="eyebrow">Fiyat teyit tarihi</span>
                 <input type="date" name="fiyat_teyit_tarihi"
                   defaultValue={proje.fiyat_teyit_tarihi ?? ''} />
               </label>
@@ -353,7 +353,7 @@ export function ProjeFormu({ proje, admin, kaydedildi }: Props) {
       <div className="dz-kaydet">
         <Kaydet etiket={admin ? 'Kaydet' : 'Onaya gönder'} />
         <a href={`/${proje.il}/${proje.ilce}/${proje.slug}`} target="_blank"
-          className="kp-btn is-ghost is-small" rel="noreferrer">
+          className="btn btn-ghost btn-sm" rel="noreferrer">
           Sitede gör
         </a>
       </div>

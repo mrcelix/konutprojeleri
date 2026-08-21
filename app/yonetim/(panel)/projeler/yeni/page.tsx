@@ -21,12 +21,12 @@ export default async function YeniProjeSayfasi() {
       <header className="yn-baslik">
         <div>
           <Link href="/yonetim/projeler" className="yn-mini">← Projeler</Link>
-          <h1 className="kp-h2" style={{ marginTop: 2 }}>Yeni proje</h1>
+          <h1 className="h2" style={{ marginTop: 2 }}>Yeni proje</h1>
         </div>
       </header>
 
       {firmalar.length === 0 ? (
-        <div className="kp-card kp-empty">
+        <div className="kart empty">
           <p className="kp-empty__title">Önce firma eklenmeli</p>
           <p className="kp-empty__text">
             Her proje bir firmaya bağlıdır. Firma kaydı olmadan proje açılamaz.

@@ -23,12 +23,12 @@ export function PlanGoruntuleyici({ kaynak, alt, pdfKaynak }: Props) {
   const zoom = KADEMELER[kademe] ?? 1;
 
   return (
-    <figure className="kat-plani kp-card" style={{ padding: 'var(--s-4)', margin: 0, position: 'relative' }}>
-      <div className="kp-row" style={{ marginBottom: 'var(--s-3)', gap: 6 }}>
+    <figure className="kat-plani kart" style={{ padding: 'var(--s-4)', margin: 0, position: 'relative' }}>
+      <div className="satir" style={{ marginBottom: 'var(--s-3)', gap: 6 }}>
         <button
           type="button"
           onClick={() => setOlculer((v) => !v)}
-          className={`kp-chip${olculer ? ' is-selected' : ''}`}
+          className={`chip${olculer ? ' is-selected' : ''}`}
           aria-pressed={olculer}
         >
           Ölçüler
@@ -36,30 +36,30 @@ export function PlanGoruntuleyici({ kaynak, alt, pdfKaynak }: Props) {
         <button
           type="button"
           onClick={() => setMobilya((v) => !v)}
-          className={`kp-chip${mobilya ? ' is-selected' : ''}`}
+          className={`chip${mobilya ? ' is-selected' : ''}`}
           aria-pressed={mobilya}
         >
           Mobilya
         </button>
 
-        <span className="kp-row" style={{ marginLeft: 'auto', gap: 4 }}>
+        <span className="satir" style={{ marginLeft: 'auto', gap: 4 }}>
           <button
             type="button"
             onClick={() => setKademe((k) => Math.max(0, k - 1))}
             disabled={kademe === 0}
-            className="kp-chip"
+            className="chip"
             aria-label="Uzaklaştır"
           >
             −
           </button>
-          <span className="kp-label tabular" style={{ minWidth: 34, textAlign: 'center' }}>
+          <span className="eyebrow sayi" style={{ minWidth: 34, textAlign: 'center' }}>
             {Math.round(zoom * 100)}%
           </span>
           <button
             type="button"
             onClick={() => setKademe((k) => Math.min(KADEMELER.length - 1, k + 1))}
             disabled={kademe === KADEMELER.length - 1}
-            className="kp-chip"
+            className="chip"
             aria-label="Yakınlaştır"
           >
             +
@@ -94,7 +94,7 @@ export function PlanGoruntuleyici({ kaynak, alt, pdfKaynak }: Props) {
 
       {pdfKaynak && (
         <figcaption style={{ marginTop: 'var(--s-3)' }}>
-          <a href={pdfKaynak} download className="kp-btn is-secondary is-small">
+          <a href={pdfKaynak} download className="btn btn-primary is-secondary is-small">
             Kat planını indir · PDF
           </a>
         </figcaption>

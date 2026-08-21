@@ -31,9 +31,9 @@ export default async function FirmalarSayfasi() {
 
   if (liste.length === 0) {
     return (
-      <main className="kp-wrap" style={{ paddingBlock: 'var(--s-7)' }}>
-        <h1 className="kp-h1">Müteahhit firmalar</h1>
-        <p className="kp-lead">Firma listesi hazırlanıyor.</p>
+      <main className="wrap" style={{ paddingBlock: 'var(--s-7)' }}>
+        <h1 className="h1">Müteahhit firmalar</h1>
+        <p className="prose">Firma listesi hazırlanıyor.</p>
       </main>
     );
   }
@@ -45,13 +45,13 @@ export default async function FirmalarSayfasi() {
   const enIyiler = notlu.slice(0, 3);
 
   return (
-    <main className="kp-wrap" style={{ paddingBlock: 'var(--s-5)' }}>
-      <nav className="kp-label" style={{ marginBottom: 'var(--s-3)' }}>
+    <main className="wrap" style={{ paddingBlock: 'var(--s-5)' }}>
+      <nav className="eyebrow" style={{ marginBottom: 'var(--s-3)' }}>
         <Link href="/">Ana sayfa</Link> › Firmalar
       </nav>
 
-      <h1 className="kp-h1">Müteahhit firmalar</h1>
-      <p className="kp-lead" style={{ marginBottom: 'var(--s-5)' }}>
+      <h1 className="h1">Müteahhit firmalar</h1>
+      <p className="prose" style={{ marginBottom: 'var(--s-5)' }}>
         Aktif projesi olan <b>{liste.length} firma</b> teslim performansına göre
         sıralanabilir. Karne yalnızca ilan arşivindeki teslim tarihlerinden ve panel
         verilerinden üretilir; yorum, kullanıcı puanı veya reklam ilişkisi hesaba girmez.{' '}
@@ -63,7 +63,7 @@ export default async function FirmalarSayfasi() {
       {/* En az geciktirenler */}
       {enIyiler.length > 0 && (
         <section style={{ marginBottom: 'var(--s-5)' }}>
-          <h2 className="kp-h2">En az geciktiren firmalar</h2>
+          <h2 className="h2">En az geciktiren firmalar</h2>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(230px,1fr))', gap: 'var(--s-3)' }}>
             {enIyiler.map((f) => (
               <Link
@@ -88,7 +88,7 @@ export default async function FirmalarSayfasi() {
                 </span>
                 <span>
                   <b style={{ display: 'block', fontSize: 13.5, letterSpacing: '-0.02em' }}>{f.ad}</b>
-                  <span style={{ fontSize: 10.5, color: 'var(--tint-mint-ink)' }} className="tabular">
+                  <span style={{ fontSize: 10.5, color: 'var(--tint-mint-ink)' }} className="sayi">
                     Ort. gecikme <b>{f.ort_gecikme?.toFixed(1)} ay</b> · {f.tamamlanan} proje
                   </span>
                 </span>
@@ -98,20 +98,20 @@ export default async function FirmalarSayfasi() {
         </section>
       )}
 
-      <section className="kp-card" style={{ padding: 'var(--s-5)' }}>
-        <div className="kp-row" style={{ marginBottom: 'var(--s-4)' }}>
-          <h2 className="kp-h2" style={{ margin: 0 }}>Tüm firmalar</h2>
-          <span className="kp-label" style={{ marginLeft: 'auto' }}>
+      <section className="kart" style={{ padding: 'var(--s-5)' }}>
+        <div className="satir" style={{ marginBottom: 'var(--s-4)' }}>
+          <h2 className="h2" style={{ margin: 0 }}>Tüm firmalar</h2>
+          <span className="eyebrow" style={{ marginLeft: 'auto' }}>
             gecikme az → çok
           </span>
         </div>
 
         <div style={{ overflowX: 'auto' }}>
-          <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 12 }} className="tabular">
+          <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 12 }} className="sayi">
             <thead>
               <tr>
                 {['Firma', 'Sicil', 'Ort. gecikme', 'Zamanında', 'Tamamlanan', 'Aktif', ''].map((h) => (
-                  <th key={h} className="kp-label" style={{ textAlign: 'left', padding: '0 9px 8px' }}>{h}</th>
+                  <th key={h} className="eyebrow" style={{ textAlign: 'left', padding: '0 9px 8px' }}>{h}</th>
                 ))}
               </tr>
             </thead>
@@ -154,7 +154,7 @@ export default async function FirmalarSayfasi() {
           </table>
         </div>
 
-        <p className="kp-label" style={{ marginTop: 'var(--s-4)', textTransform: 'none', letterSpacing: 0, lineHeight: 1.6 }}>
+        <p className="eyebrow" style={{ marginTop: 'var(--s-4)', textTransform: 'none', letterSpacing: 0, lineHeight: 1.6 }}>
           İki tamamlanmış projeden azı olan firmalara not verilmez; &ldquo;Yeni firma&rdquo;
           rozeti gösterilir. Yetersiz veriyle not vermek, düşük not vermekten daha
           yanıltıcıdır. Sektör ortalaması: <b>{SEKTOR.ortGecikme} ay</b> gecikme,

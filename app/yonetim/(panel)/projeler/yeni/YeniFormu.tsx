@@ -10,7 +10,7 @@ const TIPLER = ['konut', 'villa', 'ofis', 'rezidans', 'kentsel_donusum', 'toki',
 function Dugme() {
   const { pending } = useFormStatus();
   return (
-    <button type="submit" className="kp-btn" disabled={pending}>
+    <button type="submit" className="btn btn-primary" disabled={pending}>
       {pending ? 'Oluşturuluyor…' : 'Taslak oluştur ve düzenle'}
     </button>
   );
@@ -29,16 +29,16 @@ export function YeniFormu({ firmalar }: { firmalar: { id: number; ad: string }[]
     <form action={eylem} className="dz">
       {durum?.hata && <p className="dz-bildirim is-hata" role="alert">{durum.hata}</p>}
 
-      <section className="kp-card dz-blok" style={{ maxWidth: 620 }}>
+      <section className="kart dz-blok" style={{ maxWidth: 620 }}>
         <div className="dz-izgara">
           <label className="dz-alan dz-genis">
-            <span className="kp-label">Proje adı *</span>
+            <span className="eyebrow">Proje adı *</span>
             <input name="ad" required autoFocus value={ad}
               onChange={(e) => setAd(e.target.value)} />
           </label>
 
           <label className="dz-alan dz-genis">
-            <span className="kp-label">
+            <span className="eyebrow">
               Slug <i>boş bırakılırsa addan üretilir</i>
             </span>
             <input name="slug" value={slug} placeholder={oneri}
@@ -52,7 +52,7 @@ export function YeniFormu({ firmalar }: { firmalar: { id: number; ad: string }[]
           </label>
 
           <label className="dz-alan dz-genis">
-            <span className="kp-label">Firma *</span>
+            <span className="eyebrow">Firma *</span>
             <select name="firma_id" required defaultValue="">
               <option value="" disabled>Seçin</option>
               {firmalar.map((f) => (
@@ -62,17 +62,17 @@ export function YeniFormu({ firmalar }: { firmalar: { id: number; ad: string }[]
           </label>
 
           <label className="dz-alan">
-            <span className="kp-label">İl * <i>istanbul</i></span>
+            <span className="eyebrow">İl * <i>istanbul</i></span>
             <input name="il" required placeholder="istanbul" />
           </label>
 
           <label className="dz-alan">
-            <span className="kp-label">İlçe * <i>kadikoy</i></span>
+            <span className="eyebrow">İlçe * <i>kadikoy</i></span>
             <input name="ilce" required placeholder="kadikoy" />
           </label>
 
           <label className="dz-alan">
-            <span className="kp-label">Tip</span>
+            <span className="eyebrow">Tip</span>
             <select name="tip" defaultValue="konut">
               {TIPLER.map((t) => <option key={t} value={t}>{t.replace(/_/g, ' ')}</option>)}
             </select>

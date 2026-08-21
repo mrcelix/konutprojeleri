@@ -73,8 +73,8 @@ export default async function KontrolPaneli() {
     <main className="yn-sayfa">
       <header className="yn-baslik">
         <div>
-          <h1 className="kp-h2">Bugün yapılacaklar</h1>
-          <p className="kp-lead" style={{ fontSize: 13 }}>
+          <h1 className="h2">Bugün yapılacaklar</h1>
+          <p className="prose" style={{ fontSize: 13 }}>
             {toplamIs > 0
               ? `${toplamIs} iş bekliyor. Sıra önem sırasıdır.`
               : 'Bekleyen iş yok. Kuyruk temiz.'}
@@ -83,7 +83,7 @@ export default async function KontrolPaneli() {
       </header>
 
       {isler.length === 0 ? (
-        <div className="kp-card kp-empty">
+        <div className="kart empty">
           <p className="kp-empty__title">Kuyruk temiz</p>
           <p className="kp-empty__text">
             Açılmamış talep, onay bekleyen değişiklik, eksik görsel ya da
@@ -95,7 +95,7 @@ export default async function KontrolPaneli() {
           {isler.map((i) => (
             <li key={i.ad} className={i.agir ? 'is-agir' : undefined}>
               <Link href={i.yol}>
-                <b className="tabular">{i.n}</b>
+                <b className="sayi">{i.n}</b>
                 <span>
                   <strong>{i.ad}</strong>
                   <em>{i.neden}</em>
@@ -108,7 +108,7 @@ export default async function KontrolPaneli() {
       )}
 
       <section style={{ marginTop: 'var(--s-6)' }}>
-        <h2 className="kp-h3">Proje dağılımı</h2>
+        <h2 className="h3">Proje dağılımı</h2>
         <div className="yn-sayimlar">
           {durumlar.map((d) => (
             <Link
@@ -116,12 +116,12 @@ export default async function KontrolPaneli() {
               href={`/yonetim/projeler?durum=${d.durum}`}
               className="yn-sayim"
             >
-              <b className="tabular">{d.n}</b>
+              <b className="sayi">{d.n}</b>
               <span>{DURUM_ADLARI[d.durum] ?? d.durum}</span>
             </Link>
           ))}
           {durumlar.length === 0 && (
-            <p className="kp-lead" style={{ fontSize: 13 }}>Henüz proje yok.</p>
+            <p className="prose" style={{ fontSize: 13 }}>Henüz proje yok.</p>
           )}
         </div>
       </section>

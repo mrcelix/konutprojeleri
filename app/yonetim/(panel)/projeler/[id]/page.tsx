@@ -44,8 +44,8 @@ export default async function DuzenleyiciSayfasi({
       <header className="yn-baslik">
         <div>
           <Link href="/yonetim/projeler" className="yn-mini">← Projeler</Link>
-          <h1 className="kp-h2" style={{ marginTop: 2 }}>{proje.ad}</h1>
-          <p className="kp-lead" style={{ fontSize: 13 }}>
+          <h1 className="h2" style={{ marginTop: 2 }}>{proje.ad}</h1>
+          <p className="prose" style={{ fontSize: 13 }}>
             {proje.firma_ad} · {proje.ilce} · {proje.yayinda ? 'yayında' : 'yayında değil'}
           </p>
         </div>
@@ -67,15 +67,15 @@ export default async function DuzenleyiciSayfasi({
       </div>
 
       {islemler.length > 0 && (
-        <section className="kp-card dz-blok" style={{ marginTop: 'var(--s-5)' }}>
-          <h2 className="kp-h3">Son işlemler</h2>
+        <section className="kart dz-blok" style={{ marginTop: 'var(--s-5)' }}>
+          <h2 className="h3">Son işlemler</h2>
           <p className="dz-not" style={{ marginTop: 0 }}>
             Denetim günlüğü salt-eklemedir; buradaki kayıtlar silinemez.
           </p>
           <ul className="dz-gecmis">
             {islemler.map((i, n) => (
               <li key={n}>
-                <span className="tabular">{i.zaman}</span>
+                <span className="sayi">{i.zaman}</span>
                 <b>{i.kim}</b>
                 <span>
                   {i.alan ? <em>{i.alan}</em> : null}

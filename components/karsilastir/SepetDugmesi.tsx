@@ -24,7 +24,7 @@ export function SepetDugmesi({
       <input type="hidden" name="don" value={don} />
       <button
         type="submit"
-        className={`kp-btn is-ghost${kucuk ? ' is-small' : ''}${sepette ? ' is-selected' : ''}`}
+        className={`btn btn-ghost${kucuk ? ' is-small' : ''}${sepette ? ' is-selected' : ''}`}
         aria-pressed={sepette}
       >
         {sepette ? '✓ Karşılaştırmada' : 'Karşılaştır'}
@@ -73,11 +73,11 @@ export function SepetSeridi({
       <form method="post" action="/api/karsilastir" className="sp-serit__temizle">
         <input type="hidden" name="temizle" value="1" />
         <input type="hidden" name="don" value={don} />
-        <button type="submit" className="kp-btn is-ghost is-small">Temizle</button>
+        <button type="submit" className="btn btn-ghost btn-sm">Temizle</button>
       </form>
 
       {sluglar.length >= 2 ? (
-        <Link href={sepetYolu(sluglar)} className="kp-btn is-small">
+        <Link href={sepetYolu(sluglar)} className="btn btn-primary btn-sm">
           Karşılaştır
         </Link>
       ) : (

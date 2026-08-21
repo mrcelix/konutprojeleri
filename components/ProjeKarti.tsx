@@ -50,7 +50,7 @@ export function ProjeKarti({ proje: p, daireTipleri = [], don, sepette }: Props)
   const fiyat = para(p.min_fiyat);
 
   return (
-    <article className="kp-project">
+    <article className="vsatir">
       <div className="kp-project__media">
         {p.kapak && (
           <Image
@@ -92,7 +92,7 @@ export function ProjeKarti({ proje: p, daireTipleri = [], don, sepette }: Props)
 
         {/* Kartın asıl değeri: detaya girmeden tip karşılaştırması */}
         {daireTipleri.length > 0 && (
-          <dl className="kp-unittable">
+          <dl className="info-table">
             {daireTipleri.slice(0, 4).map((d) => (
               <div className="kp-unittable__cell" key={d.tip}>
                 <dt className="kp-unittable__type">{d.tip}</dt>
@@ -111,7 +111,7 @@ export function ProjeKarti({ proje: p, daireTipleri = [], don, sepette }: Props)
       <div className="kp-project__aside">
         {fiyat ? (
           <>
-            <span className="kp-label">Fiyatlar</span>
+            <span className="eyebrow">Fiyatlar</span>
             <span className="kp-project__price">{fiyat}</span>
             <span className="kp-project__unit">
               {m2Birim(p.min_fiyat, daireTipleri[0]?.net_m2)}
@@ -121,13 +121,13 @@ export function ProjeKarti({ proje: p, daireTipleri = [], don, sepette }: Props)
         ) : (
           /* Uydurma fiyat gösterilmez — eylem gösterilir */
           <>
-            <span className="kp-label">Fiyat</span>
+            <span className="eyebrow">Fiyat</span>
             <span className="kp-project__unit">Firma henüz açıklamadı</span>
           </>
         )}
 
         <div className="kp-project__cta">
-          <Link href={yol} className="kp-btn is-small">
+          <Link href={yol} className="btn btn-primary btn-sm">
             {fiyat ? 'Projeyi incele' : 'Fiyat isteyin'}
           </Link>
           {don && <SepetDugmesi slug={p.slug} don={don} sepette={sepette} kucuk />}

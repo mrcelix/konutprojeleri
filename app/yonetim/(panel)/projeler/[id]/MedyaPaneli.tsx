@@ -30,7 +30,7 @@ export type MedyaOgesi = {
 function Dugme({ etiket, calisiyor }: { etiket: string; calisiyor?: string }) {
   const { pending } = useFormStatus();
   return (
-    <button type="submit" className="kp-btn is-small" disabled={pending}>
+    <button type="submit" className="btn btn-primary btn-sm" disabled={pending}>
       {pending ? (calisiyor ?? 'Kaydediliyor…') : etiket}
     </button>
   );
@@ -61,7 +61,7 @@ function Satir({
         <input type="hidden" name="projeId" value={projeId} />
 
         <label className="dz-alan">
-          <span className="kp-label">
+          <span className="eyebrow">
             Alt metin
             {!m.varyant_hazir && <i> · boşken sitede gösterilmez</i>}
           </span>
@@ -73,7 +73,7 @@ function Satir({
         </label>
 
         <label className="dz-alan my-sira">
-          <span className="kp-label">Sıra</span>
+          <span className="eyebrow">Sıra</span>
           <input name="sira" type="number" defaultValue={m.sira} min={0} />
         </label>
 
@@ -147,8 +147,8 @@ export function MedyaPaneli({
   }
 
   return (
-    <section className="kp-card dz-blok">
-      <h2 className="kp-h3">Görseller</h2>
+    <section className="kart dz-blok">
+      <h2 className="h3">Görseller</h2>
 
       {!r2Var ? (
         <p className="dz-not" style={{ marginTop: 0 }}>
@@ -179,7 +179,7 @@ export function MedyaPaneli({
             />
             <button
               type="button"
-              className="kp-btn is-small"
+              className="btn btn-primary btn-sm"
               onClick={() => girdi.current?.click()}
               disabled={!!durum}
             >

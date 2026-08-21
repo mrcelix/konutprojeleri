@@ -92,16 +92,16 @@ export default async function IlSayfasi({ params, searchParams }: Params) {
   const ad = il.charAt(0).toUpperCase() + il.slice(1);
 
   return (
-    <main className="kp-wrap" style={{ paddingBlock: 'var(--s-6)' }}>
-      <nav className="kp-label" style={{ marginBottom: 'var(--s-3)' }}>
+    <main className="wrap" style={{ paddingBlock: 'var(--s-6)' }}>
+      <nav className="eyebrow" style={{ marginBottom: 'var(--s-3)' }}>
         <Link href="/">Ana sayfa</Link> › {ad} Konut Projeleri
       </nav>
 
-      <h1 className="kp-h1">{ad} Konut Projeleri</h1>
-      {icerik?.metin && <p className="kp-lead">{icerik.metin}</p>}
+      <h1 className="h1">{ad} Konut Projeleri</h1>
+      {icerik?.metin && <p className="prose">{icerik.metin}</p>}
 
       <dl
-        className="kp-card"
+        className="kart"
         style={{
           display: 'grid',
           gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))',
@@ -116,17 +116,17 @@ export default async function IlSayfasi({ params, searchParams }: Params) {
         <Ozet baslik="Ortalama m²" deger={para(ozet.m2_fiyat) ?? '—'} />
       </dl>
 
-      <h2 className="kp-h2">İlçeye göre</h2>
+      <h2 className="h2">İlçeye göre</h2>
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(180px, 1fr))', gap: 'var(--s-3)' }}>
         {liste.map((i) => (
           <Link
             key={i.ilce}
             href={`/${il}/${i.ilce}-konut-projeleri`}
-            className="kp-card"
+            className="kart"
             style={{ padding: 'var(--s-4)' }}
           >
             <b style={{ display: 'block', fontSize: 14, letterSpacing: '-0.02em' }}>{i.ilce}</b>
-            <span style={{ fontSize: 11, color: 'var(--text-muted)' }} className="tabular">
+            <span style={{ fontSize: 11, color: 'var(--text-muted)' }} className="sayi">
               {i.proje_sayisi} proje
               {i.m2_fiyat ? ` · ${para(i.m2_fiyat)}/m²` : ''}
               {i.yillik_degisim != null ? ` · ${yuzde(i.yillik_degisim, { isaretli: true })}` : ''}
@@ -141,8 +141,8 @@ export default async function IlSayfasi({ params, searchParams }: Params) {
 function Ozet({ baslik, deger }: { baslik: string; deger: string }) {
   return (
     <div style={{ background: 'var(--surface-card)', padding: 'var(--s-4)' }}>
-      <dt className="kp-label">{baslik}</dt>
-      <dd className="kp-num" style={{ margin: 0 }}>{deger}</dd>
+      <dt className="eyebrow">{baslik}</dt>
+      <dd className="sayi" style={{ margin: 0 }}>{deger}</dd>
     </div>
   );
 }

@@ -22,22 +22,22 @@ export const metadata: Metadata = {
 
 export default function DuzeltmeSayfasi() {
   return (
-    <main className="kp-wrap" style={{ paddingBlock: 'var(--s-7)', maxWidth: 620 }}>
-      <h1 className="kp-h1">Düzeltme talebi</h1>
-      <p className="kp-lead" style={{ marginBottom: 'var(--s-5)' }}>
+    <main className="wrap" style={{ paddingBlock: 'var(--s-7)', maxWidth: 620 }}>
+      <h1 className="h1">Düzeltme talebi</h1>
+      <p className="prose" style={{ marginBottom: 'var(--s-5)' }}>
         Sitede hatalı gördüğünüz bir bilgi varsa bildirin. Talepler <b>5 iş günü</b> içinde
         incelenir. Düzeltme yapılırsa <b>düzeltme kaydı sayfada görünür kalır</b> —
         sessiz düzeltme yapılmaz.
       </p>
 
-      <form className="kp-card" style={{ padding: 'var(--s-5)' }} action="/api/duzeltme" method="post">
+      <form className="kart" style={{ padding: 'var(--s-5)' }} action="/api/duzeltme" method="post">
         <Alan ad="sayfa" etiket="Hatalı bilgiyi gördüğünüz sayfa" tip="url" gerekli
               ipucu="Adres çubuğundaki bağlantıyı yapıştırabilirsiniz" />
         <Alan ad="ad" etiket="Ad Soyad" tip="text" gerekli />
         <Alan ad="eposta" etiket="E-posta" tip="email" gerekli
               ipucu="Sonucu buraya bildiririz" />
 
-        <label className="kp-field" style={{ display: 'block', marginBottom: 8 }}>
+        <label className="alan" style={{ display: 'block', marginBottom: 8 }}>
           <span className="kp-field__label">Hangi bilgi hatalı? *</span>
           <textarea
             name="aciklama"
@@ -50,7 +50,7 @@ export default function DuzeltmeSayfasi() {
             }}
           />
         </label>
-        <p className="kp-label" style={{ textTransform: 'none', letterSpacing: 0, marginBottom: 'var(--s-4)', lineHeight: 1.55 }}>
+        <p className="eyebrow" style={{ textTransform: 'none', letterSpacing: 0, marginBottom: 'var(--s-4)', lineHeight: 1.55 }}>
           Belgeye dayanan bildirimler daha hızlı sonuçlanır. Belge varsa e-posta ile
           gönderebilirsiniz.
         </p>
@@ -64,12 +64,12 @@ export default function DuzeltmeSayfasi() {
           </span>
         </label>
 
-        <button type="submit" className="kp-btn" style={{ width: '100%' }}>
+        <button type="submit" className="btn btn-primary" style={{ width: '100%' }}>
           Düzeltme talebi gönder
         </button>
       </form>
 
-      <div className="kp-card" style={{ padding: 'var(--s-4)', marginTop: 'var(--s-4)', background: 'var(--tint-butter)' }}>
+      <div className="kart" style={{ padding: 'var(--s-4)', marginTop: 'var(--s-4)', background: 'var(--tint-butter)' }}>
         <b style={{ display: 'block', fontSize: 12.5, color: 'var(--tint-butter-ink)', marginBottom: 4 }}>
           Firma yetkilisi misiniz?
         </b>
@@ -88,7 +88,7 @@ function Alan({
 }: { ad: string; etiket: string; tip: string; gerekli?: boolean; ipucu?: string }) {
   return (
     <>
-      <label className="kp-field" style={{ display: 'block', marginBottom: ipucu ? 4 : 8 }}>
+      <label className="alan" style={{ display: 'block', marginBottom: ipucu ? 4 : 8 }}>
         {/* Görünür label — yalnızca placeholder erişilebilirlik ihlali */}
         <span className="kp-field__label">{etiket}{gerekli && ' *'}</span>
         <input
@@ -100,7 +100,7 @@ function Alan({
         />
       </label>
       {ipucu && (
-        <p className="kp-label" style={{ textTransform: 'none', letterSpacing: 0, marginBottom: 10 }}>
+        <p className="eyebrow" style={{ textTransform: 'none', letterSpacing: 0, marginBottom: 10 }}>
           {ipucu}
         </p>
       )}

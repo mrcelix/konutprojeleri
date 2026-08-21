@@ -39,9 +39,9 @@ export default async function EndeksSayfasi() {
 
   if (!veri || veri.turkiye.m2 == null) {
     return (
-      <main className="kp-wrap" style={{ paddingBlock: 'var(--s-7)' }}>
-        <h1 className="kp-h1">Konut Projeleri m² Fiyat Endeksi</h1>
-        <p className="kp-lead">
+      <main className="wrap" style={{ paddingBlock: 'var(--s-7)' }}>
+        <h1 className="h1">Konut Projeleri m² Fiyat Endeksi</h1>
+        <p className="prose">
           Endeks, fiyat arşivi biriktikçe hesaplanır. Seri henüz oluşmadı.
         </p>
       </main>
@@ -60,15 +60,15 @@ export default async function EndeksSayfasi() {
   ];
 
   return (
-    <main className="kp-wrap" style={{ paddingBlock: 'var(--s-5)' }}>
+    <main className="wrap" style={{ paddingBlock: 'var(--s-5)' }}>
       <JsonLd donem={donem} m2={turkiye.m2} />
 
-      <nav className="kp-label" style={{ marginBottom: 'var(--s-3)' }}>
+      <nav className="eyebrow" style={{ marginBottom: 'var(--s-3)' }}>
         <Link href="/">Ana sayfa</Link> › Konut Projeleri m² Fiyat Endeksi
       </nav>
 
-      <h1 className="kp-h1">Konut Projeleri m² Fiyat Endeksi</h1>
-      <p className="kp-lead" style={{ marginBottom: 'var(--s-5)' }}>
+      <h1 className="h1">Konut Projeleri m² Fiyat Endeksi</h1>
+      <p className="prose" style={{ marginBottom: 'var(--s-5)' }}>
         Türkiye genelinde satışta olan <b>{turkiye.projeSayisi} yeni konut projesinin</b>{' '}
         metrekare satış fiyatlarından hesaplanır. <b>İkinci el konut dahil değildir.</b>{' '}
         Her hafta pazartesi yeniden hesaplanır; son güncelleme <b>{donem}</b>.
@@ -87,13 +87,13 @@ export default async function EndeksSayfasi() {
             borderRadius: 'var(--r-card)', padding: 'var(--s-5)',
           }}
         >
-          <p className="kp-label" style={{ marginBottom: 6 }}>Türkiye ortalaması</p>
+          <p className="eyebrow" style={{ marginBottom: 6 }}>Türkiye ortalaması</p>
           <span
             style={{
               fontSize: 42, fontWeight: 800, letterSpacing: '-0.04em',
               lineHeight: 1, display: 'block', color: 'var(--brand-strong)',
             }}
-            className="tabular"
+            className="sayi"
           >
             {para(turkiye.m2)}/m²
           </span>
@@ -115,8 +115,8 @@ export default async function EndeksSayfasi() {
         </div>
 
         {/* Metodoloji — sayfanın güvenilirliği buna bağlı */}
-        <aside className="kp-card" style={{ padding: 'var(--s-5)' }}>
-          <h2 className="kp-h3" style={{ marginBottom: 'var(--s-3)' }}>Nasıl hesaplanır</h2>
+        <aside className="kart" style={{ padding: 'var(--s-5)' }}>
+          <h2 className="h3" style={{ marginBottom: 'var(--s-3)' }}>Nasıl hesaplanır</h2>
           <ul style={{ margin: 0, paddingLeft: 16, display: 'grid', gap: 9, fontSize: 11.5, color: 'var(--text-secondary)', lineHeight: 1.6 }}>
             <li>Yalnızca <b>yeni konut projeleri</b>. İkinci el ilanları, arsa ve ticari birimler dışarıda.</li>
             <li>Fiyatlar firmaların beyan ettiği <b>liste fiyatlarıdır</b>, tapu devir bedelleri değil. Pazarlık payı yansımaz.</li>
@@ -128,17 +128,17 @@ export default async function EndeksSayfasi() {
       </div>
 
       {/* Seri */}
-      <section className="kp-card" style={{ padding: 'var(--s-5)', marginBottom: 'var(--s-4)' }}>
-        <div className="kp-row" style={{ marginBottom: 'var(--s-4)' }}>
-          <h2 className="kp-h2" style={{ margin: 0 }}>Aylık seyir</h2>
-          <span className="kp-label" style={{ marginLeft: 'auto' }}>nominal · ₺/m²</span>
+      <section className="kart" style={{ padding: 'var(--s-5)', marginBottom: 'var(--s-4)' }}>
+        <div className="satir" style={{ marginBottom: 'var(--s-4)' }}>
+          <h2 className="h2" style={{ margin: 0 }}>Aylık seyir</h2>
+          <span className="eyebrow" style={{ marginLeft: 'auto' }}>nominal · ₺/m²</span>
         </div>
 
         <CizgiGrafik seriler={seriler} />
 
-        <div className="kp-row" style={{ gap: 'var(--s-4)', marginTop: 'var(--s-3)', fontSize: 11.5 }}>
+        <div className="satir" style={{ gap: 'var(--s-4)', marginTop: 'var(--s-3)', fontSize: 11.5 }}>
           {seriler.map((s) => (
-            <span key={s.ad} className="kp-row" style={{ gap: 7 }}>
+            <span key={s.ad} className="satir" style={{ gap: 7 }}>
               <span aria-hidden style={{ width: 16, height: 3, borderRadius: 2, background: s.renk, display: 'block' }} />
               <span style={{ color: 'var(--text-secondary)' }}>
                 {s.ad} · {para(s.nokta[s.nokta.length - 1]?.m2 ?? null)}
@@ -152,18 +152,18 @@ export default async function EndeksSayfasi() {
       </section>
 
       {/* Bölge tablosu */}
-      <section className="kp-card" style={{ padding: 'var(--s-5)', marginBottom: 'var(--s-4)' }}>
-        <div className="kp-row" style={{ marginBottom: 'var(--s-4)' }}>
-          <h2 className="kp-h2" style={{ margin: 0 }}>İl endeksleri</h2>
-          <span className="kp-label" style={{ marginLeft: 'auto' }}>m² fiyatına göre</span>
+      <section className="kart" style={{ padding: 'var(--s-5)', marginBottom: 'var(--s-4)' }}>
+        <div className="satir" style={{ marginBottom: 'var(--s-4)' }}>
+          <h2 className="h2" style={{ margin: 0 }}>İl endeksleri</h2>
+          <span className="eyebrow" style={{ marginLeft: 'auto' }}>m² fiyatına göre</span>
         </div>
 
         <div style={{ overflowX: 'auto' }}>
-          <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 12 }} className="tabular">
+          <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 12 }} className="sayi">
             <thead>
               <tr>
                 {['Bölge', 'm² fiyatı', 'Aylık', 'Yıllık', 'Proje', 'Daire', '12 aylık seyir'].map((h) => (
-                  <th key={h} className="kp-label" style={{ textAlign: 'left', padding: '0 9px 8px' }}>{h}</th>
+                  <th key={h} className="eyebrow" style={{ textAlign: 'left', padding: '0 9px 8px' }}>{h}</th>
                 ))}
               </tr>
             </thead>
@@ -175,7 +175,7 @@ export default async function EndeksSayfasi() {
           </table>
         </div>
 
-        <p className="kp-label" style={{ marginTop: 'var(--s-4)', textTransform: 'none', letterSpacing: 0, lineHeight: 1.6 }}>
+        <p className="eyebrow" style={{ marginTop: 'var(--s-4)', textTransform: 'none', letterSpacing: 0, lineHeight: 1.6 }}>
           En az 5 projesi olmayan bölge için endeks yayınlanmaz — az sayıda projeden
           hesaplanan ortalama tek bir lansmanla savrulur.
         </p>
@@ -188,7 +188,7 @@ export default async function EndeksSayfasi() {
           padding: 'var(--s-5)', marginBottom: 'var(--s-4)',
         }}
       >
-        <h2 className="kp-h3" style={{ color: 'var(--warning)', marginBottom: 6 }}>
+        <h2 className="h3" style={{ color: 'var(--warning)', marginBottom: 6 }}>
           Endeksin bilinen sınırı
         </h2>
         <p style={{ margin: 0, fontSize: 12.5, color: 'var(--warning)', lineHeight: 1.7, maxWidth: '78ch' }}>
@@ -217,7 +217,7 @@ export default async function EndeksSayfasi() {
           </p>
         </div>
         <span
-          className="kp-btn"
+          className="btn btn-primary"
           style={{ background: 'var(--tint-butter-ink)', borderColor: 'var(--tint-butter-ink)', color: '#fff' }}
         >
           Raporu indir · PDF
@@ -234,20 +234,20 @@ function Delta({ ad, v }: { ad: string; v: number | null }) {
   if (v == null) {
     return (
       <div style={{ background: 'rgba(255,255,255,.55)', borderRadius: 'var(--r-block)', padding: 'var(--s-3)' }}>
-        <dt className="kp-label">{ad}</dt>
+        <dt className="eyebrow">{ad}</dt>
         <dd style={{ margin: 0, fontSize: 12, color: 'var(--text-muted)' }}>Yeterli veri yok</dd>
       </div>
     );
   }
   return (
     <div style={{ background: 'rgba(255,255,255,.55)', borderRadius: 'var(--r-block)', padding: 'var(--s-3)' }}>
-      <dt className="kp-label">{ad}</dt>
+      <dt className="eyebrow">{ad}</dt>
       <dd
         style={{
           margin: 0, fontSize: 17, fontWeight: 800, letterSpacing: '-0.03em',
           color: v >= 0 ? 'var(--success)' : 'var(--danger)',
         }}
-        className="tabular"
+        className="sayi"
       >
         {yuzde(v, { isaretli: true, basamak: 1 })}
       </dd>

@@ -25,7 +25,7 @@ export function Chip({
   children: React.ReactNode;
 }) {
   const bos = sayi === 0;
-  const sinif = ['kp-chip', secili && 'is-selected', bos && 'is-empty']
+  const sinif = ['chip', secili && 'is-selected', bos && 'is-empty']
     .filter(Boolean)
     .join(' ');
 

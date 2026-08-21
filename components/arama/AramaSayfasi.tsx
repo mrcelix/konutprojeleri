@@ -32,9 +32,9 @@ export async function AramaSayfasi({ taban, baslik, filtre, girisMetni }: Props)
   const sayfa = filtre.sayfa ?? 1;
 
   return (
-    <main className="kp-wrap" style={{ paddingBlock: 'var(--s-5)' }}>
-      <h1 className="kp-h1">{baslik}</h1>
-      {girisMetni && <p className="kp-lead" style={{ marginBottom: 'var(--s-4)' }}>{girisMetni}</p>}
+    <main className="wrap" style={{ paddingBlock: 'var(--s-5)' }}>
+      <h1 className="h1">{baslik}</h1>
+      {girisMetni && <p className="prose" style={{ marginBottom: 'var(--s-4)' }}>{girisMetni}</p>}
 
       <div
         style={{
@@ -46,37 +46,37 @@ export async function AramaSayfasi({ taban, baslik, filtre, girisMetni }: Props)
       >
         <FiltrePaneli taban={taban} filtre={filtre} fasetler={fasetler} />
 
-        <div className="kp-stack">
+        <div className="izgara">
           {/* Araç çubuğu */}
-          <div className="kp-card kp-row" style={{ padding: 'var(--s-3) var(--s-4)' }}>
+          <div className="kart satir" style={{ padding: 'var(--s-3) var(--s-4)' }}>
             <span style={{ fontSize: 13 }}>
               <b>{toplam}</b> proje
             </span>
             <Link
               href={`${taban}${filtreYaz({ ...filtre, sayfa: 1 })}${filtreYaz({ ...filtre, sayfa: 1 }) ? '&' : '?'}gorunum=harita`}
-              className="kp-chip"
+              className="chip"
             >
               Haritada gör
             </Link>
             {/* Zaman ekseni — "ne zaman taşınacağım" ile başlayan kullanıcı için */}
             <Link
               href={`/teslim-takvimi${filtre.il ? `?il=${filtre.il}` : ''}`}
-              className="kp-chip"
+              className="chip"
             >
               Teslim takvimi
             </Link>
             <Link
               href={`/butce${filtre.il ? `?il=${filtre.il}` : ''}`}
-              className="kp-chip"
+              className="chip"
             >
               Bütçeme uyanlar
             </Link>
-            <nav className="kp-row" style={{ marginLeft: 'auto', gap: 4 }} aria-label="Sıralama">
+            <nav className="satir" style={{ marginLeft: 'auto', gap: 4 }} aria-label="Sıralama">
               {SIRALAMALAR.map((s) => (
                 <Link
                   key={s.deger}
                   href={taban + filtreYaz({ ...filtre, siralama: s.deger, sayfa: 1 })}
-                  className={`kp-chip${filtre.siralama === s.deger ? ' is-selected' : ''}`}
+                  className={`chip${filtre.siralama === s.deger ? ' is-selected' : ''}`}
                 >
                   {s.ad}
                 </Link>
@@ -86,7 +86,7 @@ export async function AramaSayfasi({ taban, baslik, filtre, girisMetni }: Props)
 
           {/* Aktif filtreler */}
           {secili > 0 && (
-            <div className="kp-row" style={{ gap: 6 }}>
+            <div className="satir" style={{ gap: 6 }}>
               {filtre.daireTipi?.map((t) => (
                 <FiltreCipi key={t} href={kaldir(taban, filtre, 'daireTipi', t)}>{t}</FiltreCipi>
               ))}
@@ -136,9 +136,9 @@ export async function AramaSayfasi({ taban, baslik, filtre, girisMetni }: Props)
 
           {/* Sayfalama — gerçek bağlantı, sonsuz kaydırma değil */}
           {sonSayfa > 1 && (
-            <nav className="kp-row" style={{ justifyContent: 'center', gap: 6 }} aria-label="Sayfalar">
+            <nav className="satir" style={{ justifyContent: 'center', gap: 6 }} aria-label="Sayfalar">
               {sayfa > 1 && (
-                <Link href={taban + filtreYaz({ ...filtre, sayfa: sayfa - 1 })} className="kp-chip">
+                <Link href={taban + filtreYaz({ ...filtre, sayfa: sayfa - 1 })} className="chip">
                   ‹ Önceki
                 </Link>
               )}
@@ -149,14 +149,14 @@ export async function AramaSayfasi({ taban, baslik, filtre, girisMetni }: Props)
                   <Link
                     key={n}
                     href={taban + filtreYaz({ ...filtre, sayfa: n })}
-                    className={`kp-chip${n === sayfa ? ' is-selected' : ''}`}
+                    className={`chip${n === sayfa ? ' is-selected' : ''}`}
                   >
                     {n}
                   </Link>
                 )
               )}
               {sayfa < sonSayfa && (
-                <Link href={taban + filtreYaz({ ...filtre, sayfa: sayfa + 1 })} className="kp-chip">
+                <Link href={taban + filtreYaz({ ...filtre, sayfa: sayfa + 1 })} className="chip">
                   Sonraki ›
                 </Link>
               )}
@@ -171,7 +171,7 @@ export async function AramaSayfasi({ taban, baslik, filtre, girisMetni }: Props)
 
 function FiltreCipi({ href, children }: { href: string; children: React.ReactNode }) {
   return (
-    <Link href={href} className="kp-chip">
+    <Link href={href} className="chip">
       {children} <span aria-hidden style={{ color: 'var(--text-muted)' }}>×</span>
       <span style={{ position: 'absolute', width: 1, height: 1, overflow: 'hidden' }}>filtreyi kaldır</span>
     </Link>
@@ -187,7 +187,7 @@ async function SonucYok({ taban, filtre }: { taban: string; filtre: Filtre }) {
   const oneriler = await kurtarmaOnerileri(filtre);
 
   return (
-    <div className="kp-card kp-empty">
+    <div className="kart empty">
       <p className="kp-empty__title">Bu filtrelerle sonuç yok</p>
       <p className="kp-empty__text">
         {seciliSayisi(filtre)} filtre birlikte hiçbir projeye uymuyor.

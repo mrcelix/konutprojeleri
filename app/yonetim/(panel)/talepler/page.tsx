@@ -61,8 +61,8 @@ export default async function TaleplerSayfasi({
     <main className="yn-sayfa">
       <header className="yn-baslik">
         <div>
-          <h1 className="kp-h2">Talepler</h1>
-          <p className="kp-lead" style={{ fontSize: 13 }}>
+          <h1 className="h2">Talepler</h1>
+          <p className="prose" style={{ fontSize: 13 }}>
             {toplam} talep{suzgecVar && ' (süzülmüş)'}
           </p>
         </div>
@@ -71,27 +71,27 @@ export default async function TaleplerSayfasi({
       {/* ── Özet ── */}
       <div className="yn-sayimlar">
         <span className="yn-sayim">
-          <b className="tabular">{ozet.yeni}</b>
+          <b className="sayi">{ozet.yeni}</b>
           <span>açılmamış</span>
         </span>
         <Link href={yol(q, { sorun: 'geciken', durum: undefined })} className="yn-sayim">
-          <b className="tabular" style={ozet.geciken > 0 ? { color: 'var(--danger)' } : undefined}>
+          <b className="sayi" style={ozet.geciken > 0 ? { color: 'var(--danger)' } : undefined}>
             {ozet.geciken}
           </b>
           <span>24 saati aştı</span>
         </Link>
         <span className="yn-sayim">
-          <b className="tabular">
+          <b className="sayi">
             {ozet.ortYanitSaat != null ? `${ozet.ortYanitSaat}s` : '—'}
           </b>
           <span>ort. yanıt süresi</span>
         </span>
         <span className="yn-sayim">
-          <b className="tabular">{ozet.bu_ay}</b>
+          <b className="sayi">{ozet.bu_ay}</b>
           <span>bu ay</span>
         </span>
         <span className="yn-sayim">
-          <b className="tabular">{ozet.satis}</b>
+          <b className="sayi">{ozet.satis}</b>
           <span>satışa dönen</span>
         </span>
       </div>
@@ -105,7 +105,7 @@ export default async function TaleplerSayfasi({
 
       {/* ── Süzgeçler ── */}
       <div className="yn-cipler" style={{ marginTop: 'var(--s-4)' }}>
-        <span className="kp-label">Durum</span>
+        <span className="eyebrow">Durum</span>
         {durumlar.map((d) => (
           <Link
             key={d.durum}
@@ -113,19 +113,19 @@ export default async function TaleplerSayfasi({
               durum: suzgec.durum === d.durum ? undefined : d.durum,
               sorun: undefined,
             })}
-            className={`kp-chip${suzgec.durum === d.durum ? ' is-selected' : ''}`}
+            className={`chip${suzgec.durum === d.durum ? ' is-selected' : ''}`}
           >
             {TALEP_DURUMLARI[d.durum] ?? d.durum} <em>{d.n}</em>
           </Link>
         ))}
         {suzgecVar && (
-          <Link href="/yonetim/talepler" className="kp-chip">Süzgeçleri temizle</Link>
+          <Link href="/yonetim/talepler" className="chip">Süzgeçleri temizle</Link>
         )}
       </div>
 
       {/* ── Liste ── */}
       {satirlar.length === 0 ? (
-        <div className="kp-card kp-empty">
+        <div className="kart empty">
           <p className="kp-empty__title">
             {suzgecVar ? 'Bu süzgeçlerle talep yok' : 'Henüz talep yok'}
           </p>
@@ -149,13 +149,13 @@ export default async function TaleplerSayfasi({
       {sonSayfa > 1 && (
         <nav className="yn-sayfalar" aria-label="Sayfalar">
           {sayfa > 1 && (
-            <Link href={yol(q, { sayfa: String(sayfa - 1) })} className="kp-chip">
+            <Link href={yol(q, { sayfa: String(sayfa - 1) })} className="chip">
               ← Önceki
             </Link>
           )}
-          <span className="kp-label">{sayfa} / {sonSayfa}</span>
+          <span className="eyebrow">{sayfa} / {sonSayfa}</span>
           {sayfa < sonSayfa && (
-            <Link href={yol(q, { sayfa: String(sayfa + 1) })} className="kp-chip">
+            <Link href={yol(q, { sayfa: String(sayfa + 1) })} className="chip">
               Sonraki →
             </Link>
           )}

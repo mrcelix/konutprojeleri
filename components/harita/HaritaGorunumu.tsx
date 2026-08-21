@@ -48,17 +48,17 @@ export async function HaritaGorunumu({
   const listeYolu = taban + filtreYaz({ ...filtre, sayfa: 1 });
 
   return (
-    <main className="kp-wrap" style={{ paddingBlock: 'var(--s-4)' }}>
-      <div className="kp-row" style={{ marginBottom: 'var(--s-3)' }}>
-        <h1 className="kp-h1" style={{ margin: 0, fontSize: 22 }}>{baslik}</h1>
+    <main className="wrap" style={{ paddingBlock: 'var(--s-4)' }}>
+      <div className="satir" style={{ marginBottom: 'var(--s-3)' }}>
+        <h1 className="h1" style={{ margin: 0, fontSize: 22 }}>{baslik}</h1>
 
-        <nav className="kp-row" style={{ marginLeft: 'auto', gap: 4 }} aria-label="Görünüm">
-          <Link href={listeYolu} className="kp-chip">Liste</Link>
-          <span className="kp-chip is-selected">Harita</span>
+        <nav className="satir" style={{ marginLeft: 'auto', gap: 4 }} aria-label="Görünüm">
+          <Link href={listeYolu} className="chip">Liste</Link>
+          <span className="chip is-selected">Harita</span>
         </nav>
       </div>
 
-      <p className="kp-label" style={{ marginBottom: 'var(--s-3)', textTransform: 'none', letterSpacing: 0 }}>
+      <p className="eyebrow" style={{ marginBottom: 'var(--s-3)', textTransform: 'none', letterSpacing: 0 }}>
         {noktalar.length} proje haritada
         {seciliSayisi(filtre) > 0 && ` · ${seciliSayisi(filtre)} filtre uygulandı`}
         {eksik && eksik.n > 0 && (
@@ -67,7 +67,7 @@ export async function HaritaGorunumu({
       </p>
 
       {noktalar.length === 0 ? (
-        <div className="kp-card kp-empty">
+        <div className="kart empty">
           <p className="kp-empty__title">Bu filtrelerle haritada gösterilecek proje yok</p>
           <p className="kp-empty__text">
             Filtreleri gevşetin ya da liste görünümüne geçin — koordinatı olmayan

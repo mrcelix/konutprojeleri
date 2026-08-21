@@ -24,10 +24,10 @@ export function ArsivProje({ p }: { p: Detay }) {
       : null;
 
   return (
-    <main className="kp-wrap" style={{ paddingBlock: 'var(--s-5)' }}>
+    <main className="wrap" style={{ paddingBlock: 'var(--s-5)' }}>
       <JsonLd p={p} />
 
-      <nav className="kp-label" style={{ marginBottom: 'var(--s-3)' }}>
+      <nav className="eyebrow" style={{ marginBottom: 'var(--s-3)' }}>
         <Link href="/">Ana sayfa</Link> ›{' '}
         <Link href={`/${p.il}-konut-projeleri`}>{p.il}</Link> ›{' '}
         <Link href={`/${p.il}/${p.ilce}-konut-projeleri`}>{p.ilce}</Link> › {p.ad}
@@ -51,14 +51,14 @@ export function ArsivProje({ p }: { p: Detay }) {
           </p>
         </div>
         {p.firma_aktifler.length > 0 && (
-          <Link href={`/firmalar/${p.firma_slug}`} className="kp-btn">
+          <Link href={`/firmalar/${p.firma_slug}`} className="btn btn-primary">
             {p.firma_ad}&apos;ın {p.firma_aktifler.length} aktif projesi
           </Link>
         )}
       </div>
 
-      <h1 className="kp-h1">{p.ad}</h1>
-      <p className="kp-lead" style={{ marginBottom: 'var(--s-4)' }}>
+      <h1 className="h1">{p.ad}</h1>
+      <p className="prose" style={{ marginBottom: 'var(--s-4)' }}>
         {p.il} / {p.ilce}{p.mahalle ? ` / ${p.mahalle}` : ''} ·{' '}
         <Link href={`/firmalar/${p.firma_slug}`} style={{ color: 'var(--brand)', fontWeight: 650 }}>
           {p.firma_ad}
@@ -76,7 +76,7 @@ export function ArsivProje({ p }: { p: Detay }) {
 
       {/* Özet */}
       <dl
-        className="kp-card"
+        className="kart"
         style={{
           display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(150px,1fr))',
           gap: 1, background: 'var(--border)', overflow: 'hidden', marginBottom: 'var(--s-4)',
@@ -97,11 +97,11 @@ export function ArsivProje({ p }: { p: Detay }) {
       </dl>
 
       <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0,1fr) 300px', gap: 'var(--s-4)', alignItems: 'start' }}>
-        <div className="kp-stack">
+        <div className="izgara">
           {/* Değer karşılaştırması */}
           {p.teslim_m2_fiyati && p.guncel_m2_fiyati && (
-            <section className="kp-card" style={{ padding: 'var(--s-5)' }}>
-              <h2 className="kp-h2">Teslim dönemi ve bugün</h2>
+            <section className="kart" style={{ padding: 'var(--s-5)' }}>
+              <h2 className="h2">Teslim dönemi ve bugün</h2>
               <div style={{ display: 'grid', gap: 'var(--s-3)' }}>
                 <Cubuk
                   ad="Teslim dönemi m² fiyatı"
@@ -116,7 +116,7 @@ export function ArsivProje({ p }: { p: Detay }) {
                   renk="var(--success-bg)"
                 />
               </div>
-              <p className="kp-label" style={{ marginTop: 'var(--s-3)', textTransform: 'none', letterSpacing: 0, lineHeight: 1.6 }}>
+              <p className="eyebrow" style={{ marginTop: 'var(--s-3)', textTransform: 'none', letterSpacing: 0, lineHeight: 1.6 }}>
                 Teslim dönemi fiyatı projenin satış aşamasındaki liste fiyatıdır. Bugünkü
                 rakam aynı projedeki ikinci el ilan ortalamasıdır; <b>farklı bir veri
                 kaynağıdır</b> ve doğrudan karşılaştırılamaz.
@@ -126,17 +126,17 @@ export function ArsivProje({ p }: { p: Detay }) {
 
           {/* Teslim dönemi daire tipleri */}
           {p.daire_tipleri.length > 0 && (
-            <section className="kp-card" style={{ padding: 'var(--s-5)' }}>
-              <h2 className="kp-h2">Teslim dönemi daire tipleri</h2>
-              <p className="kp-label" style={{ marginBottom: 'var(--s-3)' }}>
+            <section className="kart" style={{ padding: 'var(--s-5)' }}>
+              <h2 className="h2">Teslim dönemi daire tipleri</h2>
+              <p className="eyebrow" style={{ marginBottom: 'var(--s-3)' }}>
                 arşiv verisi — güncel satış değildir
               </p>
               <div style={{ overflowX: 'auto' }}>
-                <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 12.5 }} className="tabular">
+                <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 12.5 }} className="sayi">
                   <thead>
                     <tr>
                       {['Tip', 'Net / brüt', 'Teslim dönemi fiyatı', 'Teslim m²', 'Bugünkü m²'].map((h) => (
-                        <th key={h} className="kp-label" style={{ textAlign: 'left', padding: '0 9px 8px' }}>{h}</th>
+                        <th key={h} className="eyebrow" style={{ textAlign: 'left', padding: '0 9px 8px' }}>{h}</th>
                       ))}
                     </tr>
                   </thead>
@@ -157,28 +157,28 @@ export function ArsivProje({ p }: { p: Detay }) {
           )}
 
           {p.aciklama && (
-            <section className="kp-card" style={{ padding: 'var(--s-5)' }}>
-              <h2 className="kp-h2">Proje hakkında</h2>
-              <p className="kp-lead">{p.aciklama}</p>
+            <section className="kart" style={{ padding: 'var(--s-5)' }}>
+              <h2 className="h2">Proje hakkında</h2>
+              <p className="prose">{p.aciklama}</p>
             </section>
           )}
         </div>
 
-        <aside className="kp-stack" style={{ position: 'sticky', top: 16 }}>
+        <aside className="izgara" style={{ position: 'sticky', top: 16 }}>
           {/* Karneye katkı — arşivin firma sayfasıyla bağı */}
-          <div className="kp-card" style={{ padding: 'var(--s-4)' }}>
-            <h2 className="kp-label" style={{ marginBottom: 'var(--s-3)' }}>Firma karnesine etkisi</h2>
-            <div className="kp-row" style={{ padding: '5px 0', fontSize: 11.5 }}>
+          <div className="kart" style={{ padding: 'var(--s-4)' }}>
+            <h2 className="eyebrow" style={{ marginBottom: 'var(--s-3)' }}>Firma karnesine etkisi</h2>
+            <div className="satir" style={{ padding: '5px 0', fontSize: 11.5 }}>
               <span style={{ color: 'var(--text-secondary)' }}>Teslim isabeti</span>
               <span style={{ marginLeft: 'auto' }}><Pill durum="success">Zamanında</Pill></span>
             </div>
             {p.firma_sicil && (
-              <div className="kp-row" style={{ padding: '5px 0', fontSize: 11.5 }}>
+              <div className="satir" style={{ padding: '5px 0', fontSize: 11.5 }}>
                 <span style={{ color: 'var(--text-secondary)' }}>Firma sicili</span>
                 <b style={{ marginLeft: 'auto' }}>{p.firma_sicil}</b>
               </div>
             )}
-            <p className="kp-label" style={{ marginTop: 'var(--s-3)', textTransform: 'none', letterSpacing: 0, lineHeight: 1.55 }}>
+            <p className="eyebrow" style={{ marginTop: 'var(--s-3)', textTransform: 'none', letterSpacing: 0, lineHeight: 1.55 }}>
               Bu proje{' '}
               <Link href={`/firmalar/${p.firma_slug}`} style={{ color: 'var(--brand)', fontWeight: 650 }}>
                 {p.firma_ad} karnesinde
@@ -189,8 +189,8 @@ export function ArsivProje({ p }: { p: Detay }) {
 
           {/* Satış CTA'sı yok — aktif projelere köprü var */}
           {p.firma_aktifler.length > 0 && (
-            <div className="kp-card" style={{ padding: 'var(--s-4)' }}>
-              <h2 className="kp-label" style={{ marginBottom: 'var(--s-2)' }}>
+            <div className="kart" style={{ padding: 'var(--s-4)' }}>
+              <h2 className="eyebrow" style={{ marginBottom: 'var(--s-2)' }}>
                 Aynı firmadan satıştakiler
               </h2>
               {p.firma_aktifler.map((a) => (
@@ -200,7 +200,7 @@ export function ArsivProje({ p }: { p: Detay }) {
                   style={{ display: 'block', padding: '7px 0', borderBottom: '1px dashed var(--border)' }}
                 >
                   <b style={{ fontSize: 12.5, display: 'block' }}>{a.ad}</b>
-                  <span style={{ fontSize: 10.5, color: 'var(--text-muted)' }} className="tabular">
+                  <span style={{ fontSize: 10.5, color: 'var(--text-muted)' }} className="sayi">
                     {a.ilce} · {teslim(a.teslim_ceyrek) ?? '—'} ·{' '}
                     {paraKisa(a.min_fiyat) ?? 'Fiyat isteyin'}
                   </span>
@@ -209,7 +209,7 @@ export function ArsivProje({ p }: { p: Detay }) {
             </div>
           )}
 
-          <p className="kp-label" style={{ textTransform: 'none', letterSpacing: 0, lineHeight: 1.55, padding: '0 4px' }}>
+          <p className="eyebrow" style={{ textTransform: 'none', letterSpacing: 0, lineHeight: 1.55, padding: '0 4px' }}>
             Arşiv kaydı{p.teslim_tarihi ? ` · teslim ${tarih(p.teslim_tarihi)}` : ''}.
             Fiyat geçmişi korunur ve m² fiyat endeksinin geçmiş serisini besler.
           </p>
@@ -225,10 +225,10 @@ function Ozet({
   if (!deger) return null;
   return (
     <div style={{ background: 'var(--surface-card)', padding: 'var(--s-4)' }}>
-      <dt className="kp-label">{baslik}</dt>
+      <dt className="eyebrow">{baslik}</dt>
       <dd style={{ margin: 0 }}>
-        <span className="kp-row" style={{ gap: 7, alignItems: 'baseline' }}>
-          <span style={{ fontSize: 15, fontWeight: 800, letterSpacing: '-0.03em' }} className="tabular">
+        <span className="satir" style={{ gap: 7, alignItems: 'baseline' }}>
+          <span style={{ fontSize: 15, fontWeight: 800, letterSpacing: '-0.03em' }} className="sayi">
             {deger}
           </span>
           {rozet}
@@ -250,7 +250,7 @@ function Cubuk({ ad, deger, enBuyuk, renk }: { ad: string; deger: number; enBuyu
       <span style={{ height: 24, background: 'var(--surface-sunken)', borderRadius: 7, position: 'relative' }}>
         <span style={{ position: 'absolute', inset: '0 auto 0 0', width: `${(deger / enBuyuk) * 100}%`, background: renk, borderRadius: 7 }} />
       </span>
-      <b style={{ textAlign: 'right' }} className="tabular">{para(deger)}</b>
+      <b style={{ textAlign: 'right' }} className="sayi">{para(deger)}</b>
     </div>
   );
 }

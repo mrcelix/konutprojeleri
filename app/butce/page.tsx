@@ -79,12 +79,12 @@ function DaireKarti({ d, vurgu }: { d: ButceDairesi; vurgu?: boolean }) {
       </dl>
 
       <div className="bt-kart__etiket">
-        {d.faizsiz && <span className="kp-pill is-success">Faizsiz</span>}
+        {d.faizsiz && <span className="badge is-success">Faizsiz</span>}
         {teslim(d.teslim_ceyrek) && (
-          <span className="kp-pill">{teslim(d.teslim_ceyrek)} teslim</span>
+          <span className="badge">{teslim(d.teslim_ceyrek)} teslim</span>
         )}
         {d.santiye_yuzde != null && (
-          <span className="kp-pill">%{d.santiye_yuzde} tamamlandı</span>
+          <span className="badge">%{d.santiye_yuzde} tamamlandı</span>
         )}
       </div>
     </li>
@@ -112,10 +112,10 @@ export default async function ButceSayfasi({
   const tavan = girdiVar ? tavanFiyat({ pesinat, aylik }) : null;
 
   return (
-    <main className="kp-wrap" style={{ paddingBlock: 'var(--s-5)' }}>
+    <main className="wrap" style={{ paddingBlock: 'var(--s-5)' }}>
       <header style={{ maxWidth: 640, marginBottom: 'var(--s-4)' }}>
-        <h1 className="kp-h1">Bütçeme ne uyar</h1>
-        <p className="kp-lead">
+        <h1 className="h1">Bütçeme ne uyar</h1>
+        <p className="prose">
           Fiyat aralığı değil, elinizdeki parayı ve aylık ödeyebileceğinizi
           girin. Firmaların beyan ettiği senetli ödeme planlarına göre hangi
           projelerin hangi daire tiplerinin bütçenize girdiğini hesaplayalım.
@@ -125,7 +125,7 @@ export default async function ButceSayfasi({
       {/* ── Girdi formu · JavaScript gerekmez ── */}
       <form method="get" action="/butce" className="bt-form">
         <label className="bt-alan">
-          <span className="kp-label">Peşinat olarak ayırabileceğiniz</span>
+          <span className="eyebrow">Peşinat olarak ayırabileceğiniz</span>
           <div className="bt-girdi">
             <input
               type="text" name="pesinat" inputMode="numeric"
@@ -137,7 +137,7 @@ export default async function ButceSayfasi({
         </label>
 
         <label className="bt-alan">
-          <span className="kp-label">Aylık ödeyebileceğiniz</span>
+          <span className="eyebrow">Aylık ödeyebileceğiniz</span>
           <div className="bt-girdi">
             <input
               type="text" name="aylik" inputMode="numeric"
@@ -149,7 +149,7 @@ export default async function ButceSayfasi({
         </label>
 
         <label className="bt-alan bt-alan--dar">
-          <span className="kp-label">Şehir</span>
+          <span className="eyebrow">Şehir</span>
           <select name="il" defaultValue={il ?? ''}>
             <option value="">Farketmez</option>
             {Object.entries(IL_ADLARI).map(([k, v]) => (
@@ -159,7 +159,7 @@ export default async function ButceSayfasi({
         </label>
 
         <label className="bt-alan bt-alan--dar">
-          <span className="kp-label">Daire tipi</span>
+          <span className="eyebrow">Daire tipi</span>
           <select name="tip" defaultValue={tip ?? ''}>
             <option value="">Farketmez</option>
             {DAIRE_TIPLERI.map((t) => (
@@ -168,19 +168,19 @@ export default async function ButceSayfasi({
           </select>
         </label>
 
-        <button type="submit" className="kp-btn bt-gonder">
+        <button type="submit" className="btn btn-primary bt-gonder">
           Hesapla
         </button>
       </form>
 
       {!girdiVar && (
         <div className="bt-ornekler">
-          <span className="kp-label">Örnek bütçelerle deneyin</span>
+          <span className="eyebrow">Örnek bütçelerle deneyin</span>
           {ORNEKLER.map((o) => (
             <Link
               key={o.ad}
               href={`/butce?pesinat=${o.pesinat}&aylik=${o.aylik}`}
-              className="kp-chip"
+              className="chip"
             >
               {o.ad}
             </Link>
@@ -193,7 +193,7 @@ export default async function ButceSayfasi({
         <section style={{ marginTop: 'var(--s-5)' }}>
           {sonuc.projeSayisi > 0 ? (
             <>
-              <h2 className="kp-h2" style={{ marginBottom: 4 }}>
+              <h2 className="h2" style={{ marginBottom: 4 }}>
                 {sonuc.projeSayisi} projede {sonuc.daireSayisi} daire tipi
                 bütçenize uyuyor
               </h2>
@@ -226,14 +226,14 @@ export default async function ButceSayfasi({
               </ul>
 
               {sonuc.projeSayisi > sonuc.uyanlar.length && (
-                <p className="kp-body" style={{ marginTop: 'var(--s-3)' }}>
+                <p className="prose" style={{ marginTop: 'var(--s-3)' }}>
                   En uygun {sonuc.uyanlar.length} proje gösteriliyor.
                   Daralmak için şehir ya da daire tipi seçin.
                 </p>
               )}
             </>
           ) : (
-            <div className="kp-card kp-empty">
+            <div className="kart empty">
               <p className="kp-empty__title">
                 Bu bütçeyle eşleşen bir ödeme planı bulunamadı
               </p>
@@ -275,8 +275,8 @@ export default async function ButceSayfasi({
           {/* Az farkla kaçanlar */}
           {sonuc.yakinlar.length > 0 && (
             <section style={{ marginTop: 'var(--s-6)' }}>
-              <h2 className="kp-h3">Az farkla kaçanlar</h2>
-              <p className="kp-body" style={{ maxWidth: '68ch', marginBottom: 'var(--s-3)' }}>
+              <h2 className="h3">Az farkla kaçanlar</h2>
+              <p className="prose" style={{ maxWidth: '68ch', marginBottom: 'var(--s-3)' }}>
                 Bütçenizin en fazla %30 üstünde kalan planlar. Gizlemek yerine
                 gösteriyoruz — eşiğin nerede olduğunu görmek, pazarlık payını
                 bilmeye yarar.
@@ -290,7 +290,7 @@ export default async function ButceSayfasi({
           )}
 
           {sonuc.plansiz > 0 && (
-            <p className="kp-body" style={{ marginTop: 'var(--s-4)' }}>
+            <p className="prose" style={{ marginTop: 'var(--s-4)' }}>
               <b>{sonuc.plansiz} proje</b> ödeme planını bildirmediği için bu
               hesaba giremedi. Listede görünmemeleri bütçenize uymadıkları
               anlamına gelmez.
@@ -300,15 +300,15 @@ export default async function ButceSayfasi({
       )}
 
       {/* ── Yöntem ve uyarı ── */}
-      <section className="kp-card" style={{ marginTop: 'var(--s-6)', maxWidth: 760 }}>
-        <h2 className="kp-h3">Bu hesap neyi gösterir, neyi göstermez</h2>
-        <p className="kp-body">
+      <section className="kart" style={{ marginTop: 'var(--s-6)', maxWidth: 760 }}>
+        <h2 className="h3">Bu hesap neyi gösterir, neyi göstermez</h2>
+        <p className="prose">
           Hesap, firmanın kendi <b>senetli ödeme planına</b> dayanır: peşinat
           oranı ve vade firmanın beyanıdır. Aylık tutar, kalan bedelin vadeye
           bölünmesiyle bulunur; faiz eklenmez. Banka kredisiyle karşılaştırma
           proje detay sayfasındaki hesaplayıcıda yapılır.
         </p>
-        <p className="kp-body">
+        <p className="prose">
           Fiyatlar liste fiyatıdır; tapu harcı, KDV farkı, aidat, demirbaş ve
           teslim sonrası masraflar dahil değildir. Bu sayfa yatırım tavsiyesi
           değildir ve kredi teklifi anlamına gelmez.

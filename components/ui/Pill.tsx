@@ -23,7 +23,7 @@ export function Pill({
   durum?: PillDurum;
   children: React.ReactNode;
 }) {
-  return <span className={`kp-pill is-${durum}`}>{children}</span>;
+  return <span className={`badge is-${durum}`}>{children}</span>;
 }
 
 /** Şantiye ilerlemesi → etiket. Veri yoksa hiç basılmaz. */

@@ -22,8 +22,8 @@ export default async function OnaySayfasi() {
     <main className="yn-sayfa">
       <header className="yn-baslik">
         <div>
-          <h1 className="kp-h2">Onay kuyruğu</h1>
-          <p className="kp-lead" style={{ fontSize: 13 }}>
+          <h1 className="h2">Onay kuyruğu</h1>
+          <p className="prose" style={{ fontSize: 13 }}>
             {kayitlar.length > 0
               ? `${kayitlar.length} değişiklik bekliyor. Onaylanana kadar sitede eski değerler görünüyor.`
               : 'Bekleyen değişiklik yok.'}
@@ -32,7 +32,7 @@ export default async function OnaySayfasi() {
       </header>
 
       {kayitlar.length === 0 ? (
-        <div className="kp-card kp-empty">
+        <div className="kart empty">
           <p className="kp-empty__title">Kuyruk boş</p>
           <p className="kp-empty__text">
             Firma panelinden gelen değişiklikler burada birikir. Yönetim

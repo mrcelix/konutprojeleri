@@ -85,14 +85,14 @@ export default async function KarsilastirSayfasi({ params, searchParams }: Props
 
   if (projeler.length === 0) {
     return (
-      <main className="kp-wrap" style={{ paddingBlock: 'var(--s-6)' }}>
-        <h1 className="kp-h1">Proje karşılaştırma</h1>
-        <p className="kp-lead" style={{ maxWidth: 620 }}>
+      <main className="wrap" style={{ paddingBlock: 'var(--s-6)' }}>
+        <h1 className="h1">Proje karşılaştırma</h1>
+        <p className="prose" style={{ maxWidth: 620 }}>
           Dört projeye kadar yan yana koyabilirsiniz: fiyat, m² birim fiyatı,
           aylık taksit, teslim tarihi, şantiye durumu, aidat, metroya yürüme
           süresi ve firmanın teslim sicili tek tabloda.
         </p>
-        <div className="kp-card kp-empty" style={{ marginTop: 'var(--s-4)' }}>
+        <div className="kart empty" style={{ marginTop: 'var(--s-4)' }}>
           <p className="kp-empty__title">
             {sluglar.length > 0
               ? 'Bu adreslerdeki projeler bulunamadı'
@@ -231,10 +231,10 @@ export default async function KarsilastirSayfasi({ params, searchParams }: Props
   const eksikTip = projeler.filter((p) => secili && !tipi(p));
 
   return (
-    <main className="kp-wrap" style={{ paddingBlock: 'var(--s-5)' }}>
+    <main className="wrap" style={{ paddingBlock: 'var(--s-5)' }}>
       <header style={{ maxWidth: 660, marginBottom: 'var(--s-4)' }}>
-        <h1 className="kp-h1">Karşılaştırma</h1>
-        <p className="kp-lead">
+        <h1 className="h1">Karşılaştırma</h1>
+        <p className="prose">
           {projeler.length} proje yan yana. Her satırda en avantajlı değer
           işaretlendi — ama “en iyi” sizin önceliğinize göre değişir.
         </p>
@@ -243,12 +243,12 @@ export default async function KarsilastirSayfasi({ params, searchParams }: Props
       {/* Daire tipi seçimi — karşılaştırma ancak aynı tip üzerinden anlamlı */}
       {secenekler.length > 1 && (
         <div className="ks-tipler">
-          <span className="kp-label">Daire tipi</span>
+          <span className="eyebrow">Daire tipi</span>
           {secenekler.map((t) => (
             <Link
               key={t}
               href={`/karsilastir/${projeler.map((p) => p.slug).join(AYIRICI)}?tip=${daireTipiSlug(t)}`}
-              className={`kp-chip${t === secili ? ' is-selected' : ''}`}
+              className={`chip${t === secili ? ' is-selected' : ''}`}
             >
               {t}
             </Link>
@@ -269,7 +269,7 @@ export default async function KarsilastirSayfasi({ params, searchParams }: Props
           {/* ── Sütun başlıkları ── */}
           <div className="ks-satir ks-basliklar">
             <div className="ks-etiket ks-etiket--bos">
-              <span className="kp-label">{projeler.length} proje karşılaştırılıyor</span>
+              <span className="eyebrow">{projeler.length} proje karşılaştırılıyor</span>
             </div>
             {projeler.map((p) => (
               <div className="ks-hucre ks-kart" key={p.id}>
@@ -319,7 +319,7 @@ export default async function KarsilastirSayfasi({ params, searchParams }: Props
             <div className="ks-etiket ks-etiket--bos" />
             {projeler.map((p) => (
               <div className="ks-hucre" key={p.id}>
-                <Link href={`/${p.il}/${p.ilce}/${p.slug}#bilgi`} className="kp-btn is-small">
+                <Link href={`/${p.il}/${p.ilce}/${p.slug}#bilgi`} className="btn btn-primary btn-sm">
                   Bilgi iste
                 </Link>
               </div>
@@ -342,7 +342,7 @@ export default async function KarsilastirSayfasi({ params, searchParams }: Props
         )}
       </p>
 
-      <p className="kp-body" style={{ marginTop: 'var(--s-3)' }}>
+      <p className="prose" style={{ marginTop: 'var(--s-3)' }}>
         Bu sayfa yazdırmaya uygundur; tarayıcınızın yazdır menüsünden
         (Ctrl/⌘ + P) PDF olarak kaydedebilirsiniz. Adres kalıcıdır, olduğu
         gibi paylaşabilirsiniz.

@@ -62,8 +62,8 @@ export default async function TalepGonderildi({ searchParams }: Props) {
     : null;
 
   return (
-    <main className="kp-wrap" style={{ paddingBlock: 'var(--s-8)', maxWidth: 620 }}>
-      <div className="kp-card" style={{ padding: 'var(--s-6)', textAlign: 'center' }}>
+    <main className="wrap" style={{ paddingBlock: 'var(--s-8)', maxWidth: 620 }}>
+      <div className="kart" style={{ padding: 'var(--s-6)', textAlign: 'center' }}>
         <span
           aria-hidden
           style={{
@@ -77,8 +77,8 @@ export default async function TalepGonderildi({ searchParams }: Props) {
           </svg>
         </span>
 
-        <h1 className="kp-h1" style={{ fontSize: 24 }}>Talebiniz iletildi</h1>
-        <p className="kp-lead" style={{ margin: '0 auto var(--s-5)', maxWidth: '46ch' }}>
+        <h1 className="h1" style={{ fontSize: 24 }}>Talebiniz iletildi</h1>
+        <p className="prose" style={{ margin: '0 auto var(--s-5)', maxWidth: '46ch' }}>
           {kayit?.firma_ad
             ? `${kayit.firma_ad} satış ekibi sizinle doğrudan iletişime geçecek.`
             : 'Satış ekibi sizinle doğrudan iletişime geçecek.'}{' '}
@@ -93,7 +93,7 @@ export default async function TalepGonderildi({ searchParams }: Props) {
                 padding: 'var(--s-4)', textAlign: 'left', marginBottom: 'var(--s-4)',
               }}
             >
-              <p className="kp-label" style={{ marginBottom: 'var(--s-3)' }}>Gönderilen bilgiler</p>
+              <p className="eyebrow" style={{ marginBottom: 'var(--s-3)' }}>Gönderilen bilgiler</p>
               <Satir ad="Proje" deger={kayit.proje_ad} />
               <Satir ad="İlgilendiğiniz tip" deger={kayit.daire_tipi} />
               <Satir
@@ -116,7 +116,7 @@ export default async function TalepGonderildi({ searchParams }: Props) {
                   display: 'flex', gap: 'var(--s-4)', alignItems: 'center',
                 }}
               >
-                <b className="tabular" style={{ fontSize: 19, fontWeight: 800, color: 'var(--success)', whiteSpace: 'nowrap' }}>
+                <b className="sayi" style={{ fontSize: 19, fontWeight: 800, color: 'var(--success)', whiteSpace: 'nowrap' }}>
                   {formatSure(kayit.yanit_saat)}
                 </b>
                 <span style={{ fontSize: 11.5, color: 'var(--success)', lineHeight: 1.5 }}>
@@ -159,7 +159,7 @@ export default async function TalepGonderildi({ searchParams }: Props) {
 function Satir({ ad, deger }: { ad: string; deger: string | null }) {
   if (!deger) return null; // veri yoksa satır basılmaz
   return (
-    <div className="kp-row" style={{ padding: '4px 0', fontSize: 12 }}>
+    <div className="satir" style={{ padding: '4px 0', fontSize: 12 }}>
       <span style={{ color: 'var(--text-secondary)' }}>{ad}</span>
       <b style={{ marginLeft: 'auto' }}>{deger}</b>
     </div>

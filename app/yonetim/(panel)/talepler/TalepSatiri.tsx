@@ -18,7 +18,7 @@ import { para } from '@/lib/format';
 function GosterDugmesi() {
   const { pending } = useFormStatus();
   return (
-    <button type="submit" className="kp-btn is-small" disabled={pending}>
+    <button type="submit" className="btn btn-primary btn-sm" disabled={pending}>
       {pending ? 'Açılıyor…' : 'Numarayı göster'}
     </button>
   );
@@ -64,12 +64,12 @@ export function TalepSatiri({ t, admin }: { t: Talep; admin: boolean }) {
       <div className="tl-sure">
         {t.acilma_zamani ? (
           <>
-            <b className="tabular">{t.saat}s</b>
+            <b className="sayi">{t.saat}s</b>
             <span className="yn-mini">yanıt süresi</span>
           </>
         ) : (
           <>
-            <b className={`tabular${geciken ? ' is-gec' : ''}`}>{t.saat}s</b>
+            <b className={`sayi${geciken ? ' is-gec' : ''}`}>{t.saat}s</b>
             <span className="yn-mini">bekliyor</span>
           </>
         )}
@@ -96,7 +96,7 @@ export function TalepSatiri({ t, admin }: { t: Talep; admin: boolean }) {
               <option key={d} value={d}>{ad}</option>
             ))}
           </select>
-          <button type="submit" className="kp-btn is-ghost is-small">Kaydet</button>
+          <button type="submit" className="btn btn-ghost btn-sm">Kaydet</button>
         </form>
       </div>
     </li>

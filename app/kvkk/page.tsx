@@ -19,13 +19,13 @@ export const metadata: Metadata = {
 
 export default function KvkkSayfasi() {
   return (
-    <main className="kp-wrap" style={{ paddingBlock: 'var(--s-7)', maxWidth: 760 }}>
-      <h1 className="kp-h1">Kişisel Verilerin Korunması Aydınlatma Metni</h1>
-      <p className="kp-label" style={{ marginBottom: 'var(--s-5)' }}>
+    <main className="wrap" style={{ paddingBlock: 'var(--s-7)', maxWidth: 760 }}>
+      <h1 className="h1">Kişisel Verilerin Korunması Aydınlatma Metni</h1>
+      <p className="eyebrow" style={{ marginBottom: 'var(--s-5)' }}>
         Sürüm {KVKK_SURUM}
       </p>
 
-      <div className="kp-card" style={{ padding: 'var(--s-5)', marginBottom: 'var(--s-4)', background: 'var(--warning-bg)' }}>
+      <div className="kart" style={{ padding: 'var(--s-5)', marginBottom: 'var(--s-4)', background: 'var(--warning-bg)' }}>
         <p style={{ margin: 0, fontSize: 12.5, color: 'var(--warning)', lineHeight: 1.6 }}>
           <b>Bu metin taslaktır.</b> Yapısı kanunun gerektirdiği başlıkları içerir ancak
           yayına almadan önce bir avukat tarafından gözden geçirilmesi gerekir. Özellikle
@@ -84,8 +84,8 @@ export default function KvkkSayfasi() {
         Başvurunuz en geç 30 gün içinde sonuçlandırılır.
       </Bolum>
 
-      <details className="kp-card" style={{ padding: 'var(--s-4)', marginTop: 'var(--s-5)' }}>
-        <summary className="kp-label" style={{ cursor: 'pointer' }}>
+      <details className="kart" style={{ padding: 'var(--s-4)', marginTop: 'var(--s-5)' }}>
+        <summary className="eyebrow" style={{ cursor: 'pointer' }}>
           Formda gösterilen kısa metin
         </summary>
         <p style={{ marginTop: 'var(--s-3)', fontSize: 12, color: 'var(--text-secondary)', lineHeight: 1.7, whiteSpace: 'pre-line' }}>
@@ -99,7 +99,7 @@ export default function KvkkSayfasi() {
 function Bolum({ baslik, children }: { baslik: string; children: React.ReactNode }) {
   return (
     <section style={{ marginBottom: 'var(--s-5)' }}>
-      <h2 className="kp-h2">{baslik}</h2>
+      <h2 className="h2">{baslik}</h2>
       <p style={{ margin: 0, fontSize: 13.5, color: 'var(--text-secondary)', lineHeight: 1.75, maxWidth: '68ch' }}>
         {children}
       </p>

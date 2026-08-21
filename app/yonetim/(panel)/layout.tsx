@@ -63,7 +63,7 @@ export default async function PanelYerlesimi({
             <i>{ROL_ADLARI[k.rol]}</i>
           </span>
           <form action={cikisYap}>
-            <button type="submit" className="kp-btn is-ghost is-small">Çıkış</button>
+            <button type="submit" className="btn btn-ghost btn-sm">Çıkış</button>
           </form>
         </div>
       </header>

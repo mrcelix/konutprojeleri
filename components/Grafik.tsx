@@ -39,7 +39,7 @@ export function CizgiGrafik({
   const dolu = seriler.filter((s) => s.nokta.length > 1);
   if (dolu.length === 0) {
     return (
-      <p className="kp-lead" style={{ fontSize: 12 }}>
+      <p className="prose" style={{ fontSize: 12 }}>
         Seri henüz oluşmadı. Endeks, fiyat arşivi biriktikçe anlamlanır.
       </p>
     );
