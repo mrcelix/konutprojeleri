@@ -7,52 +7,65 @@
 :root {
   color-scheme: light dark;
 
-  /* yüzey — beyaz zemin, ferah. Kart ve sayfa aynı beyaz:
-     ayrımı gölge ve çizgi yapıyor, ton farkı değil. */
+  /* yüzey */
   --surface-page: #ffffff;
   --surface-card: #ffffff;
-  --surface-sunken: #f5f8f9;
-  --surface-raised: #ffffff;
+  --surface-sunken: #f4f6f9;
+  --surface-raised: #eef1f6;
 
   /* metin — lacivert. Saf siyah bu paletle sert duruyor. */
-  --text-primary: #17303f;
-  --text-secondary: #55707f;
-  --text-muted: #667f8d;   /* beyaz üstünde AA sınırı; daha açığı geçmiyor */
+  --text-primary: #16203a;
+  --text-secondary: #243150;
+  --text-muted: #5c657c;
   --text-inverse: #ffffff;
 
   /* çizgi */
-  --border: #e3ebee;
-  --border-strong: #cfdde2;
+  --border: #e5e9f0;
+  --border-strong: #d3d9e6;
 
-  /* marka — turkuaz */
-  --brand: #0d9494;
-  --brand-strong: #0b8383;
-  --brand-soft: #e6f5f5;
+  /* marka — indigo. İKİ EYLEM RENGİ var ve ayrımı anlamlı:
+     indigo gezinme ve birincil eylem, amber ise DÖNÜŞÜM eylemi
+     ("fiyat al", "projemi ekle"). İkisi aynı yerde kullanılmaz. */
+  --brand: #3a45e0;
+  --brand-strong: #2730a8;
+  --brand-soft: #ebecfc;
+
+  /* dönüşüm eylemi */
+  --eylem: #efa013;
+  --eylem-strong: #d98e0b;
+  --eylem-ink: #16203a;
+  --altin: #9a6406;
+  --altin-soft: #fff4de;
 
   /* anlam — zemin / metin çifti. Yalnızca durum bildirir, dekorasyon değil. */
-  --success-bg: #e4f2ea;  --success: #1f7a52;
-  --warning-bg: #f9efdc;  --warning: #8a6a24;
-  --danger-bg:  #fbeae6;  --danger:  #b4442f;
-  --info-bg:    #e2eff5;  --info:    #1f6480;
+  --success-bg: #e6f6ec;  --success: #0e7a37;
+  --warning-bg: #fff4de;  --warning: #9a6406;
+  --danger-bg:  #fcebec;  --danger:  #bc2f35;
+  --info-bg:    #ebecfc;  --info:    #2730a8;
 
   /* kategori tonları — sıra sabit, anlam taşımaz */
-  --tint-blue: #dceef4;   --tint-blue-ink: #1f6480;
-  --tint-mint: #e0f2ea;   --tint-mint-ink: #1f7a52;
-  --tint-lav: #e6f5f5;    --tint-lav-ink: #0b8383;
-  --tint-butter: #f7f0e6; --tint-butter-ink: #8a6a3a;
-  --tint-blush: #fbeae6;  --tint-blush-ink: #a04a35;
-  --tint-stone: #eef3f5;  --tint-stone-ink: #45606d;
+  --tint-blue: #dceaf4;   --tint-blue-ink: #2f7391;
+  --tint-mint: #e6f6ec;   --tint-mint-ink: #0e7a37;
+  --tint-lav: #ebecfc;    --tint-lav-ink: #2730a8;
+  --tint-butter: #fff4de; --tint-butter-ink: #9a6406;
+  --tint-blush: #fcebec;  --tint-blush-ink: #bc2f35;
+  --tint-stone: #eef1f6;  --tint-stone-ink: #5c657c;
 
-  /* Koyu lacivert — hero perdesi, CTA bandı, alt bant zemini.
-     Metin rengiyle aynı değil: zemin olarak daha koyusu gerekiyor. */
-  --lacivert: #0f2a3a;
+  /* Koyu blok — hero gradyanı, CTA bandı, alt bilgi zemini.
+     Üstündeki metin --koyu-ink; --text-primary o zeminde okunmaz. */
+  --koyu-blok: #16203a;
+  --koyu-ink: #c7cee8;
+  --koyu-ink-2: #8c96b8;
+  --hero-grad: linear-gradient(165deg, #16203a, #1e2b4d);
+  --hero-p: #b6bedc;
 
-  /* tipografi
-     Tek aile, hiyerarşi AĞIRLIKLA kuruluyor (800 başlık / 400 gövde).
-     İkinci bir başlık ailesi eklemek bu temada gereksiz: villahane
-     düzeninde ferahlık ve ağırlık farkı zaten hiyerarşiyi taşıyor,
-     iki aile yüklemek yalnızca sayfa ağırlığı ekler. */
+  /* tipografi — İKİ AİLE.
+     Nunito başlıklarda, Inter gövdede. Başlık ailesi ayrı olduğu için
+     ağırlığı tek başına font-weight taşımıyor; Nunito'nun yuvarlak
+     formu portalın tonunu yumuşatıyor, Inter ise rakam yoğun tablo ve
+     kartlarda okunaklı kalıyor. */
   --font-sans: var(--yazi-sans), "Segoe UI", system-ui, Roboto, Helvetica, Arial, sans-serif;
+  --font-display: var(--yazi-display), var(--yazi-sans), "Segoe UI", sans-serif;
   --font-mono: Consolas, "SF Mono", ui-monospace, monospace;
   --text-display: 28px;
   --text-h1: 26px;
@@ -90,83 +103,103 @@
 /* İşletim sistemi koyu diyorsa — ama kullanıcı açık seçmediyse */
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    --surface-page: #0d1820;
-    --surface-card: #14212a;
-    --surface-sunken: #0a141b;
-    --surface-raised: #1b2c37;
+    --surface-page: #0d1424;
+    --surface-card: #141c30;
+    --surface-sunken: #0a1020;
+    --surface-raised: #1c2540;
 
-    --text-primary: #e2edf2;
-    --text-secondary: #9db4c0;
-    --text-muted: #86a0ad;
-    --text-inverse: #0d1820;
+    --text-primary: #e6e9f5;
+    --text-secondary: #c7cee8;
+    --text-muted: #8c96b8;
+    --text-inverse: #0d1424;
 
-    --border: #22333f;
-    --border-strong: #334856;
+    --border: #26304c;
+    --border-strong: #354061;
 
-    --brand: #35c4c4;
-    --brand-strong: #5ad6d6;
-    --brand-soft: #12333a;
+    --brand: #8c95f2;
+    --brand-strong: #a8afff;
+    --brand-soft: #1c2450;
 
-    --success-bg: #14301f;  --success: #6fc79a;
-    --warning-bg: #2f2717;  --warning: #dcb46e;
-    --danger-bg:  #33191a;  --danger:  #e8917c;
-    --info-bg:    #12293a;  --info:    #7fb8d6;
+    --eylem: #efa013;
+    --eylem-strong: #ffb534;
+    --eylem-ink: #16203a;
+    --altin: #d9a95a;
+    --altin-soft: #2e2517;
 
-    --tint-blue: #12293a;   --tint-blue-ink: #7fb8d6;
-    --tint-mint: #14301f;   --tint-mint-ink: #6fc79a;
-    --tint-lav: #12333a;    --tint-lav-ink: #5ad6d6;
-    --tint-butter: #2c2519; --tint-butter-ink: #d9b57e;
-    --tint-blush: #33191a;  --tint-blush-ink: #e8917c;
-    --tint-stone: #1a2830;  --tint-stone-ink: #9db4c0;
-    --lacivert: #0a1720;
+    --success-bg: #102c1c;  --success: #5fbf8a;
+    --warning-bg: #2e2517;  --warning: #d9a95a;
+    --danger-bg:  #33191d;  --danger:  #e58a8f;
+    --info-bg:    #1c2450;  --info:    #a8afff;
+
+    --tint-blue: #12283a;   --tint-blue-ink: #86b6d2;
+    --tint-mint: #102c1c;   --tint-mint-ink: #5fbf8a;
+    --tint-lav: #1c2450;    --tint-lav-ink: #a8afff;
+    --tint-butter: #2e2517; --tint-butter-ink: #d9a95a;
+    --tint-blush: #33191d;  --tint-blush-ink: #e58a8f;
+    --tint-stone: #1a2238;  --tint-stone-ink: #c7cee8;
+
+    --koyu-blok: #0a0f1c;
+    --koyu-ink: #c7cee8;
+    --koyu-ink-2: #8c96b8;
+    --hero-grad: linear-gradient(165deg, #0e1526, #182140);
+    --hero-p: #b6bedc;
 
     --elev-1: none;
-    --elev-1-border: 1px solid #22333f;
+    --elev-1-border: 1px solid #26304c;
     --elev-2: 0 10px 32px rgba(0, 0, 0, 0.6);
 
     /* Koyu temada birincil düğme tersine döner: en parlak öğe en önemli öğedir */
-    --btn-primary-bg: #35c4c4;
-    --btn-primary-text: #072026;
+    --btn-primary-bg: #8c95f2;
+    --btn-primary-text: #0d1424;
 
     --image-filter: brightness(0.92);
-    --chart-grid: #22333f;
+    --chart-grid: #26304c;
     --chart-fill-opacity: 0.14;
   }
 }
 
 /* Kullanıcı açıkça koyu seçtiyse — işletim sistemi ne derse desin */
 :root[data-theme="dark"] {
-  --surface-page: #0d1820;
-  --surface-card: #14212a;
-  --surface-sunken: #0a141b;
-  --surface-raised: #1b2c37;
-  --text-primary: #e2edf2;
-  --text-secondary: #9db4c0;
-  --text-muted: #86a0ad;
-  --text-inverse: #0d1820;
-  --border: #22333f;
-  --border-strong: #334856;
-  --brand: #35c4c4;
-  --brand-strong: #5ad6d6;
-  --brand-soft: #12333a;
-  --success-bg: #14301f;  --success: #6fc79a;
-  --warning-bg: #2f2717;  --warning: #dcb46e;
-  --danger-bg:  #33191a;  --danger:  #e8917c;
-  --info-bg:    #12293a;  --info:    #7fb8d6;
-  --tint-blue: #12293a;   --tint-blue-ink: #7fb8d6;
-  --tint-mint: #14301f;   --tint-mint-ink: #6fc79a;
-  --tint-lav: #12333a;    --tint-lav-ink: #5ad6d6;
-  --tint-butter: #2c2519; --tint-butter-ink: #d9b57e;
-  --tint-blush: #33191a;  --tint-blush-ink: #e8917c;
-  --tint-stone: #1a2830;  --tint-stone-ink: #9db4c0;
-  --lacivert: #0a1720;
+  --surface-page: #0d1424;
+  --surface-card: #141c30;
+  --surface-sunken: #0a1020;
+  --surface-raised: #1c2540;
+  --text-primary: #e6e9f5;
+  --text-secondary: #c7cee8;
+  --text-muted: #8c96b8;
+  --text-inverse: #0d1424;
+  --border: #26304c;
+  --border-strong: #35406170;
+  --brand: #8c95f2;
+  --brand-strong: #a8afff;
+  --brand-soft: #1c2450;
+  --eylem: #efa013;
+  --eylem-strong: #ffb534;
+  --eylem-ink: #16203a;
+  --altin: #d9a95a;
+  --altin-soft: #2e2517;
+  --success-bg: #102c1c;  --success: #5fbf8a;
+  --warning-bg: #2e2517;  --warning: #d9a95a;
+  --danger-bg:  #33191d;  --danger:  #e58a8f;
+  --info-bg:    #1c2450;  --info:    #a8afff;
+  --tint-blue: #12283a;   --tint-blue-ink: #86b6d2;
+  --tint-mint: #102c1c;   --tint-mint-ink: #5fbf8a;
+  --tint-lav: #1c2450;    --tint-lav-ink: #a8afff;
+  --tint-butter: #2e2517; --tint-butter-ink: #d9a95a;
+  --tint-blush: #33191d;  --tint-blush-ink: #e58a8f;
+  --tint-stone: #1a2238;  --tint-stone-ink: #c7cee8;
+  --koyu-blok: #0a0f1c;
+  --koyu-ink: #c7cee8;
+  --koyu-ink-2: #8c96b8;
+  --hero-grad: linear-gradient(165deg, #0e1526, #182140);
+  --hero-p: #b6bedc;
   --elev-1: none;
-  --elev-1-border: 1px solid #22333f;
+  --elev-1-border: 1px solid #26304c;
   --elev-2: 0 10px 32px rgba(0, 0, 0, 0.6);
-  --btn-primary-bg: #35c4c4;
-  --btn-primary-text: #072026;
+  --btn-primary-bg: #8c95f2;
+  --btn-primary-text: #0d1424;
   --image-filter: brightness(0.92);
-  --chart-grid: #22333f;
+  --chart-grid: #26304c;
   --chart-fill-opacity: 0.14;
 }
 

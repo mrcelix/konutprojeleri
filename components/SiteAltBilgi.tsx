@@ -34,7 +34,7 @@ export async function SiteAltBilgi() {
 
   return (
     <footer className="sa">
-      <div className="kp-wrap sa-ic">
+      <div className="sa-ic">
         <div>
           <Link href="/" className="sb-logo">
             konut<span>projeleri</span>
@@ -91,7 +91,7 @@ export async function SiteAltBilgi() {
         </div>
       </div>
 
-      <div className="kp-wrap sa-alt">
+      <div className="sa-alt">
         <span>© {new Date().getFullYear()} Konutprojeleri.com</span>
         <span>
           Fiyatlar ve teslim tarihleri firmaların beyanıdır, taahhüt niteliği

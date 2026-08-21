@@ -153,3 +153,33 @@ export function KartGorseli({ tip }: { tip: string }) {
     </svg>
   );
 }
+
+/** İki güven bloğunun görselleri — token'lara bağlı, temayla döner. */
+export function ArsivGorseli() {
+  return (
+    <svg viewBox="0 0 116 96" aria-hidden>
+      <rect width="116" height="96" rx="10" fill="var(--brand-soft)" />
+      <rect x="16" y="58" width="14" height="24" rx="2" fill="var(--brand)" opacity="0.45" />
+      <rect x="38" y="46" width="14" height="36" rx="2" fill="var(--brand)" opacity="0.62" />
+      <rect x="60" y="34" width="14" height="48" rx="2" fill="var(--brand)" opacity="0.8" />
+      <rect x="82" y="20" width="14" height="62" rx="2" fill="var(--brand-strong)" />
+      <path d="M16 52 L88 18" stroke="var(--text-primary)" strokeWidth="2" fill="none" />
+      <circle cx="88" cy="18" r="4" fill="var(--eylem)" />
+    </svg>
+  );
+}
+
+export function KarneGorseli() {
+  return (
+    <svg viewBox="0 0 116 96" aria-hidden>
+      <rect width="116" height="96" rx="10" fill="var(--success-bg)" />
+      <rect x="20" y="22" width="76" height="54" rx="6" fill="var(--surface-card)" />
+      <rect x="30" y="34" width="36" height="6" rx="3" fill="var(--success)" opacity="0.32" />
+      <rect x="30" y="46" width="52" height="6" rx="3" fill="var(--success)" opacity="0.22" />
+      <rect x="30" y="58" width="26" height="6" rx="3" fill="var(--success)" opacity="0.22" />
+      <circle cx="86" cy="62" r="14" fill="var(--success)" />
+      <path d="M79 62l5 5 9-10" stroke="var(--surface-card)" strokeWidth="2.6"
+        fill="none" strokeLinecap="round" />
+    </svg>
+  );
+}

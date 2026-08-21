@@ -30,11 +30,15 @@ const BUTCELER = [
 ];
 
 export function AramaKutusu({
-  iller, segmentler,
+  iller, segmentler, toplam = 0, bolgeSayisi = 0,
 }: {
   iller: Secenek[];
   segmentler: Secenek[];
+  /** Kutunun altındaki özet şeridi — sayılar veritabanından. */
+  toplam?: number;
+  bolgeSayisi?: number;
 }) {
+  const bicim = new Intl.NumberFormat('tr-TR');
   const [aktif, setAktif] = useState<string>('klasik');
 
   return (
@@ -146,6 +150,15 @@ export function AramaKutusu({
           konutun piyasaya çıkacağıyla birlikte.
         </p>
       </form>
+
+      {toplam > 0 && (
+        <p className="ak-ozet">
+          <b>{bicim.format(toplam)}</b> doğrulanmış proje
+          {bolgeSayisi > 0 && <> · <b>{bicim.format(bolgeSayisi)}</b> bölge</>}
+          {' '}· fiyatlar haftalık teyitli
+          <a href="/ara">Gelişmiş arama →</a>
+        </p>
+      )}
     </div>
   );
 }

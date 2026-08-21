@@ -24,6 +24,7 @@ export type VitrinProjesi = {
   firma_slug: string;
   firma_sicil: string | null;
   teslim_ceyrek: string | null;
+  santiye_yuzde: number | null;
   denize_mesafe_m: number | null;
   havuz_tipi: string | null;
   toplam_konut: number | null;
@@ -44,6 +45,13 @@ export type Tema = { anahtar: string; n: number };
 export type SehirOzeti = { il: string; n: number };
 export type SahilBolgesi = { slug: string; ad: string; il: string; n: number };
 export type EndeksNoktasi = { donem: string; m2: number };
+export type TeslimEdilen = {
+  ad: string; il: string; ilce: string; konut: number | null;
+  ilan_edilen: string; gerceklesen: string; gecikme_ay: number;
+  firma_ad: string; firma_slug: string; sicil: string | null;
+};
+export type TakvimYili = { yil: number; ceyrekler: { c: number; n: number }[] };
+
 export type KarneSatiri = {
   slug: string; ad: string; sicil: string | null;
   ort_gecikme: number | null; tamamlanan: number | null;
@@ -63,6 +71,8 @@ export type AnaSayfaVerisi = {
   endeks: EndeksNoktasi[];
   endeksYillik: number | null;
   karne: KarneSatiri[];
+  teslimler: TeslimEdilen[];
+  takvim: TakvimYili[];
 };
 
 /**
@@ -103,7 +113,8 @@ export async function anaSayfaVerisi(): Promise<AnaSayfaVerisi> {
         from (
           select
             p.id, p.slug::text as slug, p.ad, p.il, p.ilce, p.mahalle,
-            p.tip, p.durum, p.teslim_ceyrek, p.denize_mesafe_m, p.havuz_tipi,
+            p.tip, p.durum, p.teslim_ceyrek, p.santiye_yuzde,
+            p.denize_mesafe_m, p.havuz_tipi,
             p.toplam_konut, p.faizsiz, p.vade_ay,
             p.pesinat_orani::float8 as pesinat_orani,
             p.ozellikler, p.one_cikarma, p.fiyat_teyit_tarihi,
@@ -189,6 +200,39 @@ export async function anaSayfaVerisi(): Promise<AnaSayfaVerisi> {
               )::float8 / 10
         from mv_endeks_donem where il is null) as "endeksYillik",
 
+      -- Teslim edilen projeler: söz verilen ile gerçekleşen yan yana.
+      -- İYİ ÖRNEKLE KÖTÜ ÖRNEK BİRLİKTE gelir; yalnızca zamanında
+      -- teslim edilenleri göstermek reklam olurdu, kanıt değil.
+      (select coalesce(json_agg(t order by t.gerceklesen desc), '[]') from (
+        select p.ad, p.il, p.ilce, p.toplam_konut as konut,
+               tk.ilan_edilen, tk.gerceklesen, tk.gecikme_ay,
+               f.ad as firma_ad, f.slug::text as firma_slug, mk.sicil
+        from teslim_kaydi tk
+        join firma f on f.id = tk.firma_id
+        join proje p on p.id = tk.proje_id
+        left join mv_firma_karne mk on mk.firma_id = f.id
+        where tk.gerceklesen is not null and tk.durum = 'teyitli'
+        order by tk.gerceklesen desc
+        limit 3
+      ) t) as teslimler,
+
+      -- Teslim takvimi ızgarası: yıl → çeyrek → proje sayısı.
+      (select coalesce(json_agg(y order by y.yil), '[]') from (
+        select q.yil,
+               json_agg(json_build_object('c', q.c, 'n', q.n) order by q.c) as ceyrekler
+        from (
+          select left(p.teslim_ceyrek, 4)::int as yil,
+                 right(p.teslim_ceyrek, 1)::int as c,
+                 count(*)::int as n
+          from proje p where ${aktif()} and p.teslim_ceyrek is not null
+          group by 1, 2
+        ) q
+        where q.yil >= extract(year from now())::int
+        group by q.yil
+        order by q.yil
+        limit 4
+      ) y) as takvim,
+
       (select coalesce(json_agg(k order by k.ort_gecikme nulls last), '[]') from (
         select f.slug::text as slug, f.ad, mk.sicil,
                mk.ort_gecikme::float8 as ort_gecikme, mk.tamamlanan
@@ -203,7 +247,7 @@ export async function anaSayfaVerisi(): Promise<AnaSayfaVerisi> {
   return r ?? {
     toplamProje: 0, toplamFirma: 0, toplamIl: 0, buHafta: 0, yakindaTeslim: 0,
     vitrin: [], segmentler: [], temalar: [], sehirler: [], sahiller: [],
-    endeks: [], endeksYillik: null, karne: [],
+    endeks: [], endeksYillik: null, karne: [], teslimler: [], takvim: [],
   };
 }
 

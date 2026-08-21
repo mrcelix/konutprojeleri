@@ -1,22 +1,30 @@
 import type { Metadata, Viewport } from 'next';
-import { Plus_Jakarta_Sans } from 'next/font/google';
+import { Inter, Nunito } from 'next/font/google';
 import './globals.css';
 import './components.css';
 
 /**
- * Tipografi.
+ * Tipografi — İKİ AİLE.
+ *
+ * Inter gövdede, Nunito başlıklarda. Nunito'nun yuvarlak formu portalın
+ * tonunu yumuşatıyor; Inter ise rakam yoğun kart ve tablolarda okunaklı
+ * kalıyor. Başlık ailesi ayrı olduğu için hiyerarşi yalnızca
+ * font-weight'e yüklenmiyor.
  *
  * next/font dosyaları kendi alan adımızdan servis eder ve derleme
  * anında alt küme çıkarır: Google'a istek gitmez, düzen kayması olmaz.
- *
- * TEK AİLE. Hiyerarşi ağırlıkla kuruluyor (800 başlık / 400 gövde).
- * İkinci bir başlık ailesi bu temada gereksiz — ferahlık ve ağırlık
- * farkı hiyerarşiyi zaten taşıyor.
  */
-const sans = Plus_Jakarta_Sans({
+const sans = Inter({
   subsets: ['latin-ext'],
-  weight: ['400', '500', '600', '700', '800'],
+  weight: ['400', '500', '600', '700'],
   variable: '--yazi-sans',
+  display: 'swap',
+});
+
+const display = Nunito({
+  subsets: ['latin-ext'],
+  weight: ['600', '700', '800', '900'],
+  variable: '--yazi-display',
   display: 'swap',
 });
 
@@ -42,7 +50,7 @@ export const viewport: Viewport = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     // lang="tr" — uppercase dönüşümünde "i" harfinin "İ" olması için gerekli
-    <html lang="tr" className={sans.variable} suppressHydrationWarning>
+    <html lang="tr" className={`${sans.variable} ${display.variable}`} suppressHydrationWarning>
       <head>
         {/* Tema ilk boyamadan önce uygulanır; aksi halde koyu temada beyaz parlama olur */}
         <script

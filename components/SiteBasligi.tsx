@@ -13,14 +13,30 @@ import Link from 'next/link';
  */
 
 const NAV = [
-  { yol: '/ara?tip=villa', ad: 'Villa projeleri' },
-  { yol: '/ara?tip=konut', ad: 'Konut projeleri' },
+  { yol: '/ara', ad: 'Projeler' },
+  { yol: '/ara?tip=villa', ad: 'Satılık Villa' },
+  { yol: '/ara?tip=ofis', ad: 'Satılık Ofis' },
   { yol: '/teslim-takvimi', ad: 'Teslim takvimi' },
   { yol: '/firmalar', ad: 'Firmalar' },
 ];
 
 export function SiteBasligi({ aktif }: { aktif?: string }) {
   return (
+    <>
+    {/* Üst mini şerit — güven ve destek bağlantıları. Ana gezintiyi
+        kalabalıklaştırmadan bunlara yer açıyor. */}
+    <div className="sb-ust0">
+      <div className="vh-sar">
+        <Link href="/#nasil">Nasıl çalışır</Link>
+        <Link href="/firma-karnesi-metodoloji">Teslim karnesi</Link>
+        <Link href="/duzeltme">Düzeltme bildir</Link>
+        <span className="sag">
+          <Link href="/karsilastir">Karşılaştırmam</Link>
+          <Link href="/yonetim/giris">Firma girişi</Link>
+        </span>
+      </div>
+    </div>
+
     <header className="sb">
       <div className="sb-ic">
         <Link href="/" className="sb-logo">
@@ -45,11 +61,13 @@ export function SiteBasligi({ aktif }: { aktif?: string }) {
               kadar bağlantı değil, etiket. Tıklanan ama hiçbir şey
               yapmayan düğme koymaktan iyidir. */}
           <span className="sb-dil">TR</span>
-          <Link href="/karsilastir" className="kp-btn is-ghost is-small">Karşılaştırma</Link>
+          <span className="sb-dil">TR</span>
           <Link href="/yonetim/giris" className="kp-btn is-ghost is-small">Giriş yap</Link>
-          <Link href="/yonetim/giris" className="kp-btn is-small">Projemi ekle</Link>
+          {/* Dönüşüm eylemi amber — gezinme indigo. */}
+          <Link href="/yonetim/giris" className="kp-btn is-eylem is-small">Fiyat al</Link>
         </div>
       </div>
     </header>
+    </>
   );
 }
