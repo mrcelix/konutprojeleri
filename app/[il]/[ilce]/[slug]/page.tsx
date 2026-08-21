@@ -7,7 +7,7 @@ import { ProjeDetay } from '@/components/ProjeDetay';
 import { ArsivProje } from '@/components/ArsivProje';
 import { AramaSayfasi } from '@/components/arama/AramaSayfasi';
 import { HaritaGorunumu } from '@/components/harita/HaritaGorunumu';
-import { para, teslim, tarih } from '@/lib/format';
+import { para, teslim, tarih, birimAdi } from '@/lib/format';
 
 /**
  * Üç sayfa tipi tek segmentte — ayrım lib/routing.ts içinde kalıpla yapılır:
@@ -60,7 +60,7 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
     // Yıl ve fiyat DEĞİŞKENDEN gelir; sabit yazılmaz.
     title: `${p.ad} Fiyatları ${new Date().getFullYear()} — ${aralik}${min ? `, ${para(min)}'den` : ''}`,
     description:
-      `${p.ilce}${p.mahalle ? ' ' + p.mahalle : ''}'de ${p.toplam_konut ?? ''} konutluk proje. ` +
+      `${p.ilce}${p.mahalle ? ' ' + p.mahalle : ''}'de ${p.toplam_konut ?? ''} ${birimAdi(p.tip)}lük proje. ` +
       (min ? `${aralik} daireler ${para(min)}'den. ` : '') +
       `${teslim(p.teslim_ceyrek) ?? 'Teslim tarihi açıklanmadı'}. ` +
       (p.fiyat_teyit_tarihi ? `${tarih(p.fiyat_teyit_tarihi)} güncel.` : ''),

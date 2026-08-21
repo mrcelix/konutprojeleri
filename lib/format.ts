@@ -112,3 +112,16 @@ export function fiyatGosterimi(
   const p = para(v);
   return p ? { tip: 'fiyat', deger: p } : { tip: 'iste' };
 }
+
+/**
+ * Bağımsız bölümün adı — proje tipine göre.
+ *
+ * Sayaçlar her yerde "konut" yazıyordu. Ofis projesinde "48 konut"
+ * yanlış bilgi: satılan şey konut değil ofis katı. Tek yerden
+ * çözülüyor ki yeni bir tip eklendiğinde on iki dosya taranmasın.
+ */
+export function birimAdi(tip: string | null | undefined): string {
+  if (tip === 'ofis') return 'bağımsız bölüm';
+  if (tip === 'villa' || tip === 'mustakil' || tip === 'yali') return 'villa';
+  return 'konut';
+}

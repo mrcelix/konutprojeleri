@@ -2,7 +2,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import type { ProjeDetay as Detay } from '@/lib/queries/proje';
 import { taksitHesapla } from '@/lib/queries/proje';
-import { para, paraKisa, m2Birim, alan, teslim, tarih, yuzde, yurumeSuresi } from '@/lib/format';
+import { para, paraKisa, m2Birim, alan, teslim, tarih, yuzde, yurumeSuresi, birimAdi } from '@/lib/format';
 import { Pill, SantiyePill, TazelikPill, StokPill } from '@/components/ui/Pill';
 import { OZELLIKLER } from '@/lib/filtre';
 import { katPlaniYolu } from '@/lib/routing';
@@ -92,7 +92,7 @@ export function ProjeDetay({ p }: { p: Detay }) {
           <Link href={`/firmalar/${p.firma_slug}`} style={{ color: 'var(--brand)', fontWeight: 650 }}>
             {p.firma_ad}
           </Link>
-          {p.blok_sayisi && p.toplam_konut ? ` · ${p.blok_sayisi} blok, ${p.toplam_konut} daire` : ''}
+          {p.blok_sayisi && p.toplam_konut ? ` · ${p.blok_sayisi} blok, ${p.toplam_konut} ${birimAdi(p.tip)}` : ''}
         </p>
         <div className="satir" style={{ marginTop: 'var(--s-3)' }}>
           <SantiyePill yuzde={p.santiye_yuzde} />

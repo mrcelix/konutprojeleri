@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import type { ProjeDetay as Detay } from '@/lib/queries/proje';
-import { para, paraKisa, m2Birim, alan, teslim, tarih, yuzde } from '@/lib/format';
+import { para, paraKisa, m2Birim, alan, teslim, tarih, yuzde, birimAdi } from '@/lib/format';
 import { Pill } from '@/components/ui/Pill';
 
 /**
@@ -63,7 +63,7 @@ export function ArsivProje({ p }: { p: Detay }) {
         <Link href={`/firmalar/${p.firma_slug}`} style={{ color: 'var(--brand)', fontWeight: 650 }}>
           {p.firma_ad}
         </Link>
-        {p.toplam_konut ? ` · ${p.toplam_konut} konut` : ''}.{' '}
+        {p.toplam_konut ? ` · ${p.toplam_konut} ${birimAdi(p.tip)}` : ''}.{' '}
         {p.teslim_m2_fiyati && p.guncel_m2_fiyati && (
           <>
             Teslim dönemindeki ortalama satış fiyatı <b>{para(p.teslim_m2_fiyati)}/m²</b>;

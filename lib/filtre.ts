@@ -65,6 +65,15 @@ export const OZELLIKLER: Record<string, string> = {
   deprem_2018: '2018 deprem yönetmeliği',
   sismik_izolator: 'Sismik izolatör',
   site_ici_okul: 'Site içinde okul',
+
+  /* Ofis projeleri. Konut özellikleriyle aynı sözlükte duruyorlar
+     çünkü süzgeç bu kaydı okuyor; ayrı bir liste açmak arama
+     yüzeyini ikiye bölerdi. Bir konut projesinde bu anahtarlar hiç
+     bulunmadığı için süzgeçte de karşılıklı karışmıyorlar. */
+  toplanti_salonu: 'Toplantı salonu',
+  resepsiyon: 'Karşılama / resepsiyon',
+  jenerator: 'Jeneratör',
+  leed_sertifikali: 'LEED sertifikalı',
 };
 
 export const DAIRE_TIPLERI = ['1+0', '1+1', '2+1', '3+1', '4+1', '5+1'];
