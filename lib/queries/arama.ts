@@ -20,6 +20,7 @@ export type AramaSonucu = {
   il: string;
   ilce: string;
   mahalle: string | null;
+  tip: string;
   teslim_ceyrek: string | null;
   santiye_yuzde: number | null;
   aidat: number | null;
@@ -137,7 +138,7 @@ export async function ara(f: Filtre): Promise<AramaCikti> {
   >`
     with eslesen as (
       select
-        p.id, p.slug, p.ad, p.il, p.ilce, p.mahalle, p.teslim_ceyrek,
+        p.id, p.slug, p.ad, p.il, p.ilce, p.mahalle, p.tip, p.teslim_ceyrek,
         p.santiye_yuzde, p.aidat, p.pesinat_orani, p.vade_ay, p.ozellikler,
         p.fiyat_teyit_tarihi, p.one_cikarma, p.guncellendi, p.olusturuldu,
         f.ad as firma_ad, f.slug as firma_slug, k.sicil as firma_sicil,

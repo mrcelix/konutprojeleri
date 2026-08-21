@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import Image from 'next/image';
+import { projeKapagi } from '@/lib/gorsel-havuzu';
 import { Pill, SantiyePill, StokPill } from '@/components/ui/Pill';
 import { para, paraKisa, m2Birim, teslim, alan } from '@/lib/format';
 import { projeYolu } from '@/lib/routing';
@@ -24,6 +25,8 @@ type Props = {
     il: string;
     ilce: string;
     mahalle: string | null;
+    /** Stok görsel havuzunu seçiyor (konut / villa / ofis). */
+    tip: string;
     teslim_ceyrek: string | null;
     santiye_yuzde: number | null;
     aidat: number | null;
@@ -52,15 +55,16 @@ export function ProjeKarti({ proje: p, daireTipleri = [], don, sepette }: Props)
   return (
     <article className="vsatir">
       <div className="kp-project__media">
-        {p.kapak && (
-          <Image
-            src={p.kapak}
-            alt={`${p.ad} — ${p.ilce}, ${p.il}`}
-            fill
-            sizes="(max-width: 767px) 100vw, 212px"
-            style={{ objectFit: 'cover' }}
-          />
-        )}
+        {/* Projenin KENDİ fotoğrafı varsa o; yoksa tipine göre stok
+            havuzundan sabit bir kare. Boş bırakmak, arama sonucunda
+            yan yana duran kartların yarısını gri kutuya çeviriyordu. */}
+        <Image
+          src={projeKapagi(p)}
+          alt={`${p.ad} — ${p.ilce}, ${p.il}`}
+          fill
+          sizes="(max-width: 767px) 100vw, 212px"
+          style={{ objectFit: 'cover' }}
+        />
         <span className="kp-project__flag">
           <SantiyePill yuzde={p.santiye_yuzde} />
         </span>

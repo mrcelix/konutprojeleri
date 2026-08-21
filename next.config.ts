@@ -10,6 +10,10 @@ const config: NextConfig = {
     loaderFile: './lib/imageLoader.ts',
     remotePatterns: [
       { protocol: 'https', hostname: 'cdn.konutprojeleri.com' },
+      /* Stok fotoğraf havuzu (lib/gorsel-havuzu.ts). Envanterde
+         gerçek fotoğraf yokken kartlar ve hero buradan besleniyor;
+         host izinli değilse next/image isteği reddediyor. */
+      { protocol: 'https', hostname: 'images.unsplash.com' },
     ],
   },
 

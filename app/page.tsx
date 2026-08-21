@@ -9,7 +9,8 @@ import { SiteBasligi } from '@/components/SiteBasligi';
 import { SiteAltBilgi } from '@/components/SiteAltBilgi';
 import { MobilCubuk } from '@/components/MobilCubuk';
 import { AramaKutusu } from '@/components/anasayfa/AramaKutusu';
-import { BolgeGorseli, KartGorseli, HeroGorseli } from '@/components/anasayfa/Gorseller';
+import { BolgeGorseli, KartGorseli, HeroGorseli, AdimGorseli } from '@/components/anasayfa/Gorseller';
+import { HERO_KARELERI } from '@/lib/gorsel-havuzu';
 import { teslim } from '@/lib/format';
 
 /**
@@ -40,6 +41,18 @@ export const metadata: Metadata = {
 
 const bicim = new Intl.NumberFormat('tr-TR');
 
+/** Dört adım — her birinin görsel türü konusuyla eşleşiyor. */
+const ADIMLAR = [
+  { bas: 'Bütçenizi girin', tur: 'konut' as const,
+    aciklama: 'Peşinat ve aylık ödeyebileceğiniz tutarı yazın; sistem hangi projelerin gerçekten uyduğunu hesaplasın.' },
+  { bas: 'Kaydı okuyun', tur: 'ic' as const,
+    aciklama: 'Fiyat geçmişi, kat planı, ödeme planı ve firmanın teslim karnesi aynı sayfada.' },
+  { bas: 'Karşılaştırın', tur: 'villa' as const,
+    aciklama: 'Beğendiğiniz projeleri yan yana koyun — m² fiyatı, teslim tarihi ve taksit farkı tabloda.' },
+  { bas: 'Firmayla görüşün', tur: 'santiye' as const,
+    aciklama: 'Talebiniz doğrudan firmaya gidiyor. Arada komisyoncu yok.' },
+];
+
 /* ───────── Proje kartı ───────── */
 
 function ProjeKarti({ p }: { p: VitrinProjesi }) {
@@ -57,7 +70,7 @@ function ProjeKarti({ p }: { p: VitrinProjesi }) {
     <article className="vcard">
       <div className="vcard-media">
         <Link href={yol} className="vcard-ac" aria-label={p.ad}>
-          <KartGorseli tip={p.tip} />
+          <KartGorseli tip={p.tip} slug={p.slug} ad={p.ad} />
         </Link>
         <div className="vcard-top">
           <div className="vcard-tags">
@@ -176,7 +189,7 @@ export default async function AnaSayfa() {
       <section className="hero">
         <div className="hero-canvas">
           <div className="hero-foto">
-            <HeroGorseli />
+            <HeroGorseli src={HERO_KARELERI[0]} />
           </div>
 
           <div className="hero-body">
@@ -283,15 +296,14 @@ export default async function AnaSayfa() {
           </div>
 
           <ol className="surec">
-            {[
-              ['Bütçenizi girin', 'Peşinat ve aylık ödeyebileceğiniz tutarı yazın; sistem hangi projelerin gerçekten uyduğunu hesaplasın.'],
-              ['Kaydı okuyun', 'Fiyat geçmişi, kat planı, ödeme planı ve firmanın teslim karnesi aynı sayfada.'],
-              ['Karşılaştırın', 'Beğendiğiniz projeleri yan yana koyun — m² fiyatı, teslim tarihi ve taksit farkı tabloda.'],
-              ['Firmayla görüşün', 'Talebiniz doğrudan firmaya gidiyor. Arada komisyoncu yok.'],
-            ].map(([bas, aciklama], i) => (
+            {ADIMLAR.map(({ bas, aciklama, tur }, i) => (
               <li className="surec-adim" key={bas}>
                 <div className="surec-foto">
-                  <BolgeGorseli sira={i} tur={i % 2 ? 'sehir' : 'sahil'} />
+                  {/* Görsel adımın KONUSUNU gösteriyor: bütçe adımında
+                      konut cephesi, kayıt adımında iç mekân, teslim
+                      adımında şantiye. Dört adımda aynı manzarayı
+                      dönüşümlü basmak süsleme olurdu. */}
+                  <AdimGorseli tur={tur} anahtar={bas} />
                   <span className="surec-no">{i + 1}</span>
                 </div>
                 <h3 className="h3" style={{ marginTop: 12 }}>{bas}</h3>
@@ -377,9 +389,9 @@ export default async function AnaSayfa() {
           </div>
 
           <div className="regions">
-            {bolgeler.map((b, i) => (
+            {bolgeler.map((b) => (
               <Link href={b.yol} className="region" key={b.yol}>
-                <BolgeGorseli sira={i} tur={b.tur} />
+                <BolgeGorseli tur={b.tur} anahtar={b.yol} ad={b.ad} />
                 <span className="region-txt">
                   <b>{b.ad}</b>
                   <span>{b.alt}</span>
