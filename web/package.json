@@ -32,7 +32,8 @@
     "test:seri": "node scripts/testler.mjs --seri",
     "test:hizli": "node scripts/testler.mjs talep panel guvenlik arama silme",
     "derle": "node scripts/derle.mjs",
-    "ekran": "node scripts/ekran.mjs"
+    "ekran": "node scripts/ekran.mjs",
+    "yonetici": "node --conditions=react-server --import tsx scripts/yonetici-yap.ts"
   },
   "dependencies": {
     "@prisma/adapter-pg": "^7.9.1",

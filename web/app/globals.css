@@ -1633,11 +1633,7 @@ textarea { resize: vertical; min-height: 90px; }
 .footer .logo-b { color: var(--ink); }
 .logo:hover { filter: saturate(1.25); }
 
-/* Başlıktaki "Rezervasyonlarım": dar ekranda metin düşüyor, ikon
-   kalıyor — düğmenin kendisi kaybolmamalı. */
-.rez-link { gap: 7px; white-space: nowrap; }
-@media (max-width: 1180px) { .rez-link span { display: none; } .rez-link { padding-inline: 10px; } }
-@media (max-width: 620px) { .rez-link { display: none; } }
+
 /* Nokta markanın parçası, ayrı bir öge değil: boşluk kapatılıp
    biraz sola çekiliyor. */
 .logo .dot { color: var(--cta); margin-left: -.04em; letter-spacing: 0; }

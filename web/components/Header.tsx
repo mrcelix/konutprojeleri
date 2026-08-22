@@ -184,14 +184,10 @@ export default function Header(
             </Link>
           </div>
 
-          {/* Karşılaştırma panosu: konut kararı tek kişilik değil ve
-              eş, aile, "anlayan tanıdık" aynı üç projeye bakıyor.
-              Pano o tartışmayı tek bağlantıda topluyor; üst çubukta
-              11 px ile durunca dar ekranda ilk düşen öğelerdendi. */}
-          <Link className="btn btn-quiet btn-sm rez-link" href="/pano">
-            <Icon n="scale" s={15} />
-            <span>{dil === 'en' ? 'Compare board' : 'Karşılaştırma panom'}</span>
-          </Link>
+          {/* Karşılaştırma panosu başlıktan KALDIRILDI. Yolu duruyor:
+              `/pano` sayfası, mobil alt çubuktaki sekmesi ve proje
+              kartındaki "Panoya ekle" düğmesi çalışmaya devam
+              ediyor — yalnızca üst çubuktaki bağlantı yok. */}
           {/* Oturum varken düğme Profil / Panel / Çıkış menüsüne
               dönüşüyor; durumu istemci `/api/oturum`dan okuyor —
               çerezi burada okumak bütün sayfaları dinamikleştirirdi. */}
