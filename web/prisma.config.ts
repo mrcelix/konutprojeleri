@@ -66,6 +66,40 @@ if (secilen && !/^postgres(ql)?:\/\//.test(secilen)) {
 }
 
 /*
+ * HAVUZLAYICI ÜZERİNDEN MIGRATION ÇALIŞMIYOR — ve hata da vermiyor,
+ * SONSUZA KADAR BEKLİYOR.
+ *
+ * Prisma şema değişikliğinden önce oturum düzeyinde bir advisory lock
+ * alıyor. PgBouncer transaction modunda (Supabase havuzlayıcısı, port
+ * 6543) her ifade farklı bir arka uç bağlantısına gidebildiği için
+ * kilit hiçbir zaman alınamıyor; `migrate deploy` tek satır çıktı
+ * verip asılı kalıyor.
+ *
+ * Vercel'de `DIRECT_URL` tanımsız unutulduğunda derleme 45 dakika
+ * "Building" görünüp zaman aşımına düşüyordu ve günlükte sebebe dair
+ * hiçbir şey yoktu. Burada ANINDA ve sebebiyle söyleniyor.
+ *
+ * Yalnızca `DIRECT_URL` yokken bakılıyor: tanımlıysa şema işlemleri
+ * zaten doğrudan bağlantıdan gidiyor ve `DATABASE_URL`in havuzlanmış
+ * olması normal — uygulama sorguları için doğrusu o.
+ */
+const HAVUZ_PORTLARI = [':6543'];
+/* YALNIZCA şema komutlarında. `prisma generate` adres istemiyor ve
+   yukarıdaki blokta özellikle dayanıklı bırakıldı: burada da hata
+   fırlatmak `postinstall` adımını düşürür, istemci hiç üretilmez ve
+   `next build` alakasız bir "Cannot find module" ile çöker. */
+const semaKomutu = process.argv.some((a) => a === 'migrate' || a === 'db');
+if (semaKomutu && !dogrudan && havuz
+    && HAVUZ_PORTLARI.some((liman) => havuz.includes(liman))) {
+  throw new Error(
+    'DIRECT_URL tanımlı değil ve DATABASE_URL havuzlayıcıya (6543) bakıyor. '
+    + 'Migration havuzlayıcı üzerinden çalışmaz: advisory lock alınamadığı '
+    + 'için `prisma migrate deploy` hata vermeden sonsuza kadar bekler. '
+    + 'DIRECT_URL olarak Supabase\'in DOĞRUDAN adresini (port 5432) tanımlayın.',
+  );
+}
+
+/*
  * TEMİZLENMİŞ değer doğrudan veriliyor, `env()` ile DEĞİL.
  *
  * `env('DIRECT_URL')` Prisma'ya "bu değişkeni sen oku" demek; ham
