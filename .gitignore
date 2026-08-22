@@ -1,15 +1,59 @@
-node_modules
-.next
-out
-build
-.DS_Store
+# Bağımlılıklar
+node_modules/
+.pnp
+.pnp.js
 
-.env
-.env.local
-.env*.local
-
+# Derleme çıktıları
+.next/
+out/
+build/
+dist/
 *.tsbuildinfo
 next-env.d.ts
 
-.vercel
-coverage
+# Prisma tarafından üretilen istemci
+web/lib/generated/
+
+# Gömülü PostgreSQL veri dizini ve günlüğü — ASLA sürüm kontrolüne girmez
+.pgdata/
+*.pgdata.log
+web/.pgdata/
+web/.pgdata.log
+
+# Ortam değişkenleri — gerçek anahtarlar burada
+.env
+.env.local
+.env*.local
+!.env.example
+
+# Günlükler
+*.log
+npm-debug.log*
+
+# Editör / işletim sistemi
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/*
+!.vscode/extensions.json
+
+# Yerel araç ayarları
+.claude/
+
+# Geliştirme posta kutusu (sahte e-posta sağlayıcısının çıktısı)
+.postakutusu/
+web/.postakutusu/
+
+# Yerel fotoğraf deposu (DEPO_SURUCU=yerel) — üretim verisi değil
+.yukleme/
+web/.yukleme/
+
+# villahane.net dönüşümünden kalan yerel artıklar. Sürüm kontrolüne
+# GİRMEZLER: node_modules1 142 MB'lık kazara kopyalanmış bir bağımlılık
+# dizini, tema/ ve mockup/ eski tasarım denemeleri, tar.gz ise dönüşüm
+# öncesi alınan yedek. Silmek kullanıcının kararı; buradaki amaç
+# yalnızca yanlışlıkla commit edilmelerini önlemek.
+node_modules1/
+mockup/
+tema/
+web-villahane-yedek.tar.gz

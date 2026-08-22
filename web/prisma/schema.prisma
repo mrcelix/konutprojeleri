@@ -1,0 +1,1681 @@
+// KonutProjeleri — veri modeli
+// PostgreSQL 17.
+//
+// Alan: yeni KONUT, VILLA ve OFIS projelerinin tanıtımı ve satış
+// talebi toplama. Rezervasyon / ödeme / müsaitlik alanı YOK — burada
+// satılan şey bir gece değil bir bağımsız bölüm; site satışın
+// kendisini değil ilk teması üretiyor. Para hareketi hiç olmadığı
+// için ödeme sağlayıcısı, kapora ve iade politikası da yok.
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../lib/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+/**
+ * ============================================================
+ * Konum ve taksonomi
+ * ============================================================
+ */
+
+/// Bölge — SEO iniş sayfalarının ana varlığı
+model Bolge {
+  id     String @id @default(cuid())
+  slug   String @unique
+  ad     String
+  il     String
+  lat    Float
+  lng    Float
+  /// Pazarlama amaçlı toplam envanter sayısı. ARTIK OKUNMUYOR:
+  /// bölge listeleri proje sayısını canlı sayıyor. Sabit sütun proje
+  /// eklenip çıkarıldıkça güncellenmediği için bölgeler mega menüde
+  /// "0 proje" diye görünüyordu. Sütun tohumlama betikleriyle
+  /// uyumluluk için duruyor.
+  adet   Int    @default(0)
+  img    String
+  ozet   String
+  /// Editöryel içerik: giriş, mevkiler, ulaşım, yatırım notu, ipuçları
+  icerik Json
+
+  sira       Int      @default(0)
+  yayinda    Boolean  @default(true)
+  olusturma  DateTime @default(now())
+  guncelleme DateTime @updatedAt
+
+  projeler Proje[]
+  sss      BolgeSss[]
+  ceviri   BolgeCeviri[]
+  yazilar  Yazi[]
+
+  @@index([yayinda, sira])
+  @@map("bolge")
+}
+
+/// Bölgeye özgü SSS — FAQPage schema'sını besler, sırası korunur
+model BolgeSss {
+  id      String @id @default(cuid())
+  bolgeId String
+  soru    String
+  cevap   String
+  sira    Int    @default(0)
+
+  bolge Bolge @relation(fields: [bolgeId], references: [id], onDelete: Cascade)
+
+  @@index([bolgeId, sira])
+  @@map("bolge_sss")
+}
+
+/// Özellik taksonomisi — filtre + iniş sayfası kaynağı.
+/// Proje ölçeğinde: kapalı otopark, güvenlik, sosyal tesis, akıllı ev…
+model Ozellik {
+  id              String  @id @default(cuid())
+  /// Kod: kapali-otopark, guvenlik, sosyal-tesis, akilli-ev…
+  kod             String  @unique
+  ad              String
+  ikon            String
+  /// Doluysa /projeler/[bolge]/[slug] iniş sayfası üretilir
+  landingSlug     String? @unique
+  landingBaslik   String?
+  landingAciklama String?
+  sira            Int     @default(0)
+
+  projeler ProjeOzellik[]
+  ceviri   OzellikCeviri[]
+
+  @@index([sira])
+  @@map("ozellik")
+}
+
+/**
+ * ============================================================
+ * Geliştirici firma
+ * ============================================================
+ */
+
+/// Projeyi geliştiren müteahhit / gayrimenkul firması.
+///
+/// Alıcının ilk sorduğu şey "kim yapıyor": teslim edilmiş proje
+/// sayısı ve kuruluş yılı, bir projenin zamanında biteceğine dair
+/// en güçlü sinyal. Bu yüzden firma ayrı bir varlık ve kendi sayfası
+/// var — proje üstünde serbest bir metin alanı değil.
+model Firma {
+  id       String  @id @default(cuid())
+  slug     String  @unique
+  ad       String
+  /// Logo adresi; boşsa kart baş harfle basılıyor
+  logo     String?
+  ozet     String
+  /// Uzun tanıtım — `Sayfa.govde` ile aynı blok biçimi
+  hakkinda Json?
+
+  kurulusYili     Int?
+  /// Bugüne kadar TESLİM ETTİĞİ proje sayısı — vaat değil geçmiş
+  tamamlananProje Int  @default(0)
+
+  telefon String?
+  eposta  String?
+  web     String?
+
+  yayinda    Boolean  @default(true)
+  sira       Int      @default(0)
+  olusturma  DateTime @default(now())
+  guncelleme DateTime @updatedAt
+
+  projeler   Proje[]
+  kullanici  Kullanici?
+  basvurular FirmaBasvuru[]
+
+  @@index([yayinda, sira])
+  @@map("firma")
+}
+
+/**
+ * ============================================================
+ * Proje
+ * ============================================================
+ */
+
+/// Projenin türü.
+///
+/// Ayrı model değil aynı modelde bir alan: konum, görsel, özellik,
+/// firma, daire tipi ve talep akışı üçünde de birebir aynı. Ayrı
+/// model, galeriden haritaya kadar her şeyi üç kez yazmak demekti.
+enum ProjeTipi {
+  KONUT
+  VILLA
+  OFIS
+  /// Konut + ofis / konut + ticari aynı parselde
+  KARMA
+}
+
+/// Satış aşaması. Ziyaretçinin ilk baktığı şey bu: "hâlâ alınabilir mi".
+enum ProjeDurumu {
+  /// Lansman öncesi — ön talep toplanıyor
+  YAKINDA
+  SATISTA
+  /// Stok azaldı; aciliyet rozeti basılıyor
+  SON_DAIRELER
+  TUKENDI
+  TESLIM_EDILDI
+}
+
+/// Tapu durumu — alıcının ilk sorduğu şey.
+enum TapuDurumu {
+  KAT_MULKIYETI
+  KAT_IRTIFAKI
+  ARSA_TAPULU
+  HISSELI
+  TAHSIS
+}
+
+model Proje {
+  id      String      @id @default(cuid())
+  slug    String      @unique
+  ad      String
+  tip     ProjeTipi   @default(KONUT)
+  durum   ProjeDurumu @default(SATISTA)
+  firmaId String
+  bolgeId String
+
+  mahalle String
+  /// Açık adres — haritada iğne, sayfada "konum" bloğu
+  adres   String?
+  lat     Float
+  lng     Float
+
+  /**
+   * ---------------- Fiyat ----------------
+   */
+  /// Fiyat ARALIĞI (TL). Projede tek fiyat yok: 1+1 ile 4+1 arasında
+  /// kat kat fark var. Kartta ve listede "…'den başlayan" aralık
+  /// gösteriliyor; kesin fiyat daire tipinde duruyor.
+  fiyatMin     Int
+  fiyatMax     Int?
+  paraBirimi   String      @default("TRY")
+  /// Yüzde. 0 = peşinat bilgisi verilmiyor.
+  pesinatOrani Int         @default(0)
+  /// Vade (ay). 0 = senetli/taksitli satış yok.
+  taksitAyi    Int         @default(0)
+  krediyeUygun Boolean     @default(true)
+  takas        Boolean     @default(false)
+  /// Aylık aidat (TL) — teslim sonrası tahmini
+  aidat        Int?
+  tapuDurumu   TapuDurumu?
+
+  /**
+   * ---------------- Ölçek ----------------
+   */
+  blokSayisi          Int?
+  katSayisi           Int?
+  /// Toplam bağımsız bölüm (daire/ofis) sayısı
+  toplamBagimsizBolum Int?
+  arsaM2              Int?
+  insaatAlaniM2       Int?
+  /// Yeşil alan / peyzaj oranı, yüzde
+  yesilAlanOrani      Int?
+
+  /**
+   * ---------------- Takvim ----------------
+   */
+  /// İnşaat başlangıcı
+  baslangicTarihi DateTime? @db.Date
+  /// Vaat edilen teslim. Kartta "2027 4. çeyrek" diye basılıyor.
+  teslimTarihi    DateTime? @db.Date
+  /// İnşaat ilerlemesi, yüzde. Panelden elle güncelleniyor.
+  ilerlemeYuzde   Int       @default(0)
+
+  /**
+   * ---------------- İçerik ----------------
+   */
+  ozet     String
+  /// Blok dizisi — `Sayfa.govde` ile aynı şekil
+  aciklama Json?
+  /// Rozet metni: "Sahile 400 m", "Son 12 daire"…
+  sec      String?
+  yeni     Boolean @default(false)
+  /// Anasayfa vitrinine çıkarılsın mı
+  oneCikan Boolean @default(false)
+
+  yayinda     Boolean  @default(true)
+  yayinTarihi DateTime
+  olusturma   DateTime @default(now())
+  guncelleme  DateTime @updatedAt
+
+  /// Adı değişince eski adresler burada tutuluyor; 301 ile yönlendiriliyor.
+  eskiSluglar ProjeSlug[]
+
+  arama          ProjeArama?
+  ceviri         ProjeCeviri[]
+  firma          Firma          @relation(fields: [firmaId], references: [id])
+  bolge          Bolge          @relation(fields: [bolgeId], references: [id])
+  medya          Medya[]
+  ozellikler     ProjeOzellik[]
+  daireTipleri   DaireTipi[]
+  talepler       Talep[]
+  fiyatAlarmlari FiyatAlarmi[]
+  konusmalar     Konusma[]
+  panoOgeleri    PanoOge[]
+  kontrol        KontrolRaporu?
+
+  @@index([bolgeId, yayinda])
+  @@index([yayinda, fiyatMin])
+  @@index([yayinda, teslimTarihi])
+  @@index([firmaId, yayinda])
+  /// Vitrin sorgularının tamamı tipe ve satış aşamasına göre süzülüyor.
+  @@index([tip, durum, yayinda])
+  @@index([yayinda, oneCikan])
+  @@map("proje")
+}
+
+/// Bağımsız bölüm tipi — "2+1", "4+1 dubleks", "Ofis — Blok A".
+///
+/// Projenin gerçek satış birimi bu. Ziyaretçi projeyi değil daire
+/// tipini soruyor ("3+1 var mı, kaça?") ve talep formu da bu tipe
+/// bağlanıyor: satış ekibi telefonu açmadan önce hangi tipe
+/// bakıldığını biliyor.
+model DaireTipi {
+  id      String @id @default(cuid())
+  projeId String
+
+  /// Görünen ad: "2+1", "4+1 Dubleks", "Ofis — Blok A"
+  ad        String
+  /// Oda sayısı METİN olarak ("1+1", "4.5+1") — sayısal değil;
+  /// Türkiye'de yarım oda gerçek ve aranan bir kategori.
+  odaSayisi String
+  banyo     Int     @default(1)
+  brutM2    Int
+  netM2     Int?
+  /// Kısa nitelik: "Bahçe dubleks", "Yüksek kat", "Teraslı"
+  nitelik   String?
+
+  fiyatMin Int?
+  fiyatMax Int?
+
+  /// Bu tipten kaç adet üretiliyor
+  adet      Int?
+  /// Satılmadan kalan adet. 0 → tip "tükendi" işaretleniyor.
+  kalanAdet Int?
+
+  /// Kat planı görseli. Proje sayfasındaki en çok tıklanan tek görsel.
+  katPlaniUrl         String?
+  katPlaniAlt         String?
+  /// Yüklendiyse depodaki nesne anahtarı; adres elle girildiyse NULL.
+  katPlaniDepoAnahtar String?
+
+  sira    Int     @default(0)
+  yayinda Boolean @default(true)
+
+  olusturma  DateTime @default(now())
+  guncelleme DateTime @updatedAt
+
+  proje    Proje   @relation(fields: [projeId], references: [id], onDelete: Cascade)
+  talepler Talep[]
+
+  @@index([projeId, sira])
+  @@index([projeId, yayinda])
+  @@map("daire_tipi")
+}
+
+/// Arama indeksi.
+///
+/// Proje, firma, bölge, mahalle ve özellik metinleri tek satırda
+/// birleştirilip ağırlıklı tsvector'e çevriliyor. Tablo veritabanı
+/// tetikleyicileriyle güncelleniyor; uygulama kodunun indeksi
+/// tazelemeyi hatırlaması gerekmiyor.
+///
+/// `vektor` Prisma tarafından okunmuyor (Unsupported) — sorgular
+/// $queryRaw ile yapılıyor. Burada tanımlı olmasının sebebi şema
+/// sürüklenmesini önlemek.
+model ProjeArama {
+  projeId    String                  @id
+  /// İnsan okunur birleşik metin — hata ayıklama ve trigram için
+  metin      String
+  vektor     Unsupported("tsvector")
+  guncelleme DateTime                @default(now())
+
+  proje Proje @relation(fields: [projeId], references: [id], onDelete: Cascade)
+
+  // GIN indeksleri burada TANIMLI OLMALI. Aksi halde `prisma migrate diff`
+  // onları bilmediği için her yeni migration'a DROP INDEX ekliyor ve
+  // arama sessizce sıralı taramaya düşüyor.
+  @@index([vektor], type: Gin, map: "proje_arama_vektor_idx")
+  @@index([metin(ops: raw("gin_trgm_ops"))], type: Gin, map: "proje_arama_trgm_idx")
+  @@map("proje_arama")
+}
+
+/// Proje ↔ özellik çoka-çok
+model ProjeOzellik {
+  projeId   String
+  ozellikId String
+
+  proje   Proje   @relation(fields: [projeId], references: [id], onDelete: Cascade)
+  ozellik Ozellik @relation(fields: [ozellikId], references: [id], onDelete: Cascade)
+
+  @@id([projeId, ozellikId])
+  @@index([ozellikId])
+  @@map("proje_ozellik")
+}
+
+/// Projenin eski adresleri.
+///
+/// Proje adı değişince slug da değişiyor; eski adres paylaşılmış,
+/// dizine girmiş ve reklam bağlantılarında duruyor olabiliyor.
+/// 404 vermek yerine kalıcı yönlendirmeyle yeni adrese gidiliyor.
+///
+/// Silinmiyor: bir slug bir kez yayınlandıysa ömür boyu çözülebilmeli.
+model ProjeSlug {
+  slug      String   @id
+  projeId   String
+  olusturma DateTime @default(now())
+
+  proje Proje @relation(fields: [projeId], references: [id], onDelete: Cascade)
+
+  @@index([projeId])
+  @@map("proje_slug")
+}
+
+enum MedyaTipi {
+  DIS_CEPHE
+  IC_MEKAN
+  ORNEK_DAIRE
+  SOSYAL_TESIS
+  MANZARA
+  /// Vaziyet planı — blokların parseldeki yerleşimi
+  VAZIYET_PLANI
+  KAT_PLANI
+  /// Şantiyeden güncel ilerleme fotoğrafı
+  INSAAT_DURUMU
+}
+
+model Medya {
+  id        String    @id @default(cuid())
+  projeId   String
+  url       String
+  /// Erişilebilirlik ve SEO için zorunlu
+  alt       String
+  tip       MedyaTipi @default(DIS_CEPHE)
+  sira      Int       @default(0)
+  genislik  Int?
+  yukseklik Int?
+
+  /// Depodaki nesne anahtarı — bizim yüklediğimiz görsellerde dolu.
+  ///
+  /// Satır silinince dosyanın da silinebilmesi için gerekiyor. URL'den
+  /// geri üretmeye çalışmak sağlayıcıya bağımlı olurdu (Supabase'in
+  /// açık adresi ile Cloudflare'inki aynı biçimde değil) ve CDN adresi
+  /// değişince eski dosyalar sonsuza kadar depoda kalırdı.
+  ///
+  /// NULL: dışarıdan adres girilerek eklenen görseller.
+  depoAnahtar String?
+  /// İşlenmiş dosyanın boyutu — panelde depo kullanımını göstermek için
+  bayt        Int?
+
+  /// Alt metnini makine yazdı, insan yazmadı.
+  ///
+  /// Otomatik alt metin her fotoğrafa aynı cümleyi yazıyor: ekran
+  /// okuyucu kullanan biri aynı şeyi arka arkaya duyuyor, arama motoru
+  /// hiçbir şey öğrenmiyor. Tahmin etmek yerine (metni kalıba sokup
+  /// "otomatik mi" diye bakmak) doğrudan işaretliyoruz. İnsan alt
+  /// metni yazınca false oluyor ve bir daha true olmuyor.
+  altOtomatik Boolean @default(false)
+
+  proje Proje @relation(fields: [projeId], references: [id], onDelete: Cascade)
+
+  @@index([projeId, sira])
+  @@index([projeId, tip])
+  @@map("medya")
+}
+
+/**
+ * ============================================================
+ * Talep — sitenin tek dönüşüm hedefi
+ * ============================================================
+ */
+
+/// Talebin satış hunisindeki yeri.
+enum TalepDurumu {
+  YENI
+  ARANDI
+  ULASILAMADI
+  /// Randevu verildi, ofis/şantiye ziyareti planlandı
+  RANDEVU
+  ILGILENMIYOR
+  /// Satışa dönüştü
+  SATIS
+  KAPANDI
+}
+
+/// Talebin NİYETİ: satış ekibi telefonu açmadan önce ne konuşulacağını
+/// biliyor.
+///
+/// Randevu isteyen kişi projeyi yerinde görmek istiyor — ofis ve
+/// ulaşım gerekiyor; fiyat listesi isteyen kişi henüz o aşamada değil.
+/// Üçü aynı kuyruğa düşüyordu ve arayan kişi karşı tarafa ne soracağını
+/// bilmiyordu.
+enum TalepNiyeti {
+  BILGI
+  FIYAT_LISTESI
+  KATALOG
+  RANDEVU
+}
+
+/// Alıcının ödeme yaklaşımı — satış ekibinin ilk elemesi.
+enum OdemeSekli {
+  BELIRTILMEDI
+  PESIN
+  KREDI
+  /// Firmadan senetli / taksitli
+  TAKSIT
+  TAKAS
+}
+
+/// Satış talebi (lead).
+///
+/// Sitenin TEK dönüşüm hedefi. Tek zorunlu alan çifti ad + telefon:
+/// e-postayı zorunlu kılmak, en yüksek dönüşümlü formu en çok terk
+/// edilen forma çevirirdi. Bütçe, ödeme şekli ve daire tipi doldurulursa
+/// satış ekibi önceliklendirebiliyor; boş bırakılabiliyor.
+///
+/// KVKK: açık rıza olmadan kayıt AÇILMIYOR (`kvkkOnay` zorunlu true) ve
+/// onayın alındığı an ayrıca damgalanıyor — rızanın varlığını değil
+/// tarihini de ispat etmek gerekiyor.
+model Talep {
+  id  String @id @default(cuid())
+  /// Talep sahibinin durumunu sorgulamak için kullandığı kod (TLP-XXXXXX)
+  kod String @unique
+
+  /// Belirli bir proje için mi, yoksa genel arayış mı
+  projeId     String?
+  /// Hangi daire tipine bakılıyordu — satış ekibinin en çok işine yarayan alan
+  daireTipiId String?
+
+  ad      String
+  telefon String
+  eposta  String?
+
+  niyet TalepNiyeti @default(BILGI)
+
+  /// Bütçe aralığı (TL). İkisi de boş olabilir.
+  butceMin   Int?
+  butceMax   Int?
+  odemeSekli OdemeSekli @default(BELIRTILMEDI)
+
+  /// Ziyaretçinin tercih ettiği zaman aralığı (serbest metin)
+  saat   String?
+  not    String?
+  /// Talebin geldiği sayfa — hangi yüzeyin dönüştürdüğünü gösteriyor
+  kaynak String?
+
+  durum    TalepDurumu @default(YENI)
+  /// Satış ekibinin arama sonrası düştüğü not
+  ekipNotu String?
+  /// Talebi üstlenen panel kullanıcısı; hesap silinirse talep kalıyor
+  atananId String?
+
+  /// KVKK açık rızası ve alındığı an. Onaysız satır yazılmıyor.
+  kvkkOnay  Boolean  @default(false)
+  kvkkTarih DateTime @default(now())
+  /// Kötüye kullanım incelemesi için; KVKK imha işi temizliyor
+  ip        String?
+
+  olusturma  DateTime @default(now())
+  guncelleme DateTime @updatedAt
+
+  proje       Proje?     @relation(fields: [projeId], references: [id], onDelete: SetNull)
+  daireTipi   DaireTipi? @relation(fields: [daireTipiId], references: [id], onDelete: SetNull)
+  atanan      Kullanici? @relation("TalepAtanan", fields: [atananId], references: [id], onDelete: SetNull)
+  bildirimler Bildirim[]
+
+  @@index([durum, olusturma])
+  @@index([olusturma])
+  @@index([projeId])
+  @@index([eposta])
+  /// Panelde "bekleyen randevular" ayrı okunuyor.
+  @@index([niyet, durum])
+  @@map("talep")
+}
+
+/**
+ * ============================================================
+ * Kimlik doğrulama ve yetkilendirme
+ * ============================================================
+ */
+
+enum Rol {
+  ADMIN
+  /// Geliştirici firma yetkilisi. Yalnızca kendi projelerini ve o
+  /// projelere düşen talepleri görüyor.
+  FIRMA
+  /// Siteden kendi kaydolan ziyaretçi. Panel görmüyor; favorilerini,
+  /// panolarını ve kendi taleplerini görüyor.
+  ZIYARETCI
+}
+
+model Kullanici {
+  id         String    @id @default(cuid())
+  eposta     String    @unique
+  /// scrypt(parola, tuz) — düz parola asla saklanmaz.
+  /// Google ile açılan hesapta NULL: parolası hiç olmadı. Boş bir
+  /// hash yazmak, "parola yok" ile "parola boş" ayrımını silerdi.
+  parolaHash String?
+  ad         String
+  /// Google hesabının kalıcı kimliği (`sub`). E-postayla değil bununla
+  /// eşleşiyoruz: kullanıcı Google'da e-postasını değiştirebiliyor,
+  /// `sub` değişmiyor.
+  googleAlt  String?   @unique
+  rol        Rol       @default(FIRMA)
+  aktif      Boolean   @default(true)
+  sonGiris   DateTime?
+
+  /// İki adımlı doğrulama (TOTP, RFC 6238)
+  /// Gizli anahtar base32. Şifrelenmiyor: veritabanına erişebilen
+  /// saldırgan parola hash'lerine de erişiyor; ek katman yanlış güven verir.
+  /// Gerçek koruma, gizli anahtarın yedeklerde de korunması.
+  totpGizli   String?
+  totpAktif   Boolean  @default(false)
+  /// Tek kullanımlık yedek kodların scrypt hash'leri
+  yedekKodlar String[] @default([])
+  olusturma   DateTime @default(now())
+  guncelleme  DateTime @updatedAt
+
+  /// FIRMA rolündeki kullanıcı bir firma kaydına bağlanır
+  firmaId String? @unique
+  firma   Firma?  @relation(fields: [firmaId], references: [id])
+
+  oturumlar          Oturum[]
+  sayfalar           Sayfa[]         @relation("SayfaGuncelleyen")
+  metinler           Metin[]         @relation("MetinGuncelleyen")
+  mesajlar           Mesaj[]
+  islemler           DenetimKaydi[]
+  bildirimler        Bildirim[]
+  talepler           Talep[]         @relation("TalepAtanan")
+  tohumPartileri     TohumParti[]    @relation("TohumOlusturan")
+  ayarGuncellemeleri SiteAyar[]      @relation("AyarGuncelleyen")
+  panolar            Pano[]          @relation("PanoSahip")
+  kontrolRaporlari   KontrolRaporu[] @relation("KontrolGuncelleyen")
+
+  @@index([rol, aktif])
+  @@map("kullanici")
+}
+
+/// İki adımlı doğrulama bekleyen oturumlar `dogrulamaBekliyor = true`
+/// ile açılır ve doğrulama tamamlanana kadar yetki vermez. Böylece
+/// bekleyen durum ayrı bir tabloya veya imzalı çereze gerek kalmadan
+/// iptal edilebilir, süresi dolar ve çok örnekli kurulumda çalışır.
+model Oturum {
+  id                String   @id @default(cuid())
+  /// Çerezde taşınan değerin SHA-256 özeti — veritabanı sızsa bile oturum çalınamaz
+  tokenHash         String   @unique
+  /// true iken oturum HENÜZ geçerli değil — TOTP kodu bekleniyor
+  dogrulamaBekliyor Boolean  @default(false)
+  kullaniciId       String
+  sonKullanma       DateTime
+  ip                String?
+  tarayici          String?
+  olusturma         DateTime @default(now())
+
+  kullanici Kullanici @relation(fields: [kullaniciId], references: [id], onDelete: Cascade)
+
+  @@index([kullaniciId])
+  @@index([sonKullanma])
+  @@map("oturum")
+}
+
+/// Panelde yapılan kritik değişikliklerin izi
+model DenetimKaydi {
+  id          String   @id @default(cuid())
+  kullaniciId String?
+  eylem       String
+  varlik      String
+  varlikId    String?
+  detay       Json?
+  ip          String?
+  olusturma   DateTime @default(now())
+
+  kullanici Kullanici? @relation(fields: [kullaniciId], references: [id], onDelete: SetNull)
+
+  @@index([varlik, varlikId])
+  @@index([olusturma])
+  @@map("denetim_kaydi")
+}
+
+/**
+ * ============================================================
+ * Ziyaretçi ↔ satış ekibi yazışması
+ * ============================================================
+ */
+
+enum MesajDurumu {
+  ACIK
+  YANITLANDI
+  KAPALI
+}
+
+/// Bir proje hakkında açılan soru başlığı
+model Konusma {
+  id          String      @id @default(cuid())
+  projeId     String
+  dil         Dil         @default(TR)
+  soranAd     String
+  soranEposta String
+  konu        String
+  durum       MesajDurumu @default(ACIK)
+  /// Ekip okudu mu? Panelde okunmamış rozeti için
+  okundu      Boolean     @default(false)
+
+  olusturma  DateTime @default(now())
+  guncelleme DateTime @updatedAt
+
+  proje       Proje      @relation(fields: [projeId], references: [id], onDelete: Cascade)
+  mesajlar    Mesaj[]
+  bildirimler Bildirim[]
+
+  @@index([projeId, durum])
+  @@index([durum, guncelleme])
+  @@map("konusma")
+}
+
+model Mesaj {
+  id        String   @id @default(cuid())
+  konusmaId String
+  /// Ekip/firma yanıtıysa dolu; ziyaretçi mesajıysa boş
+  yazarId   String?
+  /// Ziyaretçiden mi geldi (true) yoksa ekipten mi (false)
+  soranMi   Boolean  @default(true)
+  metin     String
+  olusturma DateTime @default(now())
+
+  konusma Konusma    @relation(fields: [konusmaId], references: [id], onDelete: Cascade)
+  yazar   Kullanici? @relation(fields: [yazarId], references: [id], onDelete: SetNull)
+
+  @@index([konusmaId, olusturma])
+  @@map("mesaj")
+}
+
+/**
+ * ============================================================
+ * Bildirimler
+ * ============================================================
+ */
+
+enum BildirimTipi {
+  /// Talep sahibine: talebiniz alındı, ekip dönecek
+  TALEP_ALINDI
+  /// Satış ekibine: yeni talep düştü
+  TALEP_EKIP
+  /// Talep sahibine: randevu tarihi teyit edildi
+  RANDEVU_TEYIT
+  /// Talep sahibine: istediği fiyat listesi / katalog
+  KATALOG_GONDERILDI
+  /// Kullanıcıya: panel hesabı açıldı
+  HESAP_OLUSTURULDU
+  /// Kullanıcıya: parola sıfırlandı
+  PAROLA_SIFIRLANDI
+  /// Ekibe: bir proje hakkında yeni soru geldi
+  YENI_SORU
+  /// Soru sahibine: ekip yanıtladı
+  SORU_YANITLANDI
+  /// Veri sahibine: KVKK talebi doğrulama bağlantısı
+  KVKK_DOGRULAMA
+  /// Ekibe: yeni firma başvurusu geldi
+  BASVURU_ALINDI
+  /// Başvurana: kaydı açıldı
+  BASVURU_ONAYLANDI
+  /// Başvurana: gerekçesiyle reddedildi
+  BASVURU_REDDEDILDI
+  /// Takipçiye: fiyat alarmı doğrulama bağlantısı
+  ALARM_DOGRULAMA
+  /// Takipçiye: izlediği projenin fiyatı düştü
+  ALARM_DUSUS
+  /// Takipçiye: izlediği "yakında" projesi satışa çıktı
+  ALARM_SATISTA
+}
+
+enum BildirimDurumu {
+  KUYRUKTA
+  GONDERILDI
+  BASARISIZ
+  IPTAL
+}
+
+/// Bildirimin hangi yoldan gittiği. Kuyruk, yeniden deneme ve
+/// mükerrer engelleme her iki kanal için ortak çalışıyor.
+enum Kanal {
+  EPOSTA
+  SMS
+}
+
+/// Bir adrese neden gönderim yapılmadığı.
+enum EngelSebebi {
+  /// Kalıcı hata — adres yok, alan adı çözülmüyor. Bir daha denenmez.
+  KALICI_HATA
+  /// Alıcı "spam" işaretledi. Devam etmek alan adı itibarını yakar.
+  SIKAYET
+  /// Alıcı listeden çıkmak istedi.
+  ABONELIKTEN_CIKMA
+  /// Yönetici elle ekledi.
+  ELLE
+}
+
+/// Gönderim yapılmayacak adresler.
+///
+/// Ölü adreslere ısrarla göndermek sağlayıcı nezdinde "bounce oranı"
+/// olarak birikiyor; belli bir eşiğin üstünde hesap askıya alınıyor.
+/// Bu yüzden engelleme kuyruğun ÖNÜNDE, kayıt oluşturulmadan uygulanıyor.
+model GonderimEngeli {
+  id     String      @id @default(cuid())
+  kanal  Kanal
+  /// Normalize edilmiş adres: e-posta küçük harf, telefon E.164
+  adres  String
+  sebep  EngelSebebi
+  detay  String?
+  /// Hangi sağlayıcının bildirdiği ya da 'panel'
+  kaynak String
+
+  olusturma DateTime @default(now())
+
+  @@unique([kanal, adres])
+  @@index([olusturma])
+  @@index([kanal, sebep], map: "gonderim_engeli_kanal_idx")
+  @@map("gonderim_engeli")
+}
+
+/// E-posta ve SMS bildirimleri. Kuyruk + gönderim kaydı aynı tabloda.
+model Bildirim {
+  id    String         @id @default(cuid())
+  kanal Kanal          @default(EPOSTA)
+  tip   BildirimTipi
+  durum BildirimDurumu @default(KUYRUKTA)
+
+  alici      String
+  aliciAd    String
+  konu       String
+  govdeHtml  String
+  govdeMetin String
+
+  /// Hangi kayıtla ilgili — idempotans ve panelde bağlam için
+  talepId     String?
+  konusmaId   String?
+  kullaniciId String?
+
+  saglayici    String
+  referans     String?
+  hataMesaji   String?
+  denemeSayisi Int     @default(0)
+
+  /// Bu andan önce gönderilmez. Hatırlatmalar geleceğe planlanır.
+  planlanan  DateTime  @default(now())
+  gonderim   DateTime?
+  olusturma  DateTime  @default(now())
+  guncelleme DateTime  @updatedAt
+
+  talep     Talep?     @relation(fields: [talepId], references: [id], onDelete: Cascade)
+  konusma   Konusma?   @relation(fields: [konusmaId], references: [id], onDelete: Cascade)
+  kullanici Kullanici? @relation(fields: [kullaniciId], references: [id], onDelete: Cascade)
+
+  /// Aynı kişiye, aynı talep için, aynı kanaldan, aynı tip bildirim
+  /// İKİ KEZ gitmiyor. Sunucu eylemi yeniden denendiğinde ya da iki
+  /// sekmeden aynı anda tetiklendiğinde ikinci kayıt bu kısıta
+  /// takılıyor ve `kuyrukla()` onu sessizce yutuyor.
+  ///
+  /// `alici` kısıtın İÇİNDE: `TALEP_EKIP` aynı talep için birden çok
+  /// ekip adresine gidiyor ve adres olmadan ikinci ekip üyesi
+  /// bildirimi hiç alamazdı.
+  ///
+  /// `talepId` NULL olan satırlar (hesap açılışı, KVKK, başvuru)
+  /// kısıta girmiyor: PostgreSQL'de NULL'lar birbirinden farklı
+  /// sayılıyor ve o bildirimlerin mükerrerlik kuralı yok.
+  @@unique([talepId, kanal, tip, alici], map: "bildirim_tekil_talep")
+  @@index([durum, planlanan])
+  @@index([talepId])
+  @@index([olusturma])
+  @@index([kanal, durum], map: "bildirim_kanal_idx")
+  @@map("bildirim")
+}
+
+/**
+ * ============================================================
+ * İçerik yönetimi
+ * ============================================================
+ */
+
+enum Dil {
+  TR
+  EN
+  RU
+  AR
+}
+
+model Sayfa {
+  id   String @id @default(cuid())
+  slug String
+  dil  Dil    @default(TR)
+
+  /// <title> — arama sonucunda görünen başlık
+  baslik   String
+  /// Sayfadaki görünür başlık
+  h1       String
+  /// meta description
+  aciklama String
+
+  /// [{ h?: string, p?: string, liste?: string[] }]
+  govde Json
+  /// [{ s: string, c: string }] — SSS şeması da bundan üretiliyor
+  sss   Json?
+
+  /// Sayfaya özel çağrı düğmesi.
+  ///
+  /// Boşsa `sayfa.altcta` metnindeki sabit düğme gösteriliyor.
+  /// Gövde bağlantı kabul etmediği için (XSS) sayfanın kendi hedefine
+  /// yönlendirmesinin tek yolu buydu.
+  ctaMetin String?
+  ctaYol   String?
+
+  /// false ise robots noindex — teşekkür/sonuç sayfaları için
+  indexle Boolean @default(true)
+  /// false ise sayfa 404 veriyor; taslak hâlde yazılabilsin diye
+  yayinda Boolean @default(true)
+
+  guncelleyenId String?
+  olusturma     DateTime @default(now())
+  guncelleme    DateTime @updatedAt
+
+  guncelleyen Kullanici? @relation("SayfaGuncelleyen", fields: [guncelleyenId], references: [id], onDelete: SetNull)
+
+  @@unique([slug, dil])
+  @@index([dil, yayinda])
+  @@map("sayfa")
+}
+
+model Metin {
+  id      String @id @default(cuid())
+  /// `lib/metin-kayit.ts` içindeki anahtar. Kayıtta olmayan anahtar
+  /// panelde görünmüyor; artık kullanılmayan satırlar zararsız.
+  anahtar String
+  dil     Dil    @default(TR)
+  deger   String
+
+  guncelleyenId String?
+  guncelleme    DateTime @updatedAt
+
+  guncelleyen Kullanici? @relation("MetinGuncelleyen", fields: [guncelleyenId], references: [id], onDelete: SetNull)
+
+  @@unique([anahtar, dil])
+  @@map("metin")
+}
+
+/// Rehber yazısı (blog).
+///
+/// İniş sayfaları "Ataşehir konut projeleri" gibi işlem niyetli
+/// sorguları karşılıyor; "kat irtifakı ne demek", "yeni projede
+/// aidat nasıl belirlenir" gibi araştırma niyetli sorguların karşılığı
+/// yoktu. İçerik ağı buradan besleniyor.
+///
+/// Gövde `Sayfa` ile AYNI blok biçiminde: panelde aynı editör
+/// kullanılıyor ve iki ayrı içerik biçimi öğrenmek gerekmiyor.
+model Yazi {
+  id     String  @id @default(cuid())
+  slug   String  @unique
+  dil    Dil     @default(TR)
+  baslik String
+  /// Liste kartında ve meta açıklamasında kullanılıyor
+  ozet   String
+  kapak  String?
+  /// Blok dizisi — `Sayfa.govde` ile aynı şekil
+  govde  Json
+
+  /// Yazının bağlandığı bölge — iniş sayfasından yazıya bağlantı verilir
+  bolgeId String?
+
+  yazar       String?
+  /// Dakika cinsinden okuma süresi; kaydederken gövdeden hesaplanıyor
+  okumaDk     Int      @default(3)
+  yayinda     Boolean  @default(false)
+  yayinTarihi DateTime @default(now())
+  guncelleme  DateTime @updatedAt
+
+  bolge Bolge? @relation(fields: [bolgeId], references: [id], onDelete: SetNull)
+
+  @@index([yayinda, yayinTarihi])
+  @@index([bolgeId])
+  @@map("yazi")
+}
+
+enum MenuKonumu {
+  /// Ana başlıktaki gezinme
+  BASLIK
+  /// Başlığın üstündeki yardımcı şerit
+  YARDIMCI
+  /// Altbilgi sütunları
+  ALTBILGI
+}
+
+/// Menü ögesi — başlık, yardımcı şerit ve altbilgi menüleri.
+///
+/// Menü koda yazılıydı; yeni bir sayfa açan yönetici onu menüye
+/// ekleyemiyor, geliştirici bekliyordu.
+///
+/// KENDİNE REFERANSLI ağaç, üç düzey:
+///   0 · menü ögesi          ("Konut projeleri")
+///   1 · mega panel sütunu   ("Popüler bölgeler")   — `yol` boş olabilir
+///   2 · sütun bağlantısı    ("Ataşehir")
+///
+/// Düz bir bağlantı için tek düzey yeter (`mega = false`).
+///
+/// Tablo BOŞSA site koddaki varsayılan menüye düşüyor: menüsüz bir
+/// başlık, gezinmesi olmayan bir site demek.
+model MenuOgesi {
+  id    String     @id @default(cuid())
+  konum MenuKonumu @default(BASLIK)
+  dil   Dil        @default(TR)
+
+  /// Üst öge — boşsa en üst düzey
+  ustId String?
+  ust   MenuOgesi?  @relation("MenuAgaci", fields: [ustId], references: [id], onDelete: Cascade)
+  alt   MenuOgesi[] @relation("MenuAgaci")
+
+  ad   String
+  /// Boş bırakılabilir: mega panel sütun başlıkları tıklanmıyor
+  yol  String?
+  ikon String?
+  /// Bağlantının altındaki küçük not — "214 proje" gibi
+  not  String?
+
+  sira      Int     @default(0)
+  aktif     Boolean @default(true)
+  /// Yalnızca üst düzeyde: mega panel mi, düz bağlantı mı
+  mega      Boolean @default(false)
+  yeniSekme Boolean @default(false)
+
+  /// Mega panelin sağındaki tanıtım kartı
+  tanitimBaslik String?
+  tanitimMetin  String?
+  tanitimDugme  String?
+  tanitimYol    String?
+  /// Panelin altındaki kısayol şeridinin başlığı
+  seritBaslik   String?
+
+  olusturma  DateTime @default(now())
+  guncelleme DateTime @updatedAt
+
+  @@index([konum, dil, aktif, sira])
+  @@index([ustId])
+  @@map("menu_ogesi")
+}
+
+/// Hero görseli — ana sayfanın üstündeki bant.
+///
+/// Görsel koda yazılıydı. Sezon değiştiğinde ya da kampanya görseli
+/// koymak gerektiğinde dağıtım şarttı.
+///
+/// Birden fazla satır olabilir: hero yavaş geçişli bir gösteriye
+/// dönüşüyor. Tek satır varsa geçiş yok, sabit fotoğraf.
+model HeroGorsel {
+  id     String  @id @default(cuid())
+  url    String
+  /// Erişilebilirlik için zorunlu; boşsa dekoratif sayılıyor
+  alt    String  @default("")
+  /// Fotoğrafın üstüne basılan isteğe bağlı etiket
+  etiket String?
+  sira   Int     @default(0)
+  aktif  Boolean @default(true)
+
+  /// Panelden YÜKLENDİYSE nesne deposundaki anahtar. Kayıt silinince
+  /// dosya da siliniyor; anahtar tutulmazsa depoda kimsenin göremediği
+  /// bir dosya kalıyor. Adres elle girildiyse NULL.
+  depoAnahtar String?
+
+  olusturma  DateTime @default(now())
+  guncelleme DateTime @updatedAt
+
+  @@index([aktif, sira])
+  @@map("hero_gorsel")
+}
+
+/// Kampanya şeridi — sayfanın en üstünde duyuru bandı.
+///
+/// Metin kaydına (`metin` tablosu) sığmadı: kampanyanın BAŞLANGICI ve
+/// BİTİŞİ var, süresi dolunca kendiliğinden düşmeli. Metin kaydında
+/// tarih alanı yok ve "kampanya bitti" diye elle silmeyi beklemek,
+/// unutulunca süresi geçmiş bir vaadi sürdürmek demekti.
+///
+/// Aynı anda birden fazla satır olabilir; site en son başlayan AKTİF
+/// olanı gösteriyor. Geçmiş kampanyalar silinmeden arşivde kalıyor.
+model Kampanya {
+  id        String   @id @default(cuid())
+  metin     String
+  /// Şeritteki düğme — ikisi de doluysa basılıyor
+  cagriAd   String?
+  cagriYol  String?
+  /// Geri sayım gösterilsin mi (bitiş tarihine kadar)
+  geriSayim Boolean  @default(false)
+  baslangic DateTime
+  bitis     DateTime
+  aktif     Boolean  @default(true)
+
+  olusturma  DateTime @default(now())
+  guncelleme DateTime @updatedAt
+
+  @@index([aktif, baslangic, bitis])
+  @@map("kampanya")
+}
+
+/// Site geneli KURUM BİLGİLERİ — tek satır (id = 1).
+///
+/// Telefon, WhatsApp, e-posta, adres, belge numaraları ve sosyal
+/// hesaplar `lib/site.ts` içinde koda gömülüydü: numarayı değiştirmek
+/// dağıtım gerektiriyordu. Kod tarafındaki değerler VARSAYILAN olarak
+/// kalıyor, buradaki dolu alanlar onların üzerine yazıyor.
+model SiteAyar {
+  id Int @id @default(1)
+
+  unvan    String?
+  telefon  String?
+  whatsapp String?
+  eposta   String?
+  slogan   String?
+  aciklama String?
+
+  adresSokak String?
+  adresIlce  String?
+  adresIl    String?
+  adresPosta String?
+
+  /// Altbilgide gösterilen belge numaraları; boş bırakılan satır hiç basılmıyor
+  tursab   String?
+  bakanlik String?
+  etbis    String?
+  mersis   String?
+
+  /// Sosyal hesap adresleri (tam URL)
+  sosyal String[] @default([])
+
+  guncelleyenId String?
+  guncelleme    DateTime @updatedAt
+
+  guncelleyen Kullanici? @relation("AyarGuncelleyen", fields: [guncelleyenId], references: [id], onDelete: SetNull)
+
+  @@map("site_ayar")
+}
+
+/**
+ * ============================================================
+ * Fiyat alarmı
+ * ============================================================
+ */
+
+/// "Bu projede fiyat düşerse / satışa çıkarsa haber ver".
+///
+/// Konut alımında karar aylar sürüyor: ziyaretçi bakıyor, pahalı
+/// buluyor, ayrılıyor. Geri gelip gelmediğini kimse bilmiyordu.
+/// "Yakında" aşamasındaki projelerde bu, lansman öncesi liste
+/// oluşturmanın da tek yolu.
+///
+/// ÇİFT ONAY zorunlu: e-posta adresi doğrulanmadan bildirim
+/// gönderilmiyor. Onaysız gönderim, başkasının adresini yazan birinin
+/// bizi istenmeyen posta göndericisi yapması demekti.
+model FiyatAlarmi {
+  id            String @id @default(cuid())
+  projeId       String
+  eposta        String
+  /// Bu tutarın ALTINA düşünce haber veriliyor. 0 → yalnızca
+  /// "satışa çıktı" bildirimi isteniyor.
+  hedef         Int    @default(0)
+  /// Alarm kurulduğu andaki en düşük fiyat — "ne kadar düştü" için
+  kurulusFiyati Int
+
+  /// Doğrulama ve abonelikten çıkma bağlantısının anahtarı
+  jeton      String  @unique
+  dogrulandi Boolean @default(false)
+  aktif      Boolean @default(true)
+
+  /// Son bildirim — aynı düşüş için üst üste e-posta gitmesin
+  sonBildirim DateTime?
+  /// Bildirim gönderildiğinde yakalanan fiyat
+  sonFiyat    Int?
+
+  olusturma DateTime @default(now())
+
+  proje Proje @relation(fields: [projeId], references: [id], onDelete: Cascade)
+
+  /// Aynı adres aynı projeye iki alarm kuramıyor
+  @@unique([projeId, eposta])
+  @@index([aktif, dogrulandi])
+  @@map("fiyat_alarmi")
+}
+
+/**
+ * ============================================================
+ * Karşılaştırma panosu
+ * ============================================================
+ */
+
+/// PAYLAŞILABİLİR PROJE SEÇKİSİ.
+///
+/// Konut seçimi tek kişilik bir iş değil: eş, aile, ortak bakıyor ve
+/// karar WhatsApp'ta dağılıyordu. Pano bir bağlantı arkasında duruyor,
+/// açan herkes oy verebiliyor ve not bırakabiliyor. Giriş gerekmiyor —
+/// davet edilen kişiyi kayıt ekranıyla karşılamak panonun tek amacını
+/// (kolay paylaşım) baltalardı.
+model Pano {
+  id  String @id @default(cuid())
+  /// Paylaşım adresindeki kısa kod: /pano/xk39p2
+  kod String @unique
+
+  ad String
+
+  /// Panonun bütçe bağlamı; kartlardaki "bütçeye uygun" rozeti buradan
+  butceMin Int?
+  butceMax Int?
+
+  /// Panoyu kuran kişinin anonim kimliği (çerez). Sahip olmak
+  /// düzenleme hakkı veriyor; hesap zorunlu değil.
+  sahipKimlik String
+  /// Giriş yapmış kullanıcı kurduysa hesabına da bağlanıyor
+  sahipId     String?
+
+  olusturma  DateTime @default(now())
+  guncelleme DateTime @updatedAt
+
+  sahip    Kullanici?  @relation("PanoSahip", fields: [sahipId], references: [id], onDelete: SetNull)
+  ogeler   PanoOge[]
+  yorumlar PanoYorum[]
+
+  @@index([sahipKimlik])
+  @@map("pano")
+}
+
+model PanoOge {
+  id      String  @id @default(cuid())
+  panoId  String
+  projeId String
+  /// Panoya ekleyenin adı — "bunu Ayşe ekledi"
+  ekleyen String?
+  sira    Int     @default(0)
+
+  olusturma DateTime @default(now())
+
+  pano     Pano        @relation(fields: [panoId], references: [id], onDelete: Cascade)
+  proje    Proje       @relation(fields: [projeId], references: [id], onDelete: Cascade)
+  oylar    PanoOy[]
+  yorumlar PanoYorum[]
+
+  /// Aynı proje panoya iki kez eklenemiyor
+  @@unique([panoId, projeId])
+  @@index([panoId, sira])
+  @@map("pano_oge")
+}
+
+model PanoOy {
+  id        String   @id @default(cuid())
+  ogeId     String
+  /// Anonim oy verenin kimliği (çerez)
+  kimlik    String
+  /// 1 beğendi, -1 beğenmedi
+  yon       Int
+  olusturma DateTime @default(now())
+
+  oge PanoOge @relation(fields: [ogeId], references: [id], onDelete: Cascade)
+
+  /// Bir kişi bir projeye bir oy
+  @@unique([ogeId, kimlik])
+  @@map("pano_oy")
+}
+
+model PanoYorum {
+  id     String  @id @default(cuid())
+  panoId String
+  /// Proje notu ise dolu; pano geneline yazılan not ise boş
+  ogeId  String?
+  ad     String
+  metin  String
+
+  olusturma DateTime @default(now())
+
+  pano Pano     @relation(fields: [panoId], references: [id], onDelete: Cascade)
+  oge  PanoOge? @relation(fields: [ogeId], references: [id], onDelete: Cascade)
+
+  @@index([panoId, olusturma])
+  @@map("pano_yorum")
+}
+
+/**
+ * ============================================================
+ * Yerinde inceleme raporu
+ * ============================================================
+ */
+
+/// PROJE İNCELEME RAPORU — proje başına bir rapor.
+///
+/// Ekip her projeyi yayına almadan önce şantiyede geziyor ama bu iş
+/// sitede görünmüyordu: "her proje yerinde görüldü" güven şeridinde
+/// bir vaatti, arkasında tarih ve madde yoktu. Rapor vaadi kanıta
+/// çeviriyor. Maddeler koda gömülü (`lib/kontrol-kayit.ts`); burada
+/// yalnızca o maddelerin SONUÇLARI duruyor.
+model KontrolRaporu {
+  id      String @id @default(cuid())
+  projeId String @unique
+
+  /// Ziyaret tarihi — raporun yaşı güvenin bir parçası
+  ziyaret     DateTime
+  /// Kontrolü yapan kişi (ekip üyesi)
+  kontrolEden String
+  /// Sayfada rozetlerin altında görünen kısa değerlendirme
+  ozet        String?
+
+  /// [{ kod, durum: 'gecti' | 'kalmadi' | 'uygulanmaz', not? }]
+  sonuclar Json
+
+  /// false ise proje sayfasında hiç görünmüyor (taslak)
+  yayinda Boolean @default(true)
+
+  guncelleyenId String?
+  olusturma     DateTime @default(now())
+  guncelleme    DateTime @updatedAt
+
+  proje       Proje      @relation(fields: [projeId], references: [id], onDelete: Cascade)
+  guncelleyen Kullanici? @relation("KontrolGuncelleyen", fields: [guncelleyenId], references: [id], onDelete: SetNull)
+
+  @@map("kontrol_raporu")
+}
+
+/**
+ * ============================================================
+ * KVKK — veri sahibi hakları ve imha
+ * Talep sahibinin hesabı yok: formu e-posta/telefonla dolduruyor. Bu
+ * yüzden talep sahipliği E-POSTA DOĞRULAMASIYLA kanıtlanıyor; jetonun
+ * yalnızca özeti saklanıyor (oturum jetonlarıyla aynı gerekçe).
+ * SİLME = SİLME. Burada rezervasyon/ödeme gibi ticari belge
+ * üretilmiyor; saklama yükümlülüğü doğuran bir kayıt yok. Bu yüzden
+ * silme talebinde satır ANONİMLEŞTİRİLMİYOR, gerçekten siliniyor.
+ * Yalnızca satışa dönüşmüş taleplerde sözleşme ilişkisi doğduğu için
+ * anonimleştirme uygulanıyor ve gerekçesi `sonuc` alanına yazılıyor.
+ * ============================================================
+ */
+
+enum VeriTalebiTipi {
+  /// KVKK md. 11/b–c: hangi verilerin işlendiğini öğrenme
+  ERISIM
+  /// KVKK md. 7 + md. 11/e: silme / yok etme / anonim hâle getirme
+  SILME
+}
+
+enum VeriTalebiDurumu {
+  DOGRULAMA_BEKLIYOR
+  /// E-posta doğrulandı; erişim talebinde veri hazır, silmede yönetici onayı bekliyor
+  ISLEMDE
+  TAMAMLANDI
+  /// Yasal saklama yükümlülüğü ya da süren sözleşme ilişkisi nedeniyle
+  REDDEDILDI
+}
+
+model VeriTalebi {
+  id    String           @id @default(cuid())
+  tip   VeriTalebiTipi
+  durum VeriTalebiDurumu @default(DOGRULAMA_BEKLIYOR)
+
+  /// Normalize edilmiş (küçük harf) e-posta
+  eposta String
+
+  /// Bağlantıdaki jetonun SHA-256 özeti — veritabanı sızsa bile
+  /// başkasının verisine erişilemez
+  jetonHash        String   @unique
+  jetonSonKullanma DateTime
+
+  dogrulandi DateTime?
+  tamamlanma DateTime?
+
+  /// Ret gerekçesi ya da yönetici notu
+  not   String?
+  /// Ne yapıldığının dökümü: hangi tabloda kaç satır silindi
+  sonuc Json?
+
+  /// Talebin geldiği IP — kötüye kullanım incelemesi için, imha
+  /// süresi dolunca temizleniyor
+  ip String?
+
+  olusturma DateTime @default(now())
+
+  @@index([durum, olusturma])
+  @@index([eposta])
+  @@map("veri_talebi")
+}
+
+/**
+ * ============================================================
+ * Firma başvurusu
+ * `/firma-basvuru` sayfası platformun ARZ tarafındaki kazanım hunisi.
+ * Başvuru ONAYLANINCA `Firma` kaydına dönüşüyor; oradan panelden
+ * proje açılıyor. Böylece huni uçtan uca kapanıyor.
+ * ============================================================
+ */
+
+enum BasvuruDurumu {
+  YENI
+  /// Ekip aradı/yazdı, süreç devam ediyor
+  GORUSULDU
+  /// Firma kaydı açıldı
+  ONAYLANDI
+  REDDEDILDI
+}
+
+model FirmaBasvuru {
+  id    String        @id @default(cuid())
+  durum BasvuruDurumu @default(YENI)
+
+  /// Başvuran kişi
+  ad      String
+  /// Normalize edilmiş (küçük harf)
+  eposta  String
+  telefon String
+  /// Firma unvanı
+  firmaAd String
+
+  /// Serbest metin: başvuran bölge adını bizim yazdığımız gibi
+  /// yazmak zorunda değil
+  bolge       String
+  /// Listelemek istediği proje sayısı
+  projeSayisi Int     @default(1)
+  mesaj       String?
+
+  /// Ekip notu / ret gerekçesi
+  not String?
+
+  /// Onaylanınca bağlanan firma kaydı.
+  ///
+  /// TEKİL DEĞİL: aynı firma sonradan yeni projelerle tekrar
+  /// başvurabiliyor ve ikinci başvuru da aynı firma kaydına
+  /// bağlanıyor. Tekil yapılınca ikinci onay benzersizlik kısıtına
+  /// takılıp "kayıt açılamadı" veriyordu.
+  firmaId String?
+
+  /// Kötüye kullanım incelemesi için; KVKK imha işi temizliyor
+  ip String?
+
+  olusturma  DateTime  @default(now())
+  guncelleme DateTime  @updatedAt
+  sonuclanma DateTime?
+
+  firma Firma? @relation(fields: [firmaId], references: [id], onDelete: SetNull)
+
+  @@index([durum, olusturma])
+  @@index([eposta])
+  @@index([firmaId])
+  @@map("firma_basvuru")
+}
+
+/**
+ * ============================================================
+ * Tohumlama defteri
+ * ============================================================
+ */
+
+/// Tohumlama partisi — panelden basılan her "demo veri ekle" bir parti.
+///
+/// VAR OLMA SEBEBİ: geri alınabilirlik. `npm run db:seed` tabloları
+/// `deleteMany()` ile boşaltıyor; üretimde bir kez yanlış çalıştırmak
+/// gerçek talepleri siler. Panele o davranışı koyamazdım.
+///
+/// Bunun yerine tohumlama ne oluşturduysa `TohumKayit` olarak
+/// yazılıyor ve silme YALNIZCA bu deftere bakıyor. Gerçek kayıtlar
+/// defterde olmadığı için silinemiyor — "demo görünen"i değil,
+/// "demo olduğu yazılan"ı siliyoruz.
+model TohumParti {
+  id     String    @id @default(cuid())
+  tur    TohumTuru
+  etiket String
+
+  /// "6 proje, 3 firma" gibi model → adet sayımı
+  ozet Json?
+
+  olusturanId String?
+  olusturma   DateTime @default(now())
+
+  /// Kısmî silmede boş kalır: bazı kayıtlar gerçek veriye bağlandığı
+  /// için korunmuş olabilir.
+  silinme DateTime?
+
+  olusturan Kullanici?   @relation("TohumOlusturan", fields: [olusturanId], references: [id], onDelete: SetNull)
+  kayitlar  TohumKayit[]
+
+  @@index([olusturma])
+  @@map("tohum_parti")
+}
+
+/// Partinin oluşturduğu tek bir kayıt.
+///
+/// Yalnızca KÖK kayıtlar yazılıyor (Firma, Proje, Talep). Medya,
+/// özellik, daire tipi gibi çocuklar zaten `onDelete: Cascade` ile
+/// kökle birlikte gidiyor; deftere yazmak tekrar olurdu.
+model TohumKayit {
+  id      String @id @default(cuid())
+  partiId String
+  /// Prisma model adı — "Proje", "Talep"…
+  model   String
+  kayitId String
+  /// Oluşturulma sırası. Silme bunun TERSİNDEN gidiyor: çocuk önce,
+  /// ebeveyn sonra.
+  sira    Int
+
+  parti TohumParti @relation(fields: [partiId], references: [id], onDelete: Cascade)
+
+  /// Aynı kayıt iki partiye ait olamaz — ikinci parti silinince
+  /// birincinin defteri yalan söylerdi.
+  @@unique([model, kayitId])
+  @@index([partiId, sira])
+  @@map("tohum_kayit")
+}
+
+enum TohumTuru {
+  /// Firma + proje + daire tipi + görsel + özellik
+  ORNEK_PROJE
+  /// Sınırsız basılabilen, numaralandırılmış üretilmiş demo envanter
+  DEMO_PROJE
+  /// Var olan projelere geçmişe dönük talep kaydı
+  TALEP_GECMISI
+}
+
+/**
+ * ============================================================
+ * Çeviriler.
+ * ÖNCEKİ YAPI dil başına SÜTUNDU: `ozetEn`, `icerikEn`, `adEn`,
+ * `landingSlugEn`… İki dil için çalışıyordu; dördüncü dilde 21 sütun
+ * ediyordu ve her yeni dil şema göçü gerektiriyordu. Artık dil bir
+ * VERİ değeri, şema değil.
+ * VARLIK BAŞINA AYRI TABLO, tek bir anahtar-değer tablosu değil.
+ * Anahtar-değer üçünü birden kaybettirirdi:
+ * · yabancı anahtar bütünlüğü (proje silinince çevirisi kalırdı),
+ * · cascade silme,
+ * · alan adı ve tipinde derleme zamanı denetimi.
+ * TÜRKÇE BURADA DEĞİL. Varsayılan dil ana tablodaki sütunlarda
+ * duruyor ve her zaman dolu. Türkçeyi de buraya taşımak "içerik ya
+ * orada ya burada" belirsizliği üretirdi.
+ * ============================================================
+ */
+
+/// Bölge çevirisi. NULL alan = o dilde yazılmamış.
+model BolgeCeviri {
+  bolgeId String
+  dil     Dil
+
+  ozet   String?
+  /// Editöryel içerik bloğu — Türkçesiyle aynı şekil
+  icerik Json?
+
+  guncelleme DateTime @updatedAt
+
+  bolge Bolge @relation(fields: [bolgeId], references: [id], onDelete: Cascade)
+
+  @@id([bolgeId, dil])
+  @@map("bolge_ceviri")
+}
+
+/// Proje çevirisi.
+model ProjeCeviri {
+  projeId String
+  dil     Dil
+
+  ozet String?
+
+  guncelleme DateTime @updatedAt
+
+  proje Proje @relation(fields: [projeId], references: [id], onDelete: Cascade)
+
+  @@id([projeId, dil])
+  @@map("proje_ceviri")
+}
+
+/// Özellik çevirisi — iniş sayfası metinleri dâhil.
+model OzellikCeviri {
+  ozellikId String
+  dil       Dil
+
+  ad              String?
+  /// O dildeki iniş sayfası yolu. Diller arasında FARKLI olmalı:
+  /// "kapali-otoparkli-projeler" ↔ "projects-with-parking".
+  landingSlug     String?
+  landingBaslik   String?
+  landingAciklama String?
+
+  guncelleme DateTime @updatedAt
+
+  ozellik Ozellik @relation(fields: [ozellikId], references: [id], onDelete: Cascade)
+
+  @@id([ozellikId, dil])
+  /// Aynı dilde iki özellik aynı yolu kullanamaz. Diller arası
+  /// çakışma serbest — ayrı adres ağaçları.
+  @@unique([dil, landingSlug])
+  @@map("ozellik_ceviri")
+}
+
+/**
+ * ============================================================
+ * Altyapı — hız sınırı ve ölçüm
+ * ============================================================
+ */
+
+/// Hız sınırı sayacı.
+///
+/// Bellekte tutmak sunucusuz ortamda işe yaramıyor: her fonksiyon
+/// örneği kendi belleğine sahip, saldırgan istekleri farklı örneklere
+/// dağıtınca sınır hiç dolmuyor. Redis eklemek yerine veritabanı
+/// kullanılıyor — zaten her istekte veritabanına gidiliyor ve tek ek
+/// satır maliyeti bir UPSERT.
+///
+/// `anahtar` neyin sınırlandığını taşıyor: "giris:ip:1.2.3.4",
+/// "talep:ip:...", "arama:ip:...". Böylece tek tablo tüm sınırlara
+/// yetiyor.
+model HizSinir {
+  anahtar    String    @id
+  sayac      Int       @default(0)
+  /// Pencerenin başladığı an — süresi dolunca sayaç sıfırlanıyor
+  pencere    DateTime  @default(now())
+  /// Sınır aşıldıysa bu ana kadar tüm istekler reddediliyor
+  engelBitis DateTime?
+
+  @@index([pencere])
+  @@map("hiz_sinir")
+}
+
+/// Tek bir sayfa görüntüleme.
+///
+/// KVKK: IP ADRESİ SAKLANMIYOR ve ÇEREZ KULLANILMIYOR. Ziyaretçiyi
+/// ayırt etmek için IP + user-agent + GÜNLÜK DÖNEN TUZ'dan türetilen
+/// bir özet tutuluyor; tuz her gece değiştiği için aynı kişi ertesi
+/// gün yeni bir ziyaretçi sayılıyor ve özet geriye çevrilemiyor.
+/// Kimliklendirme değil, "aynı gün içinde aynı tarayıcı mı" sorusu.
+model Ziyaret {
+  id String @id @default(cuid())
+
+  /// Sorgu dizesi ATILIYOR — arama terimi kişisel veri taşıyabilir
+  yol      String
+  /// Sayfa başlığı yerine rota tipi: proje | bolge | firma | arama | kurumsal…
+  tip      String
+  /// Yönlendiren alan adı (tam URL değil); doğrudan girişte boş
+  kaynak   String?
+  /// organik | doğrudan | sosyal | referans | reklam | e-posta
+  kanal    String
+  /// Organikse arama motoru: google | bing | yandex | duckduckgo | diğer
+  motor    String?
+  /// UTM kampanyası — reklam ve e-posta trafiğini ayırmak için
+  kampanya String?
+
+  /// Bot mu? Arama motoru robotları da SAYILIYOR ama insan
+  /// trafiğinden ayrı raporlanıyor — ikisini toplamak
+  /// "ziyaretçi sayısı"nı anlamsız kılıyor.
+  bot    Boolean @default(false)
+  /// Bot adı: googlebot | bingbot | yandexbot | diğer
+  botAdi String?
+
+  cihaz String
+  dil   String?
+  /// Ülke kodu — barındırıcının coğrafi başlığından, IP saklanmadan
+  ulke  String?
+
+  /// Günlük dönen tuzla üretilen ziyaretçi özeti (geri çevrilemez)
+  ziyaretci String
+  /// Aynı ziyaretçinin 30 dakikalık penceresi — oturum
+  oturum    String
+
+  olusturma DateTime @default(now())
+
+  @@index([olusturma])
+  @@index([bot, olusturma])
+  @@index([kanal, olusturma])
+  @@index([yol, olusturma])
+  @@index([ziyaretci])
+  @@map("ziyaret")
+}
+
+/// Sayfa içi etkileşim: tıklama, filtre, form.
+///
+/// Ziyaretle aynı ziyaretçi özetini taşıyor ama YABANCI ANAHTAR YOK:
+/// olay, sayfa görüntülemesi kaydedilmeden de gelebiliyor (istemci
+/// tarafı gezinme) ve eksik bağ yüzünden olay kaybetmek istemiyoruz.
+model Olay {
+  id String @id @default(cuid())
+
+  /// proje-ac | filtre | arama | talep-basla | talep-gonder | wa | tel…
+  tur   String
+  /// Neye tıklandı: proje slug'ı, filtre kodu, düğme adı
+  hedef String?
+  yol   String
+  /// Sayısal ek: fiyat, sonuç sayısı, sıra
+  deger Int?
+
+  ziyaretci String
+  oturum    String
+  olusturma DateTime @default(now())
+
+  @@index([tur, olusturma])
+  @@index([olusturma])
+  @@map("olay")
+}
+
+/// Gerçek kullanıcı ölçümü (RUM) — Core Web Vitals.
+///
+/// Çerez YOK, kullanıcı kimliği YOK, IP saklanmıyor. KVKK açısından
+/// kişisel veri işlenmiyor; yalnızca "hangi sayfa ne kadar hızlı"
+/// bilgisi tutuluyor. Google'ın sıralamada kullandığı alan verisi de
+/// bu — Search Console'daki değerler 28 günlük ortalama olduğu için
+/// bir regresyonu haftalar sonra görüyorsunuz; kendi ölçümümüz aynı gün.
+model OlcumCWV {
+  id        String   @id @default(cuid())
+  /// Sayfa yolu (sorgu dizesi ATILIYOR — kişisel veri taşıyabilir)
+  yol       String
+  metrik    String
+  deger     Float
+  /// good | needs-improvement | poor
+  derece    String
+  /// mobil | masaustu
+  cihaz     String
+  olusturma DateTime @default(now())
+
+  @@index([metrik, olusturma])
+  @@index([yol, metrik])
+  @@map("olcum_cwv")
+}

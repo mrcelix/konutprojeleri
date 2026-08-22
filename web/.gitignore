@@ -1,0 +1,26 @@
+node_modules/
+.next/
+# Dogrulama derlemesi (npm run derle) — dev sunucusunu bozmasin diye ayri klasor
+.next-kontrol/
+out/
+build/
+*.tsbuildinfo
+next-env.d.ts
+
+# Gömülü PostgreSQL veri dizini ve günlüğü — asla sürüm kontrolüne girmez
+.pgdata/
+.pgdata.log
+
+# Ortam değişkenleri
+.env
+.env.local
+.env*.local
+
+# Prisma tarafından üretilen istemci
+lib/generated/
+
+.DS_Store
+
+# Geliştirme posta kutusu (sahte e-posta sağlayıcısının çıktısı)
+.postakutusu/
+.yedek/

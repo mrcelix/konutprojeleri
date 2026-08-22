@@ -1,0 +1,80 @@
+# Zamanlanmış işleri sık aralıkla tetikler.
+#
+# NEDEN VERCEL CRON YETMİYOR
+# Vercel Hobby planı günde YALNIZCA BİR cron çalıştırmaya izin veriyor
+# ("This cron expression would run more than once per day"). Oysa
+# `web/lib/isler.ts` içindeki işlerin üçü zamana duyarlı:
+#
+#   · bildirimler     — talep onayı ve fiyat alarmı e-postaları
+#                       KUYRUĞA yazılıyor, doğrudan gönderilmiyor.
+#                       Kuyruk günde bir işlenirse alıcı formu
+#                       doldurduğunun onayını ertesi gün alır.
+#   · gecikenTalepler — konut satışında ilk temasın hızı belirleyici:
+#                       alıcı aynı gün üç projeye form dolduruyor ve
+#                       ilk arayan öne geçiyor. Dört saati geçen YENİ
+#                       talebin uyarısı ertesi güne kalırsa talep
+#                       zaten kaybedilmiş olur.
+#   · fiyatAlarmlari  — "düşünce haber ver" diyen alıcıya bildirim.
+#                       Günlük çalışırsa fiyat düşüşü duyurulmadan
+#                       önce kampanya bitmiş olabilir.
+#
+# Bu yüzden Vercel cron'u günlük bir GÜVENLİK AĞI olarak duruyor
+# (web/vercel.json, 03:00 UTC) ve asıl sıklık buradan geliyor.
+#
+# GitHub Actions zamanlaması "en iyi çaba": yoğunlukta gecikebiliyor,
+# bazen bir çalıştırma atlanabiliyor. Sorun değil — işler idempotent
+# ve günlük Vercel cron'u yine de her şeyi toparlıyor.
+#
+# GEREKEN AYAR (depo → Settings → Secrets and variables → Actions)
+#   Secret   CRON_SECRET  → Vercel'deki CRON_SECRET ile AYNI değer
+#   Variable ISLER_URL    → https://www.konutprojeleri.com/api/isler
+#                           (tanımlanmazsa bu varsayılan kullanılıyor)
+#
+# Secret tanımlı değilse iş sessizce atlanıyor; her on dakikada bir
+# kırmızı çalıştırma bildirimi göndermenin anlamı yok.
+
+name: Zamanlanmış işler
+
+on:
+  schedule:
+    - cron: '*/10 * * * *'
+  workflow_dispatch:
+
+# Aynı anda tek çalıştırma: gecikmeli tetiklemeler üst üste binerse
+# aynı kuyruğu iki kez işlemeye çalışmasın.
+concurrency:
+  group: zamanlanmis-isler
+  cancel-in-progress: false
+
+jobs:
+  tetikle:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: İşleri çalıştır
+        env:
+          ANAHTAR: ${{ secrets.CRON_SECRET }}
+          ADRES: ${{ vars.ISLER_URL || 'https://www.konutprojeleri.com/api/isler' }}
+        run: |
+          if [ -z "$ANAHTAR" ]; then
+            echo "CRON_SECRET tanımlı değil — atlanıyor."
+            echo "Depo → Settings → Secrets and variables → Actions → New repository secret"
+            exit 0
+          fi
+
+          # Anahtar başlıkta gidiyor; sorgu dizesinde gitseydi
+          # sunucu erişim kayıtlarına düz metin olarak yazılırdı.
+          KOD=$(curl -s -o yanit.json -w '%{http_code}' \
+            --max-time 120 --retry 2 --retry-delay 10 \
+            -H "Authorization: Bearer $ANAHTAR" \
+            "$ADRES")
+
+          echo "HTTP $KOD"
+          # Yanıt işlenen iş sayılarını içeriyor, kişisel veri yok
+          cat yanit.json || true
+          echo
+
+          if [ "$KOD" != "200" ]; then
+            echo "::error::İşler tetiklenemedi (HTTP $KOD)"
+            exit 1
+          fi
