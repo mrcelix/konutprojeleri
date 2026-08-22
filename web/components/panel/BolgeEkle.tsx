@@ -8,7 +8,7 @@ import { slugla } from '@/lib/turkce';
 /* ============================================================
    Yeni bölge.
 
-   Bölge, iniş sayfası ağacının kökü: `/villa-kiralama/<slug>` ve
+   Bölge, iniş sayfası ağacının kökü: `/projeler/<slug>` ve
    altındaki her özellik kombinasyonu buradan üretiliyor. Slug
    sonradan değiştirilmiyor — yayındaki adresi kırardı — bu yüzden
    formda bir kez ve dikkatle giriliyor.
@@ -55,7 +55,7 @@ export default function BolgeEkle() {
           <span>Adres (slug) <em>*</em></span>
           <input name="slug" required value={slug} onChange={(e) => setSlug(slugla(e.target.value))} />
           <span className="tiny dim">
-            /villa-kiralama/{slug || '…'} — <b>sonradan değiştirilmiyor</b>.
+            /projeler/{slug || '…'} — <b>sonradan değiştirilmiyor</b>.
           </span>
         </label>
         <label>

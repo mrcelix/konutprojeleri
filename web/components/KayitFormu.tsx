@@ -31,9 +31,8 @@ export default function KayitFormu() {
       <label className="onay-kutu">
         <input type="checkbox" name="kosullar" />
         <span>
-          <Link href="/gizlilik" target="_blank">Gizlilik politikasını</Link> ve{' '}
-          <Link href="/iptal-kosullari" target="_blank">iptal koşullarını</Link> okudum,
-          onaylıyorum.
+          <Link href="/gizlilik" target="_blank">KVKK ve gizlilik politikasını</Link>{' '}
+          okudum, onaylıyorum.
         </span>
       </label>
 

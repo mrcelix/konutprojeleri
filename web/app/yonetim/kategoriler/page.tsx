@@ -32,6 +32,13 @@ export default async function KategorilerSayfasi() {
 
   const inisSayisi = satirlar.filter((s) => s.landingSlug).length;
   const bolgeSayisi = await prisma.bolge.count({ where: { yayinda: true } });
+  /* Önizleme bağlantısı için GERÇEK bir bölge gerekiyor: iniş sayfası
+     `/projeler/<bölge>/<kategori>` biçiminde ve bölgesiz açılmıyor.
+     Önceden adres `kas` diye sabitlenmişti (kiralama ürününün
+     bölgesi) ve bağlantıların tamamı 404 veriyordu. */
+  const ilkBolge = await prisma.bolge.findFirst({
+    where: { yayinda: true }, orderBy: { sira: 'asc' }, select: { slug: true },
+  });
 
   return (
     <PanelKabuk
@@ -78,14 +85,14 @@ export default async function KategorilerSayfasi() {
                 </td>
                 <td><code className="tiny">{s.kod}</code></td>
                 <td>
-                  {s.landingSlug
+                  {s.landingSlug && ilkBolge
                     ? (
-                      <a href={`/villa-kiralama/kas/${s.landingSlug}`} target="_blank" rel="noreferrer"
-                        className="tiny">
+                      <a href={`/projeler/${ilkBolge.slug}/${s.landingSlug}`} target="_blank"
+                        rel="noreferrer" className="tiny">
                         /{s.landingSlug}
                       </a>
                     )
-                    : <span className="tiny dim">—</span>}
+                    : <span className="tiny dim">{s.landingSlug ?? '—'}</span>}
                 </td>
                 <td className="sayi">{s._count.projeler}</td>
                 <td><KategoriSatirEylem satir={{

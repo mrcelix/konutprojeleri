@@ -3,7 +3,7 @@ import type { BolgeIcerik } from './types';
 /* ============================================================
    Bölge oluşturma kuralları.
 
-   Bölge, iniş sayfası ağacının kökü: `/villa-kiralama/<slug>` ve
+   Bölge, iniş sayfası ağacının kökü: `/projeler/<slug>` ve
    altındaki her özellik kombinasyonu buradan üretiliyor. Slug
    sonradan değiştirilemiyor (yayındaki adresi kırardı), bu yüzden
    girişte sıkı denetleniyor.

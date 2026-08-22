@@ -24,3 +24,9 @@ lib/generated/
 # Geliştirme posta kutusu (sahte e-posta sağlayıcısının çıktısı)
 .postakutusu/
 .yedek/
+# Vercel bağlantısı ve çektiği belirteçler
+.vercel
+# Gerçek anahtarlar. `.env.example` ŞABLON ve depoda duruyor —
+# `.env*` onu da kapsıyordu.
+.env*
+!.env.example

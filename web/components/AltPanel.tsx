@@ -42,13 +42,14 @@ export default function AltPanel({ dil = 'tr' }: { dil?: string }) {
 
   const sekmeler: Sekme[] = [
     { ad: 'Keşfet', yol: '/', ikon: 'home' },
-    { ad: 'Ara', yol: '/arama', ikon: 'search', onek: '/villa-kiralama' },
-    /* ORTADAKI SEKME SITENIN BIRINCIL EYLEMI. Masaüstü başlıkta
-       "Teklif al" turuncu düğme olarak duruyor; dar ekranda başlık
-       yalnızca logo, arama ve girişi taşıyabiliyor ve bu yol
-       kayboluyordu. Bölgeler menüde ve altbilgide kalmaya devam
-       ediyor — keşif yolu, dönüşüm yolu kadar acil değil. */
-    { ad: 'Teklif al', yol: '/teklif-al', ikon: 'spark', onek: '/teklif', vurgu: true },
+    { ad: 'Bölgeler', yol: '/bolgeler', ikon: 'pin', onek: '/projeler' },
+    /* ORTADAKI SEKME SITENIN BIRINCIL EYLEMI: proje aramak.
+       Önceden `/teklif-al` yazıyordu ama öyle bir sayfa hiç
+       yazılmamıştı — dar ekranın en vurgulu düğmesi 404 veriyordu.
+       Bu üründe genel bir teklif formu da yok: talep HER ZAMAN bir
+       projeye bağlı ve proje sayfasındaki formdan gidiyor. Alıcının
+       önce projeyi seçmesi gerekiyor, o yüzden yol arama. */
+    { ad: 'Proje ara', yol: '/arama', ikon: 'search', vurgu: true },
     { ad: 'Pano', yol: '/pano', ikon: 'grid', onek: '/pano' },
     /* Favori sayısı burada rozet olarak duruyor: başlıktaki kalp
        dar ekranda gizli ve biriktirdiğini gösteren tek yer kalmıyordu. */

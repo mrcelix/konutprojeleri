@@ -88,7 +88,7 @@ export function KategoriForm(
         <input type="checkbox" checked={inis} onChange={(e) => setInis(e.target.checked)} />
         <span>
           <b>İniş sayfası aç.</b> Bu kategori için her bölgede
-          <code> /villa-kiralama/&lt;bölge&gt;/&lt;adres&gt;</code> sayfası üretilir.
+          <code> /projeler/&lt;bölge&gt;/&lt;adres&gt;</code> sayfası üretilir.
           Yalnızca sonuç veren bölgelerde basılır.
         </span>
       </label>

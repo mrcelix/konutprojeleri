@@ -18,6 +18,7 @@ import {
 import { meta } from '@/lib/seo';
 import { site } from '@/lib/site';
 import type { ProjeTipi } from '@/lib/types';
+import { TIP_VITRIN_LISTESI } from '@/lib/tip-vitrin';
 
 export const revalidate = 1800;
 
@@ -32,11 +33,12 @@ export const metadata = meta({
 });
 
 /** Vitrin tipleri — üç ayrı liste, karma projeler ikisinde birden. */
-const TIPLER: { tip: ProjeTipi; yol: string }[] = [
-  { tip: 'KONUT', yol: '/konut-projeleri' },
-  { tip: 'VILLA', yol: '/villa-projeleri' },
-  { tip: 'OFIS', yol: '/ofis-projeleri' },
-];
+/* Yollar `lib/tip-vitrin.ts`ten: sayfanın kendisi, ana sayfadaki
+   kart ve site haritası aynı listeyi okuyor. Burada elle yazılıydı
+   ve karşılığı olan sayfa hiç yazılmadığı için vitrinin üç kartı da
+   404 veriyordu. */
+const TIPLER: { tip: ProjeTipi; yol: string }[] = TIP_VITRIN_LISTESI
+  .map((v) => ({ tip: v.tip as ProjeTipi, yol: `/${v.slug}` }));
 
 export default async function AnaSayfa() {
   const [BOLGELER, LANDING_OZELLIKLER, PROJELER, VITRIN, FIRMALAR, m, heroKare, KOMBINASYONLAR, kanit]

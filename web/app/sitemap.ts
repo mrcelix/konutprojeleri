@@ -8,6 +8,7 @@ import {
 } from '@/lib/queries';
 import { getBolgelerEn, getLandingKombinasyonlariEn, getProjelerEn } from '@/lib/queries-en';
 import { abs } from '@/lib/site';
+import { TIP_VITRIN_LISTESI } from '@/lib/tip-vitrin';
 
 /**
  * Bir Türkçe yol için sitemap `alternates` bloğu.
@@ -53,6 +54,15 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const sabit: MetadataRoute.Sitemap = [
     { url: abs('/'), lastModified: bugun, changeFrequency: 'daily', priority: 1, ...dilBaglari('/', diller) },
     { url: abs('/bolgeler'), lastModified: bugun, changeFrequency: 'weekly', priority: 0.9, ...dilBaglari('/bolgeler', diller) },
+    /* Tip vitrinleri: "konut projeleri", "villa projeleri" ve "ofis
+       projeleri" bu işin en yüksek hacimli üç araması. Bölge hub'ıyla
+       aynı öncelikte — ikisi de sitenin iki ana giriş ekseni. */
+    ...TIP_VITRIN_LISTESI.map((v) => ({
+      url: abs(`/${v.slug}`),
+      lastModified: bugun,
+      changeFrequency: 'daily' as const,
+      priority: 0.9,
+    })),
     { url: abs('/firmalar'), lastModified: bugun, changeFrequency: 'weekly', priority: 0.8 },
     { url: abs('/rehber'), lastModified: bugun, changeFrequency: 'weekly', priority: 0.7 },
     /* Firma başvurusu indekslenebilir: kişisel veri yok, yalnızca

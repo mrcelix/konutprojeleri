@@ -143,9 +143,8 @@ export default function GirisPopup(
             <label className="onay-kutu">
               <input type="checkbox" name="kosullar" />
               <span>
-                <Link href="/gizlilik" target="_blank">Gizlilik politikasını</Link> ve{' '}
-                <Link href="/iptal-kosullari" target="_blank">iptal koşullarını</Link> okudum,
-                onaylıyorum.
+                <Link href="/gizlilik" target="_blank">KVKK ve gizlilik politikasını</Link>{' '}
+                okudum, onaylıyorum.
               </span>
             </label>
             {hata && <p className="form-hata" role="alert"><Icon n="x" s={15} sw={2.4} /> {hata}</p>}

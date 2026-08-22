@@ -54,9 +54,10 @@ export default async function OzellikSayfasi({ params }: { params: Params }) {
   const [b, o] = await Promise.all([getBolge(bolge), getOzellikBySlug(ozellik)]);
   if (!b || !o) notFound();
 
-  const [list, tumOzellikler] = await Promise.all([
+  const [list, tumOzellikler, kombinasyonlar] = await Promise.all([
     getProjelerByOzellik(b.slug, o.key),
     getLandingOzellikler(),
+    getLandingKombinasyonlari(),
   ]);
 
   /* Sonucu olmayan kombinasyon `generateStaticParams` tarafından hiç
@@ -66,8 +67,17 @@ export default async function OzellikSayfasi({ params }: { params: Params }) {
      sayfa boş durumu açıkça söylüyor ve çıkış yolu veriyor. */
   const enDusuk = list.length ? Math.min(...list.map((p) => p.fiyatMin)) : 0;
 
+  /* Kardeş bağlantılar YALNIZCA bu bölgede sonucu olan
+     kombinasyonlara gidiyor. Önceki koşul `list.every(() => true)`
+     yazıyordu — hiçbir şey elemeyen bir no-op. Sonuç: sayfa, bu
+     bölgede karşılığı olmayan her kategoriye de bağlanıyordu ve
+     `dynamicParams` kapalı olduğu için hepsi 404 veriyordu
+     (taramada 26 kırık bağlantı). */
+  const bolgeninKombinasyonlari = new Set(
+    kombinasyonlar.filter((k) => k.bolge === b.slug).map((k) => k.ozellik),
+  );
   const kardesler = tumOzellikler
-    .filter((x) => x.slug !== o.slug && list.every(() => true))
+    .filter((x) => x.slug !== o.slug && bolgeninKombinasyonlari.has(x.slug))
     .slice(0, 8);
 
   const kirintilar = [
