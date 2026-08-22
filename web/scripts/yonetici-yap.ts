@@ -51,6 +51,31 @@ async function main() {
     select: { eposta: true, rol: true, aktif: true, ad: true },
   });
 
+  /* DENETİME YAZILIYOR. İlk sürüm yazmıyordu ve sonuç şuydu: denetim
+     defterinde hesabın `ziyaretci.kayit` satırı var, birkaç dakika
+     sonra yönetici işlemleri var, ARADA rolün nasıl değiştiğine dair
+     hiçbir kayıt yok. Yetki yükseltmesi tam da defterin tutulma
+     sebebi; komut satırından yapılmış olması onu istisna yapmıyor.
+
+     `denetimYaz` yerine doğrudan yazılıyor: o yardımcı `headers()`
+     çağırıyor ve istek bağlamı olmayan bir betikte çalışmıyor. IP
+     alanı da bilerek boş — burada bir istek yok, kabuk var. */
+  await prisma.denetimKaydi.create({
+    data: {
+      kullaniciId: k.id,
+      eylem: 'kullanici.rol.yukseltme',
+      varlik: 'kullanici',
+      varlikId: k.id,
+      detay: {
+        eposta: guncel.eposta,
+        oncekiRol: k.rol,
+        yeniRol: 'ADMIN',
+        oncekiAktif: k.aktif,
+        kaynak: 'scripts/yonetici-yap.ts',
+      },
+    },
+  });
+
   console.log(
     `\n  ${guncel.eposta} → ${guncel.rol} (${guncel.aktif ? 'aktif' : 'pasif'})`
     + `${guncel.ad ? ` · ${guncel.ad}` : ''}\n`

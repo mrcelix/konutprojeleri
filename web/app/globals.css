@@ -118,7 +118,18 @@
   /* Sag kenar sekmesi (WhatsApp) yuksekligi. Hizli islemler hapi
      kendi konumunu buradan hesapliyor; ikisi arasindaki bagi tek
      yerde tutuyor. */
+  /* Hero'nun USTUNDEKI yigin: ust bant (33px) + baslik (65px) + baslik
+     alti vurgu cizgisi (3px). `--header-h` BURADA KULLANILMIYOR —
+     o, YAPISIK baslik icin ve ust bant kayip gittiginde gecerli
+     olan yukseklik; hero ise sayfanin tepesinde, ust bant hala
+     yerindeyken basliyor. Ikisini karistirmak hero'yu 29 piksel
+     tasirip ilk ekranda kaydirma cubugu birakiyordu. */
+  --hero-ust: 101px;
   --wa-yukseklik: 118px;
+  /* Hizli islemler sekmesi WhatsApp'tan biraz uzun: metni daha
+     uzun ("Hızlı işlemler" / "Quick tools") ve dikeyde daha çok
+     yer istiyor. */
+  --hizli-yukseklik: 148px;
 
   /* TrendMatik ile aynı ikili: gövde Inter, başlık Nunito. Tek aile
      denenmişti; başlıkta ayrı bir ses olmayınca sayfa düzleşiyordu. */
@@ -458,7 +469,23 @@ header.header {
    Arama ayri kutulardan degil, ic cizgilerle bolunmus TEK bir beyaz
    yuzeyden olusuyor: bandin uzerinde tek bir nesne gibi duruyor.
    ============================================================ */
-.hero { position: relative; padding: 0; margin: 0; }
+/* Hero EKRANI KAPLIYOR: fotograf, basligin altindan ekranin dibine
+   kadar. Onceden yukseklik yalnizca iceriginden geliyordu ve bant
+   304 pikselde kaliyordu — genis bir ekranda fotograf ince bir serit
+   gibi duruyor, altindaki bolum daha ilk bakista giriyordu.
+
+   `100svh` (small viewport height) SART: `100vh` mobil tarayicilarda
+   adres cubugu gizliyken olculuyor, gorunurken hero ekrandan tasip
+   sayfayi asagi itiyor. `svh` en kucuk hali, yani hicbir durumda
+   tasmiyor.
+
+   `--header-h` cikariliyor cunku hero basligin ALTINDA basliyor;
+   cikarilmazsa hero'nun son 72 pikseli ilk ekranda gorunmuyor. */
+.hero {
+  position: relative; padding: 0; margin: 0;
+  min-height: calc(100svh - var(--hero-ust));
+  display: grid; align-items: center;
+}
 /* Fotografsiz acilis (Ingilizce ana sayfa): bant yok, sadece nefes */
 .hero-sade {
   background: var(--bg-sunken); border-bottom: 1px solid var(--line);
@@ -2028,12 +2055,13 @@ textarea { resize: vertical; min-height: 90px; }
 /* ---------- WhatsApp hatti ----------
    Sag altta sabit. Karsilastirma cubugu da alttan aciliyor; hat onun
    ustune degil YANINA dusuyor (cubuk sol/orta, hat sagda). */
-/* Genis ekranda SAG KENARIN ORTASINDA, kenara yapisik ve dikey —
-   hizli islemler sekmesinin sol kenardaki karsiligi. Alt kosede
-   duruyordu ve sayfanin son bolumunde kart butonlarinin uzerine
-   biniyordu; kenarda yalnizca bir santim yer kapliyor. */
+/* Genis ekranda SOL KENARIN ORTASINDA, kenara yapisik ve dikey.
+   Hizli islemler sekmesiyle AYNI KENARDA, hemen ustunde: iki yuzer
+   oge sagda dururken sag alt bolgeyi tumden kapatiyorlardi ve proje
+   kartlarinin "Detayli bilgi" dugmesi o seride kaliyordu. Solda
+   icerik kenarina en yakin sey kart golgesi. */
 .wa-hat {
-  position: fixed; right: 0; top: 50%; transform: translateY(-50%); z-index: 70;
+  position: fixed; left: 0; top: 50%; transform: translateY(-50%); z-index: 70;
   display: inline-flex; align-items: center; justify-content: center; gap: 8px;
   flex-direction: column;
   /* Yukseklik SABITLENDI: hizli islemler hapi bu sekmenin ustune
@@ -2041,10 +2069,11 @@ textarea { resize: vertical; min-height: 90px; }
      uzunlugundan gelen degisken bir yukseklik iki ogeyi birbirinden
      kaydirirdi. */
   width: 34px; height: var(--wa-yukseklik); padding: 14px 0 12px;
-  border-radius: var(--r-lg) 0 0 var(--r-lg);
+  /* Yalnizca GORUNEN sag koseler yuvarlak — sol kenara yapisik. */
+  border-radius: 0 var(--r-lg) var(--r-lg) 0;
   /* Yesil koyulastirildi: #1FAF54 uzerinde beyaz 2.87:1 idi. */
   background: #0D7A3D; color: #fff; font-size: var(--t-2xs); font-weight: 800;
-  box-shadow: -4px 6px 18px rgba(12,90,44,.3);
+  box-shadow: 4px 6px 18px rgba(12,90,44,.3);
   transition: transform .16s cubic-bezier(.4,0,.2,1), box-shadow .16s;
 }
 /* Metin dikey AKIYOR: dondurulmus bir kutu yerine gercek dikey yazi,
@@ -2053,16 +2082,17 @@ textarea { resize: vertical; min-height: 90px; }
   writing-mode: vertical-rl; text-orientation: mixed;
   letter-spacing: .04em; line-height: 1;
 }
+/* Kenardan DISARI degil ICERI dogru kalkiyor: solda gidecek yer yok. */
 .wa-hat:hover {
-  transform: translateY(-50%) translateX(-2px);
-  box-shadow: -10px 8px 26px rgba(12,90,44,.42); color: #fff;
+  transform: translateY(-50%) translateX(2px);
+  box-shadow: 10px 8px 26px rgba(12,90,44,.42); color: #fff;
 }
 .wa-ikon { display: flex; flex: none; }
 @media (max-width: 620px) {
   /* Dar ekranda kenar sekmesi icerigin uzerine biniyor: eski kose
      davranisi, yalnizca ikon. Metin, kartlarin ustune tasiyordu. */
   .wa-hat {
-    top: auto; bottom: 78px; right: 14px; transform: none;
+    top: auto; bottom: 78px; left: 14px; right: auto; transform: none;
     width: 52px; height: 34px; padding: 0;
     flex-direction: row; border-radius: var(--r-full);
     box-shadow: 0 5px 16px rgba(12,90,44,.3);
@@ -2598,24 +2628,38 @@ textarea { resize: vertical; min-height: 90px; }
    birbirinden kaymiyor.
    ============================================================ */
 .hizli-menu {
-  position: fixed; right: 0; z-index: 70;
+  position: fixed; left: 0; z-index: 70;
   bottom: calc(50% + (var(--wa-yukseklik) / 2) + 10px);
 }
-/* Iki yuzer dugme de KUCULDU: 52 px yukseklik ve tam metinle ekranin
-   iki alt kosesini kapliyor, dar ekranda icerigin uzerine
-   biniyorlardi. */
+/* Sekmedeki yazi da DIKEY AKIYOR — dondurulmus bir kutu yerine
+   gercek dikey yazi; `.wa-metin` ile ayni teknik. */
+.hizli-dugme > span {
+  writing-mode: vertical-rl; text-orientation: mixed;
+  letter-spacing: .04em; line-height: 1; white-space: nowrap;
+}
+/* DIKEY SEKME, yatay hap degil. Yatayken kenardan 130 piksel
+   iceri giriyor ve hero'nun sol yarisindaki metnin uzerine
+   biniyordu; hemen altindaki WhatsApp sekmesiyle de bicimsiz bir
+   ikili olusturuyordu. Ikisi de simdi ayni genislikte dikey sekme:
+   kenarda bir santim yer kapliyorlar. */
 .hizli-dugme {
-  display: inline-flex; align-items: center; gap: 6px; cursor: pointer;
-  height: 34px; padding: 0 12px 0 12px;
-  /* Kenara yapisik: yalnizca gorunen sol koseler yuvarlak — WhatsApp
-     sekmesinin aynasi. */
-  border-radius: var(--r-lg) 0 0 var(--r-lg);
-  background: var(--ink); color: #fff; font-size: var(--t-2xs); font-weight: 800;
-  box-shadow: -4px 6px 18px rgba(12,20,40,.28);
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  flex-direction: column; cursor: pointer;
+  width: 34px; height: var(--hizli-yukseklik); padding: 12px 0;
+  /* Kenara yapisik: yalnizca gorunen sag koseler yuvarlak — hemen
+     altindaki WhatsApp sekmesiyle ayni. */
+  border-radius: 0 var(--r-lg) var(--r-lg) 0;
+  /* `--koyu-blok`, `--ink` DEGIL: `--ink` metin rengi ve gece
+     temasinda ACIK renge donuyor — beyaz yazi acik zeminde
+     kayboluyordu. `--koyu-blok` iki temada da koyu kaliyor, zaten
+     bunun icin var. */
+  background: var(--koyu-blok); color: #fff;
+  font-size: var(--t-2xs); font-weight: 800;
+  box-shadow: 4px 6px 18px rgba(12,20,40,.28);
   transition: transform .16s cubic-bezier(.4,0,.2,1), box-shadow .16s, background .16s;
 }
-/* Kenardan DISARI degil ICERI dogru kalkiyor: sagda gidecek yer yok. */
-.hizli-dugme:hover { transform: translateX(-2px); background: var(--primary-600); }
+/* Kenardan DISARI degil ICERI dogru kalkiyor: solda gidecek yer yok. */
+.hizli-dugme:hover { transform: translateX(2px); background: var(--primary-600); }
 .hizli-menu.acik .hizli-dugme { background: var(--primary); }
 /* Rozet YALNIZCA biriktirilmis bir sey varken: menuyu acmadan
    "orada bir seyim var" bilgisini veriyor. */
@@ -2626,18 +2670,20 @@ textarea { resize: vertical; min-height: 90px; }
   font-size: 11px; font-weight: 800; font-variant-numeric: tabular-nums;
 }
 .hizli-liste {
-  /* Panel YUKARI degil YANA aciliyor. Hap artik ekranin dikey
-     ortasinda; 560 px'lik liste yukari acildiginda ust kenardan
-     tasip ilk uc satiri kesiliyordu.
+  /* Panel YUKARI degil YANA aciliyor: 500 px'lik liste yukari
+     acildiginda ust kenardan tasip ilk uc satiri kesiliyordu.
 
-     Dikeyde hapin ustune ortalaniyor, yuksekligi ise ekranin 200 px
-     altiyla sinirli: hapin merkezi kabaca ekran ortasindan
-     `--wa-yukseklik`in yarisi kadar yukarida oldugu icin bu sinir,
-     panelin hangi ekran boyunda olursa olsun ust kenardan tasmasini
-     matematiksel olarak imkansiz kiliyor. */
-  position: absolute; right: calc(100% + 10px); top: 50%;
+     Dayanak SEKME DEGIL EKRAN: panel `position: fixed` ve ekranin
+     dikey ortasina hizali. Onceden sekmeye gore ortalaniyordu ve
+     "hapin merkezi ekran ortasina yakin" varsayimina dayaniyordu;
+     sekme dikeye cevrilip 34 px'ten 148 px'e cikinca merkezi 143 px
+     yukari kaydi ve panel ust kenardan 35 px tasti. Ekrana
+     baglaninca sekmenin boyu panelin konumunu hic etkilemiyor.
+
+     `left: 44px` = sekme genisligi (34) + bosluk (10). */
+  position: fixed; left: 44px; top: 50%;
   transform: translateY(-50%); width: 306px;
-  max-height: calc(100vh - 200px); overflow-y: auto; overscroll-behavior: contain;
+  max-height: calc(100svh - 120px); overflow-y: auto; overscroll-behavior: contain;
   background: var(--surface); border: 1px solid var(--line);
   border-radius: var(--r-lg); box-shadow: var(--shadow-lg);
   padding: 8px; display: grid; gap: 2px;
@@ -2646,7 +2692,7 @@ textarea { resize: vertical; min-height: 90px; }
 /* Dikey ortalama animasyon boyunca korunuyor: `to` karesi
    yazilmazsa transform sifirlanip panel asagi kayiyor. */
 @keyframes hizli-ac {
-  from { opacity: 0; transform: translateY(-50%) translateX(8px) scale(.98); }
+  from { opacity: 0; transform: translateY(-50%) translateX(-8px) scale(.98); }
   to   { opacity: 1; transform: translateY(-50%) translateX(0) scale(1); }
 }
 .hizli-bas { padding: 10px 12px 8px; display: grid; gap: 2px; }
@@ -4816,6 +4862,11 @@ table { border-radius: var(--r-md); overflow: hidden; }
      ile hero'nun dibinde duruyor ve hizli arama cipleriyle
      cakisiyordu. */
   padding: 30px 24px 76px;
+  /* Icerik dikeyde ORTALI, tepeye yapisik degil: hero artik ekran
+     boyunda ve ustte durunca altinda kocaman bir bosluk kaliyordu.
+     `align-content` degil `align-self`, cunku ortalamayi yapan
+     `.hero`nun izgarasi. */
+  align-self: center;
 }
 .hero-rozet {
   justify-self: start; display: inline-flex; align-items: center; gap: 6px;
@@ -4842,6 +4893,10 @@ table { border-radius: var(--r-md); overflow: hidden; }
   /* Guven seridi akisa giriyor; ona ayrilan 76 px'lik alt dolgu
      bos bir bant birakiyordu. */
   .hero-icerik { padding-bottom: 22px; }
+  /* Tam ekran yukseklik BURADA GECERSIZ: fotograf ayri bir 200 px'lik
+     serit ve metin onun ALTINDA akiyor. Ekran boyu bir kutu, metnin
+     altinda bos bir bant birakirdi. */
+  .hero { min-height: 0; display: block; }
 }
 
 .arama-kabuk { position: relative; margin-top: 6px; display: grid; gap: 12px; }
