@@ -72,8 +72,14 @@ export const METIN_KAYDI = {
       + 'One form gets you a call back from the developer’s sales team.',
   },
   'anasayfa.hero.rozet': {
-    grup: 'Ana sayfa', etiket: 'Hero rozeti', tip: 'satir',
-    ipucu: '{proje} ve {bolge} yerine güncel sayılar yazılır.',
+    grup: 'Ana sayfa', etiket: 'Hero rozeti (şu an basılmıyor)', tip: 'satir',
+    /* Rozet hero'dan KALDIRILDI; kayıt duruyor çünkü çağrıda geçilen
+       yer tutucuyu (`{proje}`, `{bolge}`) kullanan tek metin bu ve
+       `scripts/test-icerik.ts` mekanizmayı bunun üzerinden sınıyor.
+       Etikette "basılmıyor" yazıyor ki panelde düzenleyen biri
+       değişikliğin neden ekrana yansımadığını arasın. */
+    ipucu: 'Şu an sayfada basılmıyor. {proje} ve {bolge} yerine güncel '
+      + 'sayılar yazılır.',
     tr: '{proje} proje · {bolge} bölge',
     en: '{proje} developments · {bolge} areas',
   },

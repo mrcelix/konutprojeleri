@@ -4862,21 +4862,20 @@ table { border-radius: var(--r-md); overflow: hidden; }
      ile hero'nun dibinde duruyor ve hizli arama cipleriyle
      cakisiyordu. */
   padding: 30px 24px 76px;
-  /* Icerik dikeyde ORTALI, tepeye yapisik degil: hero artik ekran
-     boyunda ve ustte durunca altinda kocaman bir bosluk kaliyordu.
-     `align-content` degil `align-self`, cunku ortalamayi yapan
-     `.hero`nun izgarasi. */
-  align-self: center;
+  /* Icerik UST UCTE, tam ortada degil. Arama kutusu hero'nun tek
+     eylemi ve ortada dururken ekranin yarisi kutuya gelene kadar
+     bos fotograf oluyordu. `align-self: start` + oransal ust bosluk:
+     kucuk ekranda yukari toplaniyor, buyuk ekranda fotografin ust
+     seridine nefes birakiyor. */
+  align-self: start;
+  margin-top: clamp(24px, 9vh, 92px);
 }
-.hero-rozet {
-  justify-self: start; display: inline-flex; align-items: center; gap: 6px;
-  padding: 5px 11px; border-radius: var(--r-full);
-  background: var(--primary-100); color: var(--primary-600);
-  font-size: var(--t-2xs); font-weight: 700;
-}
+/* Aciklama arama kutusunun ALTINDA (bkz. `app/page.tsx`). Olcusu
+   de kucultuldu: kutunun ustundeyken basligi tasiyordu, altinda
+   ikincil bir aciklama ve kutuyla boy yarisina girmemeli. */
 .hero-alt {
-  margin: 0; max-width: 56ch; font-size: var(--t-xl); line-height: 1.6;
-  color: rgba(255, 255, 255, .93); text-shadow: 0 1px 12px rgba(8, 14, 26, .6);
+  margin: 0; max-width: 62ch; font-size: var(--t-md); line-height: 1.6;
+  color: rgba(255, 255, 255, .9); text-shadow: 0 1px 12px rgba(8, 14, 26, .6);
 }
 
 /* Dar ekranda fotograf 200 px'lik ayri bir serit ve metin ONUN
@@ -4900,13 +4899,16 @@ table { border-radius: var(--r-md); overflow: hidden; }
 }
 
 .arama-kabuk { position: relative; margin-top: 6px; display: grid; gap: 12px; }
+/* Hap DARALDI: 8+8 px dolgu ve 46 px'lik dugme ile yuksekligi
+   78 px'e cikiyordu ve hero'nun ucte birini tek basina kapliyordu.
+   Ic olculer kuculdu, alanlarin dokunma hedefi (>= 44 px) korundu. */
 .arama-hap {
   display: flex; align-items: stretch; gap: 0;
-  padding: 8px; border-radius: var(--r-2xl);
+  padding: 6px; border-radius: var(--r-2xl);
   background: var(--surface); border: 1px solid var(--line);
   box-shadow: var(--shadow-md);
 }
-.arama-bolme { flex: 1 1 0; min-width: 0; display: grid; gap: 2px; padding: 8px 14px; }
+.arama-bolme { flex: 1 1 0; min-width: 0; display: grid; gap: 1px; padding: 6px 14px; }
 /* "Nerede" en geniş bölme: metin girişi öbür ikisinden uzun ve
    kısaltıldığında proje adı sığmıyor. */
 .arama-bolme-genis { flex: 1.6 1 0; }
@@ -4924,9 +4926,9 @@ table { border-radius: var(--r-md); overflow: hidden; }
 
 .arama-dugme {
   flex: none; display: inline-flex; align-items: center; gap: 8px;
-  padding: 0 22px; border: 0; border-radius: var(--r-xl); cursor: pointer;
+  padding: 0 20px; border: 0; border-radius: var(--r-xl); cursor: pointer;
   background: var(--cta); color: var(--on-cta);
-  font-size: var(--t-md); font-weight: 700; box-shadow: var(--shadow-eylem);
+  font-size: var(--t-sm); font-weight: 700; box-shadow: var(--shadow-eylem);
 }
 .arama-dugme:hover { filter: brightness(1.05); }
 

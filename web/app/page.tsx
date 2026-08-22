@@ -56,6 +56,11 @@ export default async function AnaSayfa() {
   for (const k of KOMBINASYONLAR) {
     if (!temaBolgesi.has(k.ozellik)) temaBolgesi.set(k.ozellik, k.bolge);
   }
+  /* Basılabilir çipler ÖNCEDEN süzülüyor: bölüm başlığının koşulu da
+     bu listeye bakıyor, yoksa hepsi elenirken başlık ayakta kalıyor. */
+  const temaCipleri = LANDING_OZELLIKLER
+    .map((o) => ({ o, bolgeSlug: temaBolgesi.get(o.slug) }))
+    .filter((x): x is { o: typeof x.o; bolgeSlug: string } => !!x.bolgeSlug);
 
   // Hero başlığında satır kırma yöneticiye bırakılıyor: tek "|" karakteri
   const heroSatirlari = m('anasayfa.hero.baslik').split('|');
@@ -90,7 +95,6 @@ export default async function AnaSayfa() {
     .slice(0, 4);
 
   const enPopulerBolgeler = [...BOLGELER].sort((a, b) => b.adet - a.adet).slice(0, 6);
-  const enBuyukBolge = enPopulerBolgeler[0];
 
   /* Hero çipleri: en çok aranan dört tema. Tümünü basmak hero'yu
      ikinci bir kategori şeridine çeviriyordu.
@@ -123,28 +127,22 @@ export default async function AnaSayfa() {
         <HeroGosteri kareler={heroKare} />
 
         <div className="hero-icerik">
-          {/* Sayılar VERİDEN geçiliyor, `site` sabitinden değil: koda
-              gömülü bir "1.240 proje" rakamı ilk gün yanlış oluyor ve
-              kimse güncellemiyor. Yayındaki proje sayısı sıfırsa rozet
-              hiç basılmıyor — "0 proje" bir vaat değil, bir uyarı. */}
-          {kanit.proje > 0 && (
-            <span className="hero-rozet">
-              <Icon n="check" s={13} sw={2.6} />{' '}
-              {m('anasayfa.hero.rozet', { proje: kanit.proje, bolge: BOLGELER.length })}
-            </span>
-          )}
-
           <h1 className="hero-mujde">
             {heroSatirlari.map((satir, i) => (
               <span key={satir} className={i === 0 ? undefined : 'hero-alt-satir'}>{satir}</span>
             ))}
           </h1>
 
+          <SearchBar oneriler={oneriler} temalar={hizliTemalar} />
+
+          {/* Açıklama arama kutusunun ALTINDA: hero'nun tek eylemi
+              arama ve kutu ilk göze çarpan şey olmalı. Üstte
+              duruyorken göz önce iki satır metni okuyup sonra kutuya
+              iniyordu; sayaç rozeti de aynı yolu bir adım daha
+              uzatıyordu, o yüzden kaldırıldı. */}
           <p className="hero-alt">
             {m('anasayfa.hero.alt', { proje: kanit.proje, bolge: BOLGELER.length })}
           </p>
-
-          <SearchBar oneriler={oneriler} temalar={hizliTemalar} />
         </div>
 
         {/* Güven şeridi hero'nun İÇİNDE: `position: absolute` ile
@@ -333,7 +331,13 @@ export default async function AnaSayfa() {
       </section>
 
       {/* ---------------- Özelliğe göre ---------------- */}
-      {LANDING_OZELLIKLER.length > 0 && enBuyukBolge && (
+      {/* Koşul, BASILABILIR cip sayisina bakiyor. Onceden
+          `LANDING_OZELLIKLER.length > 0` yeterliydi ama her cip
+          `temaBolgesi`den bir bolge bulamayinca `null` donuyor:
+          envanter bosaldiginda otuz dort ozellik hala tanimliydi,
+          kombinasyon ise sifirdi ve sayfada basligi olan ama
+          altinda hicbir sey olmayan bir bolum kaliyordu. */}
+      {temaCipleri.length > 0 && (
         <section className="section">
           <div className="section-head">
             <div>
@@ -342,15 +346,11 @@ export default async function AnaSayfa() {
             </div>
           </div>
           <div className="etiket-serit">
-            {LANDING_OZELLIKLER.map((o) => {
-              const bolgeSlug = temaBolgesi.get(o.slug);
-              if (!bolgeSlug) return null;
-              return (
-                <Link key={o.slug} className="badge" href={`/projeler/${bolgeSlug}/${o.slug}`}>
-                  <Icon n={o.ikon} s={14} /> {o.baslik}
-                </Link>
-              );
-            })}
+            {temaCipleri.map(({ o, bolgeSlug }) => (
+              <Link key={o.slug} className="badge" href={`/projeler/${bolgeSlug}/${o.slug}`}>
+                <Icon n={o.ikon} s={14} /> {o.baslik}
+              </Link>
+            ))}
           </div>
         </section>
       )}
