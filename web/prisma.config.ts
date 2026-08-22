@@ -100,6 +100,41 @@ if (semaKomutu && !dogrudan && havuz
 }
 
 /*
+ * SUPABASE'İN ESKİ DOĞRUDAN KONAĞI (`db.<ref>.supabase.co`) YALNIZCA
+ * IPv6.
+ *
+ * Yeni Supabase projelerinde bu konağın IPv4 kaydı yok. Yerelde
+ * çalışıyor (ev bağlantılarının çoğu IPv6 taşıyor) ama Vercel'in
+ * derleme makineleri IPv4 ve `P1001: Can't reach database server`
+ * veriyor — adres doğru göründüğü için sebebi aramak vakit alıyor.
+ *
+ * Doğrusu havuzlayıcı konağının 5432 portu: aynı sunucu, SESSION
+ * modu. Transaction modundan (6543) farklı olarak advisory lock ve
+ * prepared statement destekliyor, yani migration oradan geçiyor.
+ * Kullanıcı adı da farklı: havuzlayıcı `postgres.<ref>` istiyor.
+ */
+if (dogrudan && /(^|@)db\.[a-z0-9]+\.supabase\.co/.test(dogrudan)) {
+  /* IPv4 eklentisi satın alındıysa konak gerçekten erişilebilir;
+     o durumda uyarı gürültü olur ve susturulabiliyor. */
+  if (process.env.SUPABASE_IPV4_EKI !== '1') {
+    console.warn([
+      '',
+      '  UYARI  DIRECT_URL, Supabase\'in eski doğrudan konağına',
+      '         (db.<ref>.supabase.co) bakıyor. Bu konak yalnızca IPv6;',
+      '         Vercel gibi IPv4 ortamlarda "P1001: Can\'t reach database',
+      '         server" veriyor.',
+      '',
+      '         Havuzlayıcı konağının 5432 PORTUNU kullanın — aynı sunucu,',
+      '         session modu, advisory lock destekliyor. Kullanıcı adı da',
+      '         farklı: havuzlayıcı `postgres.<ref>` istiyor.',
+      '',
+      '         IPv4 eklentiniz varsa SUPABASE_IPV4_EKI=1 ile bu uyarı susar.',
+      '',
+    ].join('\n'));
+  }
+}
+
+/*
  * TEMİZLENMİŞ değer doğrudan veriliyor, `env()` ile DEĞİL.
  *
  * `env('DIRECT_URL')` Prisma'ya "bu değişkeni sen oku" demek; ham
